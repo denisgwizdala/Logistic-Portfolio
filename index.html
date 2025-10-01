@@ -12,103 +12,75 @@
         }
 
         :root {
-            --primary: #0a0a0a;
-            --secondary: #1a1a1a;
-            --accent: #3b82f6;
-            --text: #e5e5e5;
-            --text-dim: #a3a3a3;
-            --border: #2a2a2a;
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #121212;
+            --bg-card: #1a1a1a;
+            --accent: #2563eb;
+            --accent-light: #3b82f6;
+            --text-primary: #f5f5f5;
+            --text-secondary: #a3a3a3;
+            --text-dim: #737373;
+            --border: #262626;
             --success: #10b981;
-            --card-bg: #141414;
+            --warning: #f59e0b;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: var(--primary);
-            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
             line-height: 1.6;
             overflow-x: hidden;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1280px;
             margin: 0 auto;
             padding: 0 2rem;
         }
 
         /* Header */
         header {
-            padding: 4rem 0 2rem;
-            position: relative;
+            padding: 5rem 0 3rem;
+            border-bottom: 1px solid var(--border);
         }
 
         .header-content {
             display: flex;
             flex-direction: column;
-            gap: 1rem;
+            gap: 1.5rem;
         }
 
         .name {
-            font-size: 3.5rem;
+            font-size: 4rem;
             font-weight: 700;
-            letter-spacing: -0.02em;
-            background: linear-gradient(135deg, var(--text) 0%, var(--text-dim) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            letter-spacing: -0.03em;
+            line-height: 1;
         }
 
-        .title {
-            font-size: 1.25rem;
-            color: var(--text-dim);
+        .role {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
             font-weight: 400;
+            max-width: 600px;
         }
 
         .tagline {
             font-size: 1.5rem;
-            color: var(--accent);
-            font-weight: 500;
-            margin-top: 0.5rem;
+            color: var(--accent-light);
+            font-weight: 600;
+            font-style: italic;
         }
 
-        /* Intro Section */
-        .intro {
-            margin: 4rem 0;
-            padding: 3rem;
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 1rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .intro::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-            background: linear-gradient(180deg, var(--accent), var(--success));
-        }
-
-        .intro-text {
-            font-size: 1.125rem;
-            line-height: 1.8;
-            color: var(--text-dim);
-            max-width: 90%;
-        }
-
-        /* Stats Bar */
+        /* Stats Grid */
         .stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(4, 1fr);
             gap: 2rem;
-            margin: 3rem 0;
-            padding: 2rem;
-            background: var(--secondary);
-            border-radius: 0.75rem;
-            border: 1px solid var(--border);
+            margin: 4rem 0;
+            padding: 3rem 0;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
         }
 
         .stat-item {
@@ -116,24 +88,47 @@
         }
 
         .stat-value {
-            font-size: 2.5rem;
+            font-size: 3rem;
             font-weight: 700;
-            color: var(--accent);
+            color: var(--accent-light);
             display: block;
+            line-height: 1;
+            margin-bottom: 0.75rem;
         }
 
         .stat-label {
             font-size: 0.875rem;
             color: var(--text-dim);
             text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-top: 0.5rem;
+            letter-spacing: 0.1em;
+            font-weight: 500;
         }
 
-        /* Section Headers */
+        /* Introduction */
+        .intro {
+            margin: 5rem 0;
+            max-width: 900px;
+        }
+
+        .intro h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            font-weight: 600;
+        }
+
+        .intro-text {
+            font-size: 1.125rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+        }
+
+        /* Projects Section */
+        .projects-section {
+            margin: 6rem 0;
+        }
+
         .section-header {
-            margin: 5rem 0 3rem;
-            position: relative;
+            margin-bottom: 3rem;
         }
 
         .section-title {
@@ -144,25 +139,23 @@
 
         .section-subtitle {
             font-size: 1.125rem;
-            color: var(--text-dim);
+            color: var(--text-secondary);
         }
 
-        /* Projects Grid */
         .projects-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 2rem;
-            margin-bottom: 4rem;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 1.5rem;
         }
 
         .project-card {
-            background: var(--card-bg);
+            background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 1rem;
+            border-radius: 0.75rem;
             padding: 2rem;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s ease;
             position: relative;
-            cursor: pointer;
+            overflow: hidden;
         }
 
         .project-card::before {
@@ -171,49 +164,83 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 3px;
+            height: 2px;
             background: linear-gradient(90deg, var(--accent), var(--success));
-            opacity: 0;
-            transition: opacity 0.3s;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
         }
 
         .project-card:hover {
-            transform: translateY(-4px);
+            transform: translateY(-2px);
             border-color: var(--accent);
-            box-shadow: 0 8px 30px rgba(59, 130, 246, 0.15);
+            box-shadow: 0 8px 24px rgba(37, 99, 235, 0.1);
         }
 
         .project-card:hover::before {
-            opacity: 1;
+            transform: scaleX(1);
         }
 
         .project-header {
             display: flex;
             justify-content: space-between;
             align-items: start;
-            margin-bottom: 1rem;
+            margin-bottom: 1.25rem;
+            gap: 1rem;
         }
 
         .project-title {
-            font-size: 1.5rem;
+            font-size: 1.375rem;
             font-weight: 600;
-            color: var(--text);
-            margin-bottom: 0.25rem;
+            line-height: 1.3;
         }
 
         .project-page {
-            font-size: 0.875rem;
+            font-size: 0.75rem;
             color: var(--text-dim);
-            background: var(--secondary);
-            padding: 0.25rem 0.75rem;
+            background: var(--bg-secondary);
+            padding: 0.25rem 0.625rem;
             border-radius: 0.25rem;
+            white-space: nowrap;
+            font-weight: 500;
         }
 
         .project-description {
-            font-size: 1rem;
-            color: var(--text-dim);
+            font-size: 0.9375rem;
+            color: var(--text-secondary);
             margin-bottom: 1.5rem;
             line-height: 1.6;
+        }
+
+        .project-impact {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            padding-top: 1.25rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .impact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.625rem;
+            font-size: 0.875rem;
+        }
+
+        .impact-icon {
+            width: 1.25rem;
+            height: 1.25rem;
+            color: var(--success);
+        }
+
+        .impact-text {
+            color: var(--text-secondary);
+        }
+
+        .impact-value {
+            color: var(--success);
+            font-weight: 600;
         }
 
         .project-tags {
@@ -223,31 +250,38 @@
         }
 
         .tag {
-            font-size: 0.75rem;
+            font-size: 0.6875rem;
             padding: 0.375rem 0.75rem;
-            background: var(--secondary);
+            background: var(--bg-secondary);
             border: 1px solid var(--border);
             border-radius: 0.375rem;
             color: var(--text-dim);
             text-transform: uppercase;
             letter-spacing: 0.05em;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .project-card:hover .tag {
+            border-color: var(--accent);
+            color: var(--accent-light);
         }
 
         /* Disclaimer */
         .disclaimer {
-            margin: 5rem 0 3rem;
+            margin: 6rem 0 3rem;
             padding: 2rem;
-            background: var(--secondary);
+            background: var(--bg-secondary);
             border: 1px solid var(--border);
-            border-left: 4px solid var(--text-dim);
+            border-left: 3px solid var(--text-dim);
             border-radius: 0.5rem;
         }
 
         .disclaimer-title {
-            font-size: 0.875rem;
+            font-size: 0.75rem;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.1em;
             margin-bottom: 1rem;
             color: var(--text-dim);
         }
@@ -255,7 +289,7 @@
         .disclaimer-text {
             font-size: 0.875rem;
             line-height: 1.7;
-            color: var(--text-dim);
+            color: var(--text-secondary);
         }
 
         /* Footer */
@@ -263,7 +297,6 @@
             padding: 3rem 0;
             text-align: center;
             border-top: 1px solid var(--border);
-            margin-top: 4rem;
         }
 
         .footer-text {
@@ -272,17 +305,19 @@
         }
 
         /* Responsive */
+        @media (max-width: 1024px) {
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
         @media (max-width: 768px) {
             .container {
-                padding: 0 1.5rem;
+                padding: 0 1.25rem;
             }
 
             .name {
                 font-size: 2.5rem;
-            }
-
-            .projects-grid {
-                grid-template-columns: 1fr;
             }
 
             .stats {
@@ -290,24 +325,22 @@
                 gap: 1.5rem;
             }
 
-            .intro {
-                padding: 2rem;
+            .projects-grid {
+                grid-template-columns: 1fr;
             }
 
-            .intro-text {
-                max-width: 100%;
+            .section-title {
+                font-size: 2rem;
             }
         }
 
-        /* Smooth scroll */
         html {
             scroll-behavior: smooth;
         }
 
-        /* Selection */
         ::selection {
             background: var(--accent);
-            color: var(--primary);
+            color: var(--bg-primary);
         }
     </style>
 </head>
@@ -317,7 +350,7 @@
         <header>
             <div class="header-content">
                 <h1 class="name">Denis Gwizdala</h1>
-                <p class="title">Supply Chain & Last-Mile Operations – Process Automation & Continuous Improvement</p>
+                <p class="role">Supply Chain & Last-Mile Operations – Process Automation & Continuous Improvement</p>
                 <p class="tagline">"Invest and Simplify"</p>
             </div>
         </header>
@@ -330,16 +363,21 @@
             </div>
             <div class="stat-item">
                 <span class="stat-value">400+</span>
-                <span class="stat-label">Stations Coordinated</span>
+                <span class="stat-label">EU Stations</span>
             </div>
             <div class="stat-item">
                 <span class="stat-value">7</span>
                 <span class="stat-label">Major Projects</span>
             </div>
+            <div class="stat-item">
+                <span class="stat-value">2000+</span>
+                <span class="stat-label">Hours Saved</span>
+            </div>
         </div>
 
         <!-- Introduction -->
         <section class="intro">
+            <h2>Introduction</h2>
             <p class="intro-text">
                 Over the last 5 years in last-mile delivery and supply chain coordination, I've turned my passion for problem-solving into a relentless focus on efficiency. I identify wasted time, redundant steps, and operational bottlenecks, transforming them into streamlined processes that save hours, reduce risk, and strengthen delivery performance.
                 <br><br>
@@ -352,138 +390,224 @@
         </section>
 
         <!-- Projects Section -->
-        <div class="section-header">
-            <h2 class="section-title">Projects</h2>
-            <p class="section-subtitle">Automation and decision-support systems built for scale</p>
-        </div>
+        <section class="projects-section">
+            <div class="section-header">
+                <h2 class="section-title">Projects</h2>
+                <p class="section-subtitle">Automation and decision-support systems built for scale</p>
+            </div>
 
-        <div class="projects-grid">
-            <!-- Project 1 -->
-            <div class="project-card">
-                <div class="project-header">
-                    <div>
+            <div class="projects-grid">
+                <!-- Project 1: EU Offset Validator -->
+                <div class="project-card">
+                    <div class="project-header">
                         <h3 class="project-title">EU Offset Validator</h3>
+                        <span class="project-page">Page 4</span>
                     </div>
-                    <span class="project-page">Page 4</span>
+                    <p class="project-description">
+                        Automated offset auditing system ensuring accurate scheduling and compliance across European logistics operations.
+                    </p>
+                    <div class="project-impact">
+                        <div class="impact-item">
+                            <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span class="impact-text"><span class="impact-value">90%</span> reduction in validation time</span>
+                        </div>
+                        <div class="impact-item">
+                            <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span class="impact-text"><span class="impact-value">350</span> hours saved annually</span>
+                        </div>
+                    </div>
+                    <div class="project-tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">Selenium</span>
+                        <span class="tag">Automation</span>
+                    </div>
                 </div>
-                <p class="project-description">
-                    Automated offset auditing system ensuring accurate scheduling and compliance across European logistics operations.
-                </p>
-                <div class="project-tags">
-                    <span class="tag">Automation</span>
-                    <span class="tag">Auditing</span>
-                    <span class="tag">Compliance</span>
-                </div>
-            </div>
 
-            <!-- Project 2 -->
-            <div class="project-card">
-                <div class="project-header">
-                    <div>
+                <!-- Project 2: EU Yard Configuration Updater -->
+                <div class="project-card">
+                    <div class="project-header">
                         <h3 class="project-title">EU Yard Configuration Updater</h3>
+                        <span class="project-page">Page 6</span>
                     </div>
-                    <span class="project-page">Page 6</span>
+                    <p class="project-description">
+                        Weekly configuration automation streamlining yard management and reducing manual configuration overhead.
+                    </p>
+                    <div class="project-impact">
+                        <div class="impact-item">
+                            <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span class="impact-text"><span class="impact-value">96%</span> faster weekly updates</span>
+                        </div>
+                        <div class="impact-item">
+                            <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span class="impact-text">8h → 20min per cycle</span>
+                        </div>
+                    </div>
+                    <div class="project-tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">SSO/VPN</span>
+                        <span class="tag">Configuration</span>
+                    </div>
                 </div>
-                <p class="project-description">
-                    Weekly configuration automation streamlining yard management and reducing manual configuration overhead.
-                </p>
-                <div class="project-tags">
-                    <span class="tag">Automation</span>
-                    <span class="tag">Configuration</span>
-                    <span class="tag">Scheduling</span>
-                </div>
-            </div>
 
-            <!-- Project 3 -->
-            <div class="project-card">
-                <div class="project-header">
-                    <div>
+                <!-- Project 3: Fill-Rate Optimizer -->
+                <div class="project-card">
+                    <div class="project-header">
                         <h3 class="project-title">Fill-Rate Optimizer</h3>
+                        <span class="project-page">Page 8</span>
                     </div>
-                    <span class="project-page">Page 8</span>
+                    <p class="project-description">
+                        Demand-driven partner scaling solution optimizing capacity utilization and delivery partner allocation.
+                    </p>
+                    <div class="project-impact">
+                        <div class="impact-item">
+                            <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span class="impact-text"><span class="impact-value">45%</span> reduction in offer spending</span>
+                        </div>
+                        <div class="impact-item">
+                            <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span class="impact-text"><span class="impact-value">£38,400</span> saved annually</span>
+                        </div>
+                    </div>
+                    <div class="project-tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">Tkinter</span>
+                        <span class="tag">Real-time</span>
+                    </div>
                 </div>
-                <p class="project-description">
-                    Demand-driven partner scaling solution optimizing capacity utilization and delivery partner allocation.
-                </p>
-                <div class="project-tags">
-                    <span class="tag">Optimization</span>
-                    <span class="tag">Analytics</span>
-                    <span class="tag">Capacity Planning</span>
-                </div>
-            </div>
 
-            <!-- Project 4 -->
-            <div class="project-card">
-                <div class="project-header">
-                    <div>
+                <!-- Project 4: Flex Nursery Tool -->
+                <div class="project-card">
+                    <div class="project-header">
                         <h3 class="project-title">Flex Nursery Tool</h3>
+                        <span class="project-page">Page 12</span>
                     </div>
-                    <span class="project-page">Page 12</span>
+                    <p class="project-description">
+                        UK pilot program for no-show mitigation, improving delivery partner reliability and operational predictability.
+                    </p>
+                    <div class="project-impact">
+                        <div class="impact-item">
+                            <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span class="impact-text"><span class="impact-value">65-70%</span> reduction in no-show escalations</span>
+                        </div>
+                        <div class="impact-item">
+                            <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span class="impact-text">Pilot expanded after success</span>
+                        </div>
+                    </div>
+                    <div class="project-tags">
+                        <span class="tag">Pilot Program</span>
+                        <span class="tag">UK Ops</span>
+                        <span class="tag">Risk Mitigation</span>
+                    </div>
                 </div>
-                <p class="project-description">
-                    UK pilot program for no-show mitigation, improving delivery partner reliability and operational predictability.
-                </p>
-                <div class="project-tags">
-                    <span class="tag">Pilot Program</span>
-                    <span class="tag">UK Operations</span>
-                    <span class="tag">Risk Mitigation</span>
-                </div>
-            </div>
 
-            <!-- Project 5 -->
-            <div class="project-card">
-                <div class="project-header">
-                    <div>
+                <!-- Project 5: Phantom Shipments Automation -->
+                <div class="project-card">
+                    <div class="project-header">
                         <h3 class="project-title">Phantom Shipments Automation</h3>
+                        <span class="project-page">Page 15</span>
                     </div>
-                    <span class="project-page">Page 15</span>
+                    <p class="project-description">
+                        Browser-based route processing system automating the detection and resolution of phantom shipment issues.
+                    </p>
+                    <div class="project-impact">
+                        <div class="impact-item">
+                            <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span class="impact-text"><span class="impact-value">520</span> hours saved annually</span>
+                        </div>
+                        <div class="impact-item">
+                            <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span class="impact-text"><span class="impact-value">£9,600</span> cost reduction</span>
+                        </div>
+                    </div>
+                    <div class="project-tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">Selenium</span>
+                        <span class="tag">Pandas</span>
+                    </div>
                 </div>
-                <p class="project-description">
-                    Browser-based route processing system automating the detection and resolution of phantom shipment issues.
-                </p>
-                <div class="project-tags">
-                    <span class="tag">Browser Automation</span>
-                    <span class="tag">Error Resolution</span>
-                    <span class="tag">Quality Control</span>
-                </div>
-            </div>
 
-            <!-- Project 6 -->
-            <div class="project-card">
-                <div class="project-header">
-                    <div>
+                <!-- Project 6: Rescue Validator -->
+                <div class="project-card">
+                    <div class="project-header">
                         <h3 class="project-title">Rescue Validator</h3>
+                        <span class="project-page">Page 17</span>
                     </div>
-                    <span class="project-page">Page 17</span>
+                    <p class="project-description">
+                        Route rescue decision support system providing real-time validation and recommendations for delivery interventions.
+                    </p>
+                    <div class="project-impact">
+                        <div class="impact-item">
+                            <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span class="impact-text"><span class="impact-value">85%</span> faster decision-making</span>
+                        </div>
+                        <div class="impact-item">
+                            <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span class="impact-text">30min → 3min per case</span>
+                        </div>
+                    </div>
+                    <div class="project-tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">API Integration</span>
+                        <span class="tag">Decision Support</span>
+                    </div>
                 </div>
-                <p class="project-description">
-                    Route rescue decision support system providing real-time validation and recommendations for delivery interventions.
-                </p>
-                <div class="project-tags">
-                    <span class="tag">Decision Support</span>
-                    <span class="tag">Real-time</span>
-                    <span class="tag">Operations</span>
-                </div>
-            </div>
 
-            <!-- Project 7 -->
-            <div class="project-card">
-                <div class="project-header">
-                    <div>
+                <!-- Project 7: Shift Deck -->
+                <div class="project-card">
+                    <div class="project-header">
                         <h3 class="project-title">Shift Deck</h3>
+                        <span class="project-page">Page 21</span>
                     </div>
-                    <span class="project-page">Page 21</span>
-                </div>
-                <p class="project-description">
-                    Centralized team launcher consolidating operational tools and resources into a unified dashboard for efficiency.
-                </p>
-                <div class="project-tags">
-                    <span class="tag">Dashboard</span>
-                    <span class="tag">Productivity</span>
-                    <span class="tag">Team Tools</span>
+                    <p class="project-description">
+                        Centralized team launcher consolidating operational tools and resources into a unified dashboard for efficiency.
+                    </p>
+                    <div class="project-impact">
+                        <div class="impact-item">
+                            <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span class="impact-text">Adopted across department</span>
+                        </div>
+                        <div class="impact-item">
+                            <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span class="impact-text">Open-source on GitHub</span>
+                        </div>
+                    </div>
+                    <div class="project-tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">Tkinter</span>
+                        <span class="tag">Productivity</span>
+                    </div>
                 </div>
             </div>
-        </div>
+        </section>
 
         <!-- Disclaimer -->
         <div class="disclaimer">
@@ -495,7 +619,7 @@
 
         <!-- Footer -->
         <footer>
-            <p class="footer-text">© 2025 Denis Gwizdala. Built with focus on clarity and performance.</p>
+            <p class="footer-text">© 2025 Denis Gwizdala · Supply Chain Process Automation Portfolio</p>
         </footer>
     </div>
 </body>
