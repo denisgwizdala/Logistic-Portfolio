@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Denis Gwizdala | Supply Chain Automation Portfolio</title>
@@ -12,148 +15,1243 @@
         }
 
         :root {
-            --bg-primary: #0a0a0a;
-            --bg-secondary: #121212;
-            --bg-card: #1a1a1a;
-            --accent: #2563eb;
-            --accent-light: #3b82f6;
-            --text-primary: #f5f5f5;
-            --text-secondary: #a3a3a3;
-            --text-dim: #737373;
-            --border: #262626;
+            --bg-primary: #0a0e15;
+            --bg-secondary: #0f1419;
+            --bg-tertiary: #161d27;
+            --accent: #3b82f6;
+            --accent-secondary: #2563eb;
+            --accent-tertiary: #60a5fa;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-dim: #64748b;
+            --border: #1e293b;
             --success: #10b981;
             --warning: #f59e0b;
+            --gradient-1: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+            --gradient-2: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+            --gradient-3: linear-gradient(180deg, rgba(59, 130, 246, 0.1) 0%, transparent 100%);
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
             line-height: 1.6;
             overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Dynamic Side Margins */
+        body::before,
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            width: 2px;
+            height: 0%;
+            background: linear-gradient(180deg, 
+                transparent 0%,
+                var(--accent) 20%,
+                var(--accent-tertiary) 50%,
+                var(--accent) 80%,
+                transparent 100%
+            );
+            z-index: 1000;
+            transition: height 0.3s ease;
+            pointer-events: none;
+        }
+
+        body::before {
+            left: 40px;
+        }
+
+        body::after {
+            right: 40px;
+        }
+
+        /* Side Accent Lines Container */
+        .side-lines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        .side-line {
+            position: absolute;
+            top: 0;
+            width: 1px;
+            height: 100%;
+            background: linear-gradient(180deg, 
+                transparent 0%,
+                var(--border) 10%,
+                var(--border) 90%,
+                transparent 100%
+            );
+        }
+
+        .side-line.left {
+            left: 40px;
+        }
+
+        .side-line.right {
+            right: 40px;
+        }
+
+        .side-line-progress {
+            position: absolute;
+            width: 3px;
+            height: 0;
+            background: var(--gradient-1);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+            top: 0;
+            left: -1px;
+            transition: height 0.1s linear;
+        }
+
+        /* Scroll Progress Indicators */
+        .scroll-indicator {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1001;
+            opacity: 0;
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+
+        .scroll-indicator.active {
+            opacity: 1;
+            border-color: var(--accent);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .scroll-indicator.left {
+            left: 21px;
+        }
+
+        .scroll-indicator.right {
+            right: 21px;
+        }
+
+        .scroll-indicator svg {
+            width: 16px;
+            height: 16px;
+            color: var(--accent);
         }
 
         .container {
-            max-width: 1280px;
+            max-width: 1880px;
             margin: 0 auto;
-            padding: 0 2rem;
+            padding: 0 80px;
         }
 
-        /* Header */
-        header {
-            padding: 5rem 0 3rem;
-            border-bottom: 1px solid var(--border);
+        /* Floating Particles Background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
         }
 
-        .header-content {
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--accent);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); }
+            25% { transform: translateY(-100px) translateX(50px); }
+            50% { transform: translateY(-200px) translateX(-50px); }
+            75% { transform: translateY(-100px) translateX(50px); }
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 4rem 0;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.15) 0%, transparent 50%);
+            animation: pulse 8s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.3; }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 1100px;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-label {
+            display: inline-block;
+            font-size: 0.875rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            padding: 0.5rem 1.5rem;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 2rem;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            backdrop-filter: blur(10px);
+            animation: fadeInUp 1s ease-out 0.2s both;
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 7vw, 5.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 2rem;
+            letter-spacing: -0.03em;
+            animation: fadeInUp 1s ease-out 0.4s both;
+        }
+
+        .hero-title .highlight {
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            display: inline-block;
+        }
+
+        .hero-title .highlight::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--gradient-1);
+            opacity: 0.5;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.125rem, 2vw, 1.5rem);
+            color: var(--text-secondary);
+            margin-bottom: 2.5rem;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            font-weight: 400;
+            line-height: 1.7;
+            animation: fadeInUp 1s ease-out 0.6s both;
+        }
+
+        .hero-tagline {
+            font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+            font-style: italic;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            margin-bottom: 3.5rem;
+            font-family: 'Dancing Script', cursive;
+            animation: fadeInUp 1s ease-out 0.8s both;
+        }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 3rem;
+            max-width: 1000px;
+            margin: 0 auto 3.5rem;
+            animation: fadeInUp 1s ease-out 1s both;
+        }
+
+        .hero-stat {
+            text-align: center;
+            position: relative;
+            padding: 2rem 1.5rem;
+            background: rgba(22, 29, 39, 0.5);
+            border-radius: 1rem;
+            border: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .hero-stat:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.2);
+        }
+
+        .hero-stat-value {
+            display: block;
+            font-size: clamp(2.5rem, 4vw, 4rem);
+            font-weight: 800;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+            margin-bottom: 0.75rem;
+        }
+
+        .hero-stat-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+        }
+
+        .hero-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1.25rem 3rem;
+            background: var(--gradient-1);
+            color: white;
+            text-decoration: none;
+            border-radius: 3rem;
+            font-weight: 600;
+            font-size: 1.125rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+            animation: fadeInUp 1s ease-out 1.2s both;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-cta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .hero-cta:hover::before {
+            left: 100%;
+        }
+
+        .hero-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(59, 130, 246, 0.5);
+        }
+
+        .hero-cta svg {
+            transition: transform 0.3s ease;
+        }
+
+        .hero-cta:hover svg {
+            transform: translateY(3px);
+        }
+
+        /* Section Transitions */
+        .section-fade {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease;
+        }
+
+        .section-fade.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Introduction Section */
+        .introduction {
+            padding: 10rem 0;
+            background: var(--bg-primary);
+            position: relative;
+        }
+
+        .introduction::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+        }
+
+/* --- intro-card layout (left profile, right content) --- */
+        .intro-card{
+        max-width:1400px;margin:0 auto;background:rgba(22,29,39,.6);
+        border:1px solid var(--border);border-radius:2rem;padding:4rem;
+        display:grid;gap:4rem;backdrop-filter:blur(20px);box-shadow:0 20px 60px rgba(0,0,0,.3);
+        grid-template-columns:350px 1fr;            /* left column fixed, right fluid */
+        grid-template-areas:
+            "profile right"                         /* row 1 */
+            "education experience";                 /* row 2: side-by-side cards */
+        grid-auto-rows:min-content;
+        }
+        .intro-profile{ grid-area:profile; }
+        .intro-right{ grid-area:right; }
+
+
+        /* --- Education: left column (stretched card) --- */
+        .education-section{
+        grid-area:education;
+        display:flex; flex-direction:column;
+        background: var(--bg-secondary);
+        border:1px solid var(--border);
+        border-radius:1rem;
+        padding:1.25rem 1.25rem 1.5rem;
+        }
+        .education-section .intro-section-title{ margin:.25rem 0 1rem; }
+        .education-grid{ display:flex; flex-direction:column; gap:1.25rem; }
+        .education-item{
+        display:flex; gap:1.25rem; padding:1.25rem;
+        background: var(--bg-tertiary);
+        border:1px solid var(--border);
+        border-radius:.875rem; transition:all .3s ease;
+        }
+        .education-item:hover{
+        border-color:var(--accent);
+        background:rgba(22,29,39,.8);
+        transform:translateX(5px);
+        }
+        .education-icon{
+        width:44px;height:44px;min-width:44px;
+        background:linear-gradient(135deg,rgba(59,130,246,.15),rgba(96,165,250,.1));
+        border:1px solid rgba(59,130,246,.3);
+        border-radius:.875rem;display:flex;align-items:center;justify-content:center;color:var(--accent);
+        }
+        .education-degree{ font-size:1.125rem;font-weight:700;color:var(--text-primary);margin-bottom:.5rem;line-height:1.4; }
+        .education-school{ font-size:1rem;color:var(--accent);margin-bottom:.25rem;font-weight:600; }
+        .education-year{ font-size:.875rem;color:var(--text-dim);font-weight:500; }
+
+        /* --- NEW: Experience (left column card styled like Education) --- */
+        /* Right column Experience card */
+        .experience-box{
+        grid-area:experience;
+        display:flex; flex-direction:column;
+        background: var(--bg-secondary);
+        border:1px solid var(--border);
+        border-radius:1rem;
+        padding:1.25rem 1.25rem 1.5rem;
+        }
+        .experience-box .intro-section-title{ margin:.25rem 0 1rem; }
+        .experience-box .experience-list{ display:flex; flex-direction:column; gap:1.25rem; }
+        .experience-box .experience-item{
+        display:flex; gap:1.25rem; padding:1.25rem;
+        background: var(--bg-tertiary);
+        border:1px solid var(--border);
+        border-radius:.875rem; transition:all .3s ease;
+        }
+        .experience-box .experience-item:hover{
+        border-color:var(--accent);
+        background:rgba(22,29,39,.8);
+        transform:translateX(5px);
+        }
+        .experience-box .experience-icon{
+        width:44px;height:44px;min-width:44px;
+        background:linear-gradient(135deg,rgba(59,130,246,.15),rgba(96,165,250,.1));
+        border:1px solid rgba(59,130,246,.3);
+        border-radius:.875rem;display:flex;align-items:center;justify-content:center;color:var(--accent);
+        }
+
+        /* Disable sticky to avoid collisions */
+        @media (min-width:1025px){
+        .education-section, .experience-box { position:static; top:auto; }
+        }
+
+        /* Mobile: stack cleanly */
+        @media (max-width:1024px){
+        .intro-card{
+            grid-template-columns:1fr;
+            gap:3rem; padding:3rem;
+            grid-template-areas:
+            "profile"
+            "right"
+            "education"
+            "experience";
+        }
+        }
+
+        /* === EDUCATION & EXPERIENCE: unified look === */
+
+        /* Section containers */
+/* === ADVANCED EDUCATION & EXPERIENCE === */
+
+        /* Section containers with gradient borders */
+        .education-section,
+        .experience-box{
+        background: var(--bg-secondary);
+        border: 1px solid var(--border);
+        border-radius: 1.25rem;
+        padding: 1.25rem 1.25rem 1.5rem;
+        position: relative;
+        overflow: hidden;
+        }
+
+        .education-section::before,
+        .experience-box::before{
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: var(--gradient-1);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .education-section:hover::before,
+        .experience-box:hover::before{
+        transform: scaleX(1);
+        }
+
+        /* Animated background glow on hover */
+        .education-section::after,
+        .experience-box::after{
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 200px;
+        height: 200px;
+        background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, transparent 70%);
+        transform: translate(-50%, -50%) scale(0);
+        transition: transform 0.5s ease;
+        pointer-events: none;
+        z-index: 0;
+        }
+
+        .education-section:hover::after,
+        .experience-box:hover::after{
+        transform: translate(-50%, -50%) scale(2);
+        }
+
+        /* Section titles with icon animation */
+        .education-section .intro-section-title,
+        .experience-box .intro-section-title{
+        display:flex; align-items:center; gap:.75rem;
+        margin:.25rem 0 1rem;
+        font-size:1.5rem; font-weight:700; color:var(--text-primary);
+        position: relative;
+        z-index: 1;
+        }
+
+        .education-section .intro-section-title svg,
+        .experience-box .intro-section-title svg{
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .education-section:hover .intro-section-title svg,
+        .experience-box:hover .intro-section-title svg{
+        transform: rotate(360deg) scale(1.1);
+        filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.6));
+        }
+
+        /* Inner item cards with staggered animations */
+        .education-item,
+        .experience-box .experience-item{
+        display:flex; gap:1.25rem;
+        padding:1.5rem;
+        background: var(--bg-tertiary);
+        border:1px solid var(--border);
+        border-radius:1rem;
+        transition:all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+        }
+
+        /* Sliding gradient effect on hover */
+        .education-item::before,
+        .experience-box .experience-item::before{
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.05), transparent);
+        transition: left 0.6s ease;
+        pointer-events: none;
+        }
+
+        .education-item:hover::before,
+        .experience-box .experience-item:hover::before{
+        left: 100%;
+        }
+
+        .education-item:hover,
+        .experience-box .experience-item:hover{
+        border-color:var(--accent);
+        background:rgba(22,29,39,.9);
+        transform:translateX(8px) translateY(-2px);
+        box-shadow: 0 8px 24px rgba(59, 130, 246, 0.15),
+                    inset 0 1px 0 rgba(59, 130, 246, 0.1);
+        }
+
+        /* Staggered animation delays */
+        .education-item:nth-child(1),
+        .experience-box .experience-item:nth-child(1){ animation-delay: 0.1s; }
+        .education-item:nth-child(2),
+        .experience-box .experience-item:nth-child(2){ animation-delay: 0.2s; }
+
+        /* Animated icon bubbles */
+        .education-icon,
+        .experience-box .experience-icon{
+        width:44px; height:44px; min-width:44px;
+        display:flex; align-items:center; justify-content:center;
+        border-radius:.875rem;
+        color:var(--accent);
+        background:linear-gradient(135deg,rgba(59,130,246,.15),rgba(96,165,250,.1));
+        border:1px solid rgba(59,130,246,.3);
+        position: relative;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Pulsing ring effect */
+        .education-icon::after,
+        .experience-box .experience-icon::after{
+        content: '';
+        position: absolute;
+        inset: -4px;
+        border-radius: .875rem;
+        border: 2px solid var(--accent);
+        opacity: 0;
+        animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+
+        @keyframes pulse-ring {
+        0% {
+            transform: scale(0.95);
+            opacity: 0;
+        }
+        50% {
+            transform: scale(1);
+            opacity: 0.3;
+        }
+        100% {
+            transform: scale(1.05);
+            opacity: 0;
+        }
+        }
+
+        .education-item:hover .education-icon,
+        .experience-box .experience-item:hover .experience-icon{
+        transform: scale(1.1) rotate(5deg);
+        background:linear-gradient(135deg,rgba(59,130,246,.25),rgba(96,165,250,.2));
+        border-color: var(--accent);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .education-icon svg,
+        .experience-box .experience-icon svg{
+        transition: transform 0.3s ease;
+        }
+
+        .education-item:hover .education-icon svg,
+        .experience-box .experience-item:hover .experience-icon svg{
+        transform: scale(1.2);
+        }
+
+        /* Typography with smooth transitions */
+        .education-degree,
+        .experience-box .experience-title{
+        font-size:1.125rem; font-weight:700; line-height:1.4;
+        color:var(--text-primary); margin-bottom:.5rem;
+        transition: color 0.3s ease;
+        position: relative;
+        }
+
+        .education-item:hover .education-degree,
+        .experience-box .experience-item:hover .experience-title{
+        color: var(--accent-tertiary);
+        }
+
+        .education-school,
+        .experience-box .experience-company{
+        font-size:1rem; font-weight:600; color:var(--accent); margin-bottom:.25rem;
+        transition: all 0.3s ease;
+        }
+
+        .education-item:hover .education-school,
+        .experience-box .experience-item:hover .experience-company{
+        color: var(--accent-tertiary);
+        transform: translateX(2px);
+        }
+
+        .education-year,
+        .experience-box .experience-period{
+        font-size:.875rem; font-weight:500; color:var(--text-dim);
+        transition: color 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        }
+
+        .education-year::before,
+        .experience-box .experience-period::before{
+        content: '●';
+        color: var(--accent);
+        font-size: 0.5rem;
+        opacity: 0;
+        transform: scale(0);
+        transition: all 0.3s ease;
+        }
+
+        .education-item:hover .education-year::before,
+        .experience-box .experience-item:hover .experience-period::before{
+        opacity: 1;
+        transform: scale(1);
+        }
+
+        /* Animated bullet points */
+        .experience-box .experience-highlights{ 
+        margin-top:.5rem; gap:.5rem; 
+        position: relative;
+        }
+
+        .experience-box .experience-highlights li{
+        transition: all 0.3s ease;
+        transform: translateX(0);
+        }
+
+        .experience-box .experience-item:hover .experience-highlights li{
+        transform: translateX(3px);
+        }
+
+        .experience-box .experience-highlights li::before{
+        transition: all 0.3s ease;
+        }
+
+        .experience-box .experience-item:hover .experience-highlights li::before{
+        color: var(--accent-tertiary);
+        transform: translateX(2px);
+        }
+
+        /* List spacing to align with card rhythm */
+        .experience-box .experience-highlights{ margin-top:.5rem; gap:.5rem; }
+
+
+        .intro-profile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .intro-image-wrapper {
+            position: relative;
+            width: 220px;
+            height: 220px;
+            margin-bottom: 2rem;
+            border-radius: 50%;
+            overflow: visible;
+        }
+
+        .intro-image-border {
+            position: absolute;
+            inset: -6px;
+            border-radius: 50%;
+            background: conic-gradient(
+                from 0deg,
+                var(--accent) 0deg,
+                var(--accent-tertiary) 90deg,
+                transparent 180deg,
+                var(--accent) 270deg,
+                var(--accent-tertiary) 360deg
+            );
+            animation: rotate 8s linear infinite;
+            z-index: 0;
+            filter: blur(8px);
+        }
+
+        .intro-image-border::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: conic-gradient(
+                from 90deg,
+                transparent 0deg,
+                var(--accent-tertiary) 90deg,
+                var(--accent) 180deg,
+                transparent 270deg
+            );
+            animation: rotate 12s linear infinite reverse;
+            filter: blur(12px);
+        }
+
+        .intro-image-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            overflow: hidden;
+            background: var(--bg-secondary);
+            z-index: 1;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4),
+                        inset 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+        /* Make row-2 a fixed track and stretch both cards to equal height */
+        .intro-card{
+        grid-template-rows: auto 1fr;            /* row1: summary, row2: cards */
+        }
+
+        /* Stretch both cards to fill row-2 height */
+        .education-section,
+        .experience-box{
+        align-self: stretch;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        }
+
+        /* Ensure inner lists don't push sizes differently */
+        .education-grid,
+        .experience-list{
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+        margin-top: 0;              /* keep headers level */
+        }
+
+        /* Keep consistent internal padding so tops align */
+        .education-section .intro-section-title,
+        .experience-box .intro-section-title{
+        margin-top: .25rem;
+        margin-bottom: 1rem;
+        }
+
+        /* Mobile remains stacked as you already defined */
+
+        .intro-image-wrapper img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            border-radius: 50%;
+            filter: grayscale(10%);
+            transition: all 0.4s ease;
+        }
+
+        .intro-image-wrapper:hover img {
+            filter: grayscale(0%);
+            transform: scale(1.05);
+        }
+
+        .intro-name {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+        }
+
+        .intro-role {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 0.25rem;
+            line-height: 1.4;
+        }
+
+        .intro-company {
+            font-size: 0.9375rem;
+            color: var(--text-dim);
+            font-weight: 500;
+        }
+
+        .intro-social {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            justify-content: center;
+        }
+
+        .social-link {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        /* Make edu & exp item cards the same height */
+        .education-item,
+        .experience-box .experience-item{
+        min-height: 140px; /* tweak if you want taller/shorter cards */
+        }
+
+        /* If you want perfectly equal heights within each column even with long bullets: */
+        .experience-box .experience-item,
+        .education-item{
+        display: grid;
+        grid-template-columns: 44px 1fr;  /* icon + content */
+        align-items: start;
+        }
+
+        .social-link:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .social-link svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .intro-section {
             display: flex;
             flex-direction: column;
             gap: 1.5rem;
         }
 
-        .name {
-            font-size: 4rem;
-            font-weight: 700;
-            letter-spacing: -0.03em;
-            line-height: 1;
+
+        .intro-section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
         }
 
-        .role {
-            font-size: 1.125rem;
-            color: var(--text-secondary);
-            font-weight: 400;
-            max-width: 600px;
+        .collapsible-header {
+            cursor: pointer;
+            user-select: none;
+            padding: 0.75rem;
+            margin: -0.75rem;
+            margin-bottom: 0.5rem;
+            border-radius: 0.5rem;
+            transition: background 0.2s ease;
         }
 
-        .tagline {
+        .collapsible-header:hover {
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .collapsible-header.collapsed {
+            margin-bottom: 0;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .collapse-icon {
+            width: 20px;
+            height: 20px;
+            color: var(--accent);
+            flex-shrink: 0;
+            transition: transform 0.3s ease;
+        }
+
+        .collapsible-header.collapsed .collapse-icon {
+            transform: rotate(-90deg);
+        }
+
+        .collapsible-content {
+            max-height: 2000px;
+            overflow: hidden;
+            transition: max-height 0.4s ease, opacity 0.3s ease, margin-top 0.3s ease;
+            opacity: 1;
+            margin-top: 1.5rem;
+        }
+
+        .collapsible-content.collapsed {
+            max-height: 0;
+            opacity: 0;
+            margin-top: 0;
+        }
+
+        .intro-icon {
+            width: 24px;
+            height: 24px;
+            color: var(--accent);
+            flex-shrink: 0;
+        }
+
+        .intro-section-title {
             font-size: 1.5rem;
-            color: var(--accent-light);
-            font-weight: 600;
-            font-style: italic;
-        }
-
-        /* Stats Grid */
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 2rem;
-            margin: 4rem 0;
-            padding: 3rem 0;
-            border-top: 1px solid var(--border);
-            border-bottom: 1px solid var(--border);
-        }
-
-        .stat-item {
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 3rem;
             font-weight: 700;
-            color: var(--accent-light);
-            display: block;
-            line-height: 1;
-            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+            letter-spacing: -0.01em;
         }
 
-        .stat-label {
-            font-size: 0.875rem;
-            color: var(--text-dim);
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            font-weight: 500;
-        }
-
-        /* Introduction */
-        .intro {
-            margin: 5rem 0;
-            max-width: 900px;
-        }
-
-        .intro h2 {
-            font-size: 2rem;
-            margin-bottom: 2rem;
-            font-weight: 600;
-        }
-
-        .intro-text {
-            font-size: 1.125rem;
+        .intro-summary {
+            font-size: 1.0625rem;
             line-height: 1.8;
             color: var(--text-secondary);
+            text-align: justify;
+        }
+
+        .intro-cta-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .intro-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.625rem;
+            padding: 0.875rem 2rem;
+            color: white;
+            text-decoration: none;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .download-cv {
+            background: var(--gradient-1);
+            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
+        }
+
+        .download-cv:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(59, 130, 246, 0.5);
+        }
+
+        .view-portfolio {
+            background: transparent;
+            border: 2px solid var(--accent);
+            color: var(--accent);
+            box-shadow: none;
+        }
+
+        .view-portfolio:hover {
+            background: var(--accent);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .intro-cta svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .experience-section {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .education-section {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .experience-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .experience-item {
+            display: flex;
+            gap: 1.25rem;
+            padding: 1.75rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .experience-item:hover {
+            border-color: var(--accent);
+            background: rgba(22, 29, 39, 0.8);
+            transform: translateX(5px);
+        }
+
+        .experience-icon {
+            width: 44px;
+            height: 44px;
+            min-width: 44px;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(96, 165, 250, 0.1));
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 0.875rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+        }
+
+        .experience-content {
+            flex: 1;
+        }
+
+        .experience-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+
+        .experience-company {
+            font-size: 1rem;
+            color: var(--accent);
+            margin-bottom: 0.25rem;
+            font-weight: 600;
+        }
+
+        .experience-period {
+            font-size: 0.875rem;
+            color: var(--text-dim);
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .experience-highlights {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .experience-highlights li {
+            font-size: 0.9375rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .experience-highlights li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-weight: 700;
         }
 
         /* Projects Section */
         .projects-section {
-            margin: 6rem 0;
+            padding: 10rem 0;
+            background: var(--bg-secondary);
+            position: relative;
+        }
+
+        .projects-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
         }
 
         .section-header {
-            margin-bottom: 3rem;
+            margin-bottom: 5rem;
+            text-align: center;
+        }
+
+        .section-label {
+            display: inline-block;
+            font-size: 0.875rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            font-weight: 600;
+            margin-bottom: 1rem;
         }
 
         .section-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1.25rem;
+            letter-spacing: -0.02em;
         }
 
         .section-subtitle {
-            font-size: 1.125rem;
+            font-size: 1.25rem;
             color: var(--text-secondary);
+            max-width: 650px;
+            margin: 0 auto;
+            line-height: 1.7;
         }
 
         .projects-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 2.5rem;
         }
 
         .project-card {
-            background: var(--bg-card);
+            background: var(--bg-tertiary);
             border: 1px solid var(--border);
-            border-radius: 0.75rem;
-            padding: 2rem;
-            transition: all 0.3s ease;
+            border-radius: 1.25rem;
+            padding: 2.5rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
         }
@@ -164,17 +1262,34 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, var(--accent), var(--success));
+            height: 4px;
+            background: var(--gradient-1);
             transform: scaleX(0);
             transform-origin: left;
-            transition: transform 0.3s ease;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .project-card::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+            transform: translate(-50%, -50%) scale(0);
+            transition: transform 0.4s ease;
+            pointer-events: none;
+        }
+
+        .project-card:hover::after {
+            transform: translate(-50%, -50%) scale(1);
         }
 
         .project-card:hover {
-            transform: translateY(-2px);
+            transform: translateY(-8px);
             border-color: var(--accent);
-            box-shadow: 0 8px 24px rgba(37, 99, 235, 0.1);
+            box-shadow: 0 20px 50px rgba(59, 130, 246, 0.2);
         }
 
         .project-card:hover::before {
@@ -185,143 +1300,257 @@
             display: flex;
             justify-content: space-between;
             align-items: start;
-            margin-bottom: 1.25rem;
+            margin-bottom: 1.5rem;
             gap: 1rem;
+            position: relative;
+            z-index: 1;
         }
 
         .project-title {
-            font-size: 1.375rem;
-            font-weight: 600;
+            font-size: 1.625rem;
+            font-weight: 700;
             line-height: 1.3;
+            color: var(--text-primary);
+            letter-spacing: -0.01em;
         }
 
         .project-page {
             font-size: 0.75rem;
             color: var(--text-dim);
             background: var(--bg-secondary);
-            padding: 0.25rem 0.625rem;
-            border-radius: 0.25rem;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
             white-space: nowrap;
-            font-weight: 500;
+            font-weight: 600;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .project-card:hover .project-page {
+            border-color: var(--accent);
+            color: var(--accent);
         }
 
         .project-description {
-            font-size: 0.9375rem;
+            font-size: 1.0625rem;
             color: var(--text-secondary);
-            margin-bottom: 1.5rem;
-            line-height: 1.6;
+            margin-bottom: 1.75rem;
+            line-height: 1.7;
+            position: relative;
+            z-index: 1;
         }
 
         .project-impact {
             display: flex;
             flex-direction: column;
-            gap: 0.75rem;
-            margin-bottom: 1.5rem;
-            padding-top: 1.25rem;
-            border-top: 1px solid var(--border);
+            gap: 1rem;
+            margin-bottom: 1.75rem;
+            padding: 1.5rem;
+            background: var(--bg-secondary);
+            border-radius: 0.75rem;
+            border: 1px solid var(--border);
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+
+        .project-card:hover .project-impact {
+            border-color: rgba(59, 130, 246, 0.3);
+            background: rgba(22, 29, 39, 0.8);
         }
 
         .impact-item {
             display: flex;
             align-items: center;
-            gap: 0.625rem;
-            font-size: 0.875rem;
+            gap: 0.875rem;
+            font-size: 0.9375rem;
         }
 
         .impact-icon {
-            width: 1.25rem;
-            height: 1.25rem;
+            width: 1.5rem;
+            height: 1.5rem;
             color: var(--success);
+            flex-shrink: 0;
         }
 
         .impact-text {
             color: var(--text-secondary);
+            line-height: 1.6;
         }
 
         .impact-value {
             color: var(--success);
-            font-weight: 600;
+            font-weight: 700;
         }
 
         .project-tags {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.5rem;
+            gap: 0.625rem;
+            position: relative;
+            z-index: 1;
         }
 
         .tag {
-            font-size: 0.6875rem;
-            padding: 0.375rem 0.75rem;
+            font-size: 0.75rem;
+            padding: 0.5rem 1rem;
             background: var(--bg-secondary);
             border: 1px solid var(--border);
-            border-radius: 0.375rem;
+            border-radius: 2rem;
             color: var(--text-dim);
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            font-weight: 500;
-            transition: all 0.2s ease;
+            font-weight: 600;
+            transition: all 0.3s ease;
         }
 
         .project-card:hover .tag {
             border-color: var(--accent);
-            color: var(--accent-light);
+            color: var(--accent);
+            background: rgba(59, 130, 246, 0.1);
         }
 
         /* Disclaimer */
         .disclaimer {
-            margin: 6rem 0 3rem;
-            padding: 2rem;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-left: 3px solid var(--text-dim);
-            border-radius: 0.5rem;
+            padding: 8rem 0;
+            background: var(--bg-primary);
+            position: relative;
+        }
+
+        .disclaimer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+        }
+
+        .disclaimer-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 3rem 3.5rem;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(22, 29, 39, 0.8) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 1.5rem;
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+
+        .disclaimer-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: var(--gradient-1);
+            border-radius: 1.5rem 0 0 1.5rem;
         }
 
         .disclaimer-title {
-            font-size: 0.75rem;
+            font-size: 1.25rem;
             font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-bottom: 1rem;
-            color: var(--text-dim);
+            margin-bottom: 1.25rem;
+            color: var(--text-primary);
+            padding-left: 2rem;
+            letter-spacing: -0.01em;
         }
 
         .disclaimer-text {
-            font-size: 0.875rem;
-            line-height: 1.7;
+            font-size: 1rem;
+            line-height: 1.8;
             color: var(--text-secondary);
+            padding-left: 2rem;
         }
 
         /* Footer */
         footer {
-            padding: 3rem 0;
+            padding: 4rem 0;
             text-align: center;
+            background: var(--bg-secondary);
             border-top: 1px solid var(--border);
+            position: relative;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 1px;
+            background: var(--gradient-1);
         }
 
         .footer-text {
-            font-size: 0.875rem;
+            font-size: 0.9375rem;
             color: var(--text-dim);
+            font-weight: 500;
         }
 
         /* Responsive */
         @media (max-width: 1024px) {
-            .stats {
+            .container {
+                padding: 0 60px;
+            }
+
+            body::before {
+                left: 30px;
+            }
+
+            body::after {
+                right: 30px;
+            }
+
+            .side-line.left {
+                left: 30px;
+            }
+
+            .side-line.right {
+                right: 30px;
+            }
+
+            .hero-stats {
                 grid-template-columns: repeat(2, 1fr);
+                gap: 2rem;
+            }
+
+            .intro-card {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+                padding: 3rem;
+            }
+
+            .intro-profile {
+                padding-bottom: 2rem;
+                border-bottom: 1px solid var(--border);
             }
         }
 
         @media (max-width: 768px) {
             .container {
-                padding: 0 1.25rem;
+                padding: 0 30px;
             }
 
-            .name {
-                font-size: 2.5rem;
+            body::before,
+            body::after {
+                display: none;
             }
 
-            .stats {
-                grid-template-columns: 1fr;
+            .side-lines {
+                display: none;
+            }
+
+            .hero {
+                padding: 6rem 0 4rem;
+            }
+
+            .hero-stats {
+                grid-template-columns: 1fr 1fr;
                 gap: 1.5rem;
             }
 
@@ -330,7 +1559,25 @@
             }
 
             .section-title {
-                font-size: 2rem;
+                font-size: 2.5rem;
+            }
+
+            .introduction,
+            .projects-section {
+                padding: 6rem 0;
+            }
+
+            .disclaimer {
+                padding: 5rem 0;
+            }
+
+            .disclaimer-content {
+                padding: 2rem;
+            }
+
+            .disclaimer-title,
+            .disclaimer-text {
+                padding-left: 1rem;
             }
         }
 
@@ -340,83 +1587,351 @@
 
         ::selection {
             background: var(--accent);
-            color: var(--bg-primary);
+            color: white;
         }
+                /* === ALIGN EDUCATION + EXPERIENCE ROW === */
+        .intro-card{ 
+        grid-template-rows: auto 1fr;           /* top row = profile+summary, second row = cards */
+        }
+
+        .intro-card .education-section,
+        .intro-card .experience-box{
+        align-self: stretch;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        /* kill the extra top spacing/border on these two cards */
+        margin-top: 0;
+        padding-top: 1.25rem;
+        border-top: 0;
+        }
+
+        .intro-card .education-section .intro-section-title,
+        .intro-card .experience-box .intro-section-title{
+        margin-top: .25rem;
+        margin-bottom: 1rem;
+        }
+
+        .intro-card .education-grid,
+        .intro-card .experience-list{
+        margin-top: 0;
+        }
+        /* === Equal-height Education & Experience row + room for long bullets === */
+
+        /* Make row 2 (education + experience) one shared track.
+        It will be at least 380px tall, but grows if your bullets are longer.
+        Both boxes will stretch to the SAME height. */
+        .intro-card{
+        grid-template-rows: auto minmax(380px, auto);
+        align-items: stretch; /* ensure grid items fill the row */
+        }
+
+        /* Kill stray margins that can make one column "look" longer */
+        .intro-card .education-section,
+        .intro-card .experience-box{
+        margin: 0 !important;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        }
+
+        /* Let the inner lists stretch, but keep nice spacing */
+        .education-grid,
+        .experience-list{
+        flex: 1 1 auto;     /* fill available height */
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+        }
+
+        /* Make individual cards equal-ish visually; tweak as you like */
+        .education-item,
+        .experience-box .experience-item{
+        min-height: 160px;  /* raise if you want taller cards */
+        display: grid;
+        grid-template-columns: 44px 1fr; /* icon + content */
+        align-items: start;
+        }
+
+        /* Long bullets wrap nicely without overflowing */
+        .experience-highlights li{
+        overflow-wrap: anywhere; /* break long words/URLs if needed */
+        line-height: 1.65;
+        }
+
+        /* (Optional) slightly larger padding for breathing room */
+        .education-section,
+        .experience-box{
+        padding: 1.5rem 1.5rem 1.75rem;
+        }
+            /* === Make the two Education items equal height & match Experience density === */
+        .education-grid{
+        display: grid !important;
+        grid-template-rows: repeat(2, minmax(150px, auto)); /* two equal rows */
+        gap: 1.25rem;
+        }
+
+        .education-item{
+        min-height: 150px;                 /* same visual weight as experience */
+        padding: 1.25rem 1.5rem;           /* slightly roomier */
+        display: grid;
+        grid-template-columns: 44px 1fr;   /* icon + content */
+        align-items: start;
+        }
+
+        /* keep typography tight so short entries don't look too “empty” */
+        .education-degree{ margin-bottom: .4rem; }
+        .education-school{ margin-bottom: .25rem; }
+
+        /* On tablet/phone, go back to natural flow (no forced equal rows) */
+        @media (max-width: 1024px){
+        .education-grid{
+            display: flex !important;
+            flex-direction: column;
+        }
+        }
+
+
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Header -->
-        <header>
-            <div class="header-content">
-                <h1 class="name">Denis Gwizdala</h1>
-                <p class="role">Supply Chain & Last-Mile Operations – Process Automation & Continuous Improvement</p>
-                <p class="tagline">"Invest and Simplify"</p>
-            </div>
-        </header>
+    <!-- Side Lines -->
+    <div class="side-lines">
+        <div class="side-line left">
+            <div class="side-line-progress"></div>
+        </div>
+        <div class="side-line right">
+            <div class="side-line-progress"></div>
+        </div>
+    </div>
 
-        <!-- Stats -->
-        <div class="stats">
-            <div class="stat-item">
-                <span class="stat-value">5</span>
-                <span class="stat-label">Years Experience</span>
+    <!-- Scroll Indicators -->
+    <div class="scroll-indicator left" style="top: 50%;">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" stroke-width="2"/>
+        </svg>
+    </div>
+    <div class="scroll-indicator right" style="top: 50%;">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" stroke-width="2"/>
+        </svg>
+    </div>
+
+    <!-- Particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+
+            <h1 class="hero-title">
+                <span class="highlight">Process Automation</span><br>
+                & Decision Support in<br>
+                European Logistics
+            </h1>
+            <p class="hero-subtitle">
+                Supply Chain & Last-Mile Operations – Process Automation & Continuous Improvement
+            </p>
+            <p class="hero-tagline">"Invest and Simplify"</p>
+            
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <span class="hero-stat-value">5</span>
+                    <span class="hero-stat-label">Years</span>
+                </div>
+                <div class="hero-stat">
+                    <span class="hero-stat-value">400+</span>
+                    <span class="hero-stat-label">Stations</span>
+                </div>
+                <div class="hero-stat">
+                    <span class="hero-stat-value">7</span>
+                    <span class="hero-stat-label">Projects</span>
+                </div>
+                <div class="hero-stat">
+                    <span class="hero-stat-value">2000+</span>
+                    <span class="hero-stat-label">Hours Saved</span>
+                </div>
             </div>
-            <div class="stat-item">
-                <span class="stat-value">400+</span>
-                <span class="stat-label">EU Stations</span>
+
+            <a href="#projects" class="hero-cta">
+                View Projects
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+            </a>
+        </div>
+    </section>
+
+    <!-- Introduction Section -->
+    <!-- Introduction Section -->
+    <section class="introduction section-fade">
+    <div class="container">
+        <div class="intro-card">
+        <!-- LEFT: Profile -->
+        <div class="intro-profile">
+            <div class="intro-image-wrapper">
+            <img src="me.jpg" alt="Denis Gwizdala">
             </div>
-            <div class="stat-item">
-                <span class="stat-value">7</span>
-                <span class="stat-label">Major Projects</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-value">2000+</span>
-                <span class="stat-label">Hours Saved</span>
+            <h2 class="intro-name">Denis Gwizdala</h2>
+            <p class="intro-role">Supply Chain Process Automation Specialist</p>
+            <p class="intro-company">Amazon EU</p>
+
+            <div class="intro-social">
+            <a href="#" class="social-link">
+                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+            </a>
+            <a href="#" class="social-link">
+                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+            </a>
             </div>
         </div>
 
-        <!-- Introduction -->
-        <section class="intro">
-            <h2>Introduction</h2>
-            <p class="intro-text">
-                Over the last 5 years in last-mile delivery and supply chain coordination, I've turned my passion for problem-solving into a relentless focus on efficiency. I identify wasted time, redundant steps, and operational bottlenecks, transforming them into streamlined processes that save hours, reduce risk, and strengthen delivery performance.
-                <br><br>
-                What started with simple Excel formulas grew into full Python and Java solutions — cutting manual effort, reducing errors, and helping teams focus on higher-value work. Amazon gave me the scale to prove these ideas: coordinating across 400+ stations in one of Europe's busiest and most fast-paced supply chains.
-                <br><br>
-                From rising delivery volumes and tighter customer expectations to manual coordination and complex workflows, I transformed operational pressures into tools that supported colleagues and delivered measurable results across the European network. Along the way, I became a point of contact for technical issues and a driver of innovation, coordinating across EU and US teams to deliver scalable, impactful solutions.
-                <br><br>
-                This portfolio showcases that 5-year journey — a mix of automation, decision-support, and productivity initiatives — all born out of real operational needs and a drive to make things faster, simpler, and more reliable.
+        <!-- RIGHT: Summary -->
+        <div class="intro-right">
+            <div class="intro-section">
+            <h3 class="intro-section-title">
+            <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path>
+            </svg>
+            Experience
+            </h3>
+            <p class="intro-summary">
+                Denis Gwizdala is a Supply Chain Process Automation Specialist with 5 years of experience in last-mile delivery and logistics coordination across 400+ European stations. His work focuses on developing Python and Java automation solutions that eliminate operational bottlenecks, reduce manual effort, and enhance delivery performance. With over 2,000 hours saved through his automation initiatives, Denis has proven expertise in transforming complex supply chain challenges into efficient, scalable systems. His projects have delivered measurable impact including £48,000 in annual cost savings, 90% reductions in validation time, and successful pilot programs adopted across operations.
             </p>
-        </section>
 
-        <!-- Projects Section -->
-        <section class="projects-section">
+            <div class="intro-cta-group">
+                <a href="#" class="intro-cta download-cv">
+                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path></svg>
+                Download CV
+                </a>
+                <a href="#projects" class="intro-cta view-portfolio">
+                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                View Portfolio
+                </a>
+            </div>
+            </div>
+        </div>
+
+        <!-- LEFT: Education (inside .intro-card) -->
+        <div class="education-section">
+            <h3 class="intro-section-title">
+            <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path>
+            </svg>
+            Education
+            </h3>
+
+            <div class="education-grid">
+            <div class="education-item">
+                <div class="education-icon">
+                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                </div>
+                <div class="education-content">
+                <h4 class="education-degree">BSc Supply Chain Management</h4>
+                <p class="education-school">University of Manchester</p>
+                <p class="education-year">2015 – 2019</p>
+                </div>
+            </div>
+
+            <div class="education-item">
+                <div class="education-icon">
+                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                </div>
+                <div class="education-content">
+                <h4 class="education-degree">Python Programming Certificate</h4>
+                <p class="education-school">Coursera / University of Michigan</p>
+                <p class="education-year">2020</p>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <!-- LEFT: Experience (new card, left column) -->
+        <div class="experience-box">
+        <h3 class="intro-section-title">
+        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M10.343 3.94c.09-.54.56-.94 1.11-.94h1.093c.55 0 1.02.4 1.11.94l.149.894a7.5 7.5 0 012.108.873l.737-.737a1.125 1.125 0 011.59 0l.772.772c.44.44.44 1.15 0 1.59l-.737.737c.266.658.465 1.362.57 2.098l.893.15c.54.09.94.56.94 1.11v1.094c0 .55-.4 1.02-.94 1.11l-.893.149a7.5 7.5 0 01-.873 2.108l.737.737c.44.44.44 1.15 0 1.59l-.772.772a1.125 1.125 0 01-1.59 0l-.737-.737a7.5 7.5 0 01-2.108.873l-.149.894c-.09.54-.56.94-1.11.94h-1.094c-.55 0-1.02-.4-1.11-.94l-.149-.894a7.5 7.5 0 01-2.108-.873l-.737.737a1.125 1.125 0 01-1.59 0l-.772-.772a1.125 1.125 0 010-1.59l.737-.737a7.5 7.5 0 01-.873-2.108l-.894-.149A1.125 1.125 0 013 13.5v-1.094c0-.55.4-1.02.94-1.11l.894-.149a7.5 7.5 0 01.873-2.108l-.737-.737a1.125 1.125 0 010-1.59l.772-.772a1.125 1.125 0 011.59 0l.737.737a7.5 7.5 0 012.108-.873l.149-.894z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+        Experience
+        </h3>
+
+
+            <div class="experience-list">
+            <div class="experience-item">
+                <div class="experience-icon">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
+                    </svg>
+                </div>
+                <div class="experience-content">
+                    <h4 class="experience-title">Process Automation Analyst</h4>
+                    <p class="experience-company">Amazon EU Operations</p>
+                    <p class="experience-period">2021 – 2024</p>
+                    <ul class="experience-highlights">
+                    <li>Built Python/Selenium automations saving 2,000+ hrs</li>
+                    <li>Deployed decision-support tools used across 400+ stations</li>
+                    <li>Cut validation time by 90% with audit workflows</li>
+                    </ul>
+                </div>
+                </div>
+<!-- Job 2 -->
+            <div class="experience-item">
+            <div class="experience-icon">
+                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
+                </svg>
+            </div>
+            <div class="experience-content">
+                <h4 class="experience-title">Operations Coordinator</h4>
+                <p class="experience-company">Amazon UK Last Mile</p>
+                <p class="experience-period">2019 – 2020</p>
+                <ul class="experience-highlights">
+                <li>Coordinated delivery ops across multiple UK stations</li>
+                <li>Reduced manual workflows by ~40%</li>
+                <li>Maintained 99%+ delivery success with cross-team alignment</li>
+                </ul>
+            </div>
+            </div>
+
+            </div>
+        </div>
+        <!-- END left column cards -->
+        </div>
+    </div>
+    </section>
+
+    <section id="projects" class="projects-section">
+        <div class="container">
             <div class="section-header">
                 <h2 class="section-title">Projects</h2>
                 <p class="section-subtitle">Automation and decision-support systems built for scale</p>
             </div>
 
             <div class="projects-grid">
-                <!-- Project 1: EU Offset Validator -->
                 <div class="project-card">
                     <div class="project-header">
                         <h3 class="project-title">EU Offset Validator</h3>
                         <span class="project-page">Page 4</span>
                     </div>
-                    <p class="project-description">
-                        Automated offset auditing system ensuring accurate scheduling and compliance across European logistics operations.
-                    </p>
+                    <p class="project-description">Automated offset auditing system ensuring accurate scheduling and compliance across European logistics operations.</p>
                     <div class="project-impact">
                         <div class="impact-item">
-                            <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                            </svg>
+                            <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                             <span class="impact-text"><span class="impact-value">90%</span> reduction in validation time</span>
                         </div>
                         <div class="impact-item">
-                            <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                            </svg>
+                            <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                             <span class="impact-text"><span class="impact-value">350</span> hours saved annually</span>
                         </div>
                     </div>
@@ -427,26 +1942,19 @@
                     </div>
                 </div>
 
-                <!-- Project 2: EU Yard Configuration Updater -->
                 <div class="project-card">
                     <div class="project-header">
                         <h3 class="project-title">EU Yard Configuration Updater</h3>
                         <span class="project-page">Page 6</span>
                     </div>
-                    <p class="project-description">
-                        Weekly configuration automation streamlining yard management and reducing manual configuration overhead.
-                    </p>
+                    <p class="project-description">Weekly configuration automation streamlining yard management and reducing manual configuration overhead.</p>
                     <div class="project-impact">
                         <div class="impact-item">
-                            <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                            </svg>
+                            <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                             <span class="impact-text"><span class="impact-value">96%</span> faster weekly updates</span>
                         </div>
                         <div class="impact-item">
-                            <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                            </svg>
+                            <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                             <span class="impact-text">8h → 20min per cycle</span>
                         </div>
                     </div>
@@ -457,26 +1965,19 @@
                     </div>
                 </div>
 
-                <!-- Project 3: Fill-Rate Optimizer -->
                 <div class="project-card">
                     <div class="project-header">
                         <h3 class="project-title">Fill-Rate Optimizer</h3>
                         <span class="project-page">Page 8</span>
                     </div>
-                    <p class="project-description">
-                        Demand-driven partner scaling solution optimizing capacity utilization and delivery partner allocation.
-                    </p>
+                    <p class="project-description">Demand-driven partner scaling solution optimizing capacity utilization and delivery partner allocation.</p>
                     <div class="project-impact">
                         <div class="impact-item">
-                            <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                            </svg>
+                            <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                             <span class="impact-text"><span class="impact-value">45%</span> reduction in offer spending</span>
                         </div>
                         <div class="impact-item">
-                            <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                            </svg>
+                            <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                             <span class="impact-text"><span class="impact-value">£38,400</span> saved annually</span>
                         </div>
                     </div>
@@ -487,26 +1988,19 @@
                     </div>
                 </div>
 
-                <!-- Project 4: Flex Nursery Tool -->
                 <div class="project-card">
                     <div class="project-header">
                         <h3 class="project-title">Flex Nursery Tool</h3>
                         <span class="project-page">Page 12</span>
                     </div>
-                    <p class="project-description">
-                        UK pilot program for no-show mitigation, improving delivery partner reliability and operational predictability.
-                    </p>
+                    <p class="project-description">UK pilot program for no-show mitigation, improving delivery partner reliability and operational predictability.</p>
                     <div class="project-impact">
                         <div class="impact-item">
-                            <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                            </svg>
+                            <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                             <span class="impact-text"><span class="impact-value">65-70%</span> reduction in no-show escalations</span>
                         </div>
                         <div class="impact-item">
-                            <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                            </svg>
+                            <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                             <span class="impact-text">Pilot expanded after success</span>
                         </div>
                     </div>
@@ -517,26 +2011,19 @@
                     </div>
                 </div>
 
-                <!-- Project 5: Phantom Shipments Automation -->
                 <div class="project-card">
                     <div class="project-header">
                         <h3 class="project-title">Phantom Shipments Automation</h3>
                         <span class="project-page">Page 15</span>
                     </div>
-                    <p class="project-description">
-                        Browser-based route processing system automating the detection and resolution of phantom shipment issues.
-                    </p>
+                    <p class="project-description">Browser-based route processing system automating the detection and resolution of phantom shipment issues.</p>
                     <div class="project-impact">
                         <div class="impact-item">
-                            <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                            </svg>
+                            <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                             <span class="impact-text"><span class="impact-value">520</span> hours saved annually</span>
                         </div>
                         <div class="impact-item">
-                            <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                            </svg>
+                            <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                             <span class="impact-text"><span class="impact-value">£9,600</span> cost reduction</span>
                         </div>
                     </div>
@@ -547,26 +2034,19 @@
                     </div>
                 </div>
 
-                <!-- Project 6: Rescue Validator -->
                 <div class="project-card">
                     <div class="project-header">
                         <h3 class="project-title">Rescue Validator</h3>
                         <span class="project-page">Page 17</span>
                     </div>
-                    <p class="project-description">
-                        Route rescue decision support system providing real-time validation and recommendations for delivery interventions.
-                    </p>
+                    <p class="project-description">Route rescue decision support system providing real-time validation and recommendations for delivery interventions.</p>
                     <div class="project-impact">
                         <div class="impact-item">
-                            <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                            </svg>
+                            <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                             <span class="impact-text"><span class="impact-value">85%</span> faster decision-making</span>
                         </div>
                         <div class="impact-item">
-                            <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                            </svg>
+                            <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                             <span class="impact-text">30min → 3min per case</span>
                         </div>
                     </div>
@@ -577,26 +2057,19 @@
                     </div>
                 </div>
 
-                <!-- Project 7: Shift Deck -->
                 <div class="project-card">
                     <div class="project-header">
                         <h3 class="project-title">Shift Deck</h3>
                         <span class="project-page">Page 21</span>
                     </div>
-                    <p class="project-description">
-                        Centralized team launcher consolidating operational tools and resources into a unified dashboard for efficiency.
-                    </p>
+                    <p class="project-description">Centralized team launcher consolidating operational tools and resources into a unified dashboard for efficiency.</p>
                     <div class="project-impact">
                         <div class="impact-item">
-                            <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                            </svg>
+                            <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                             <span class="impact-text">Adopted across department</span>
                         </div>
                         <div class="impact-item">
-                            <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                            </svg>
+                            <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                             <span class="impact-text">Open-source on GitHub</span>
                         </div>
                     </div>
@@ -607,20 +2080,135 @@
                     </div>
                 </div>
             </div>
-        </section>
-
-        <!-- Disclaimer -->
-        <div class="disclaimer">
-            <h3 class="disclaimer-title">Disclaimer</h3>
-            <p class="disclaimer-text">
-                The project examples, screenshots, and descriptions included in this portfolio are provided for demonstration purposes only. They represent past versions of tools I personally developed and may not reflect the current systems, processes, or software in use at Amazon or any other company. The content does not disclose confidential or proprietary information, and no guarantee is made as to its completeness, accuracy, or ongoing applicability. Any resemblance to active internal systems is coincidental, and the materials should be viewed solely as a showcase of my individual contributions, problem-solving approach, and technical capabilities.
-            </p>
         </div>
+    </section>
 
-        <!-- Footer -->
-        <footer>
+    <!-- Footer -->
+    <footer>
+        <div class="container">
             <p class="footer-text">© 2025 Denis Gwizdala · Supply Chain Process Automation Portfolio</p>
-        </footer>
-    </div>
+        </div>
+    </footer>
+
+    <script>
+        // Scroll Progress Animation
+        function updateScrollProgress() {
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight - windowHeight;
+            const scrolled = window.scrollY;
+            const progress = (scrolled / documentHeight) * 100;
+            
+            const progressLines = document.querySelectorAll('.side-line-progress');
+            progressLines.forEach(line => {
+                line.style.height = progress + '%';
+            });
+            
+            // Update scroll indicators
+            const indicators = document.querySelectorAll('.scroll-indicator');
+            indicators.forEach(indicator => {
+                if (scrolled > 100) {
+                    indicator.classList.add('active');
+                } else {
+                    indicator.classList.remove('active');
+                }
+            });
+        }
+
+        // Fade in sections on scroll
+        function checkSectionVisibility() {
+            const sections = document.querySelectorAll('.section-fade');
+            sections.forEach(section => {
+                const rect = section.getBoundingClientRect();
+                const isVisible = rect.top < window.innerHeight * 0.75;
+                
+                if (isVisible) {
+                    section.classList.add('visible');
+                }
+            });
+        }
+
+        // Generate particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Counter animation for stats
+        function animateCounters() {
+            const counters = document.querySelectorAll('.hero-stat-value');
+            counters.forEach(counter => {
+                const target = counter.textContent;
+                const isNumber = !isNaN(target.replace('+', ''));
+                
+                if (isNumber) {
+                    const value = parseInt(target.replace('+', ''));
+                    const duration = 2000;
+                    const increment = value / (duration / 16);
+                    let current = 0;
+                    
+                    const timer = setInterval(() => {
+                        current += increment;
+                        if (current >= value) {
+                            counter.textContent = target;
+                            clearInterval(timer);
+                        } else {
+                            counter.textContent = Math.floor(current) + (target.includes('+') ? '+' : '');
+                        }
+                    }, 16);
+                }
+            });
+        }
+
+        // Collapsible sections
+        document.querySelectorAll('.collapsible-header').forEach(header => {
+            header.addEventListener('click', function() {
+                const section = this.getAttribute('data-section');
+                const content = document.getElementById(section + '-content');
+                
+                this.classList.toggle('collapsed');
+                content.classList.toggle('collapsed');
+            });
+        });
+
+        // Smooth scroll for CTA buttons
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (href !== '#' && href.startsWith('#')) {
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                }
+            });
+        });
+
+        // Initialize
+        window.addEventListener('scroll', () => {
+            updateScrollProgress();
+            checkSectionVisibility();
+        });
+
+        window.addEventListener('load', () => {
+            createParticles();
+            animateCounters();
+            checkSectionVisibility();
+            updateScrollProgress();
+        });
+    </script>
 </body>
 </html>
