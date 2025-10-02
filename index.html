@@ -68,7 +68,7 @@
         body::after {
             right: 40px;
         }
-        /* Side Accent Lines Container */
+
         /* Side Accent Lines Container */
         .side-lines {
             position: fixed;
@@ -396,10 +396,11 @@
         }
 
         /* Section Transitions */
+/* Section Transitions */
         .section-fade {
             opacity: 0;
-            transform: translateY(50px);
-            transition: all 0.8s ease;
+            transform: translateY(30px);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .section-fade.visible {
@@ -935,7 +936,7 @@
         /* Make edu & exp item cards the same height */
         .education-item,
         .experience-box .experience-item{
-        min-height: 140px; /* tweak if you want taller/shorter cards */
+        min-height: 160px;
         }
 
         /* If you want perfectly equal heights within each column even with long bullets: */
@@ -1198,7 +1199,441 @@
             background: var(--bg-secondary);
             position: relative;
         }
+/* Metrics Dashboard - Compact & Advanced */
+        .metrics-dashboard {
+            padding: 6rem 0 3rem 0;
+            background: var(--bg-primary);
+            position: relative;
+            overflow: hidden;
+        }
 
+        .metrics-dashboard::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+        }
+
+        /* Compact Stats Grid */
+        .compact-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(15, 20, 25, 0.8), rgba(22, 29, 39, 0.9));
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 1.75rem 1.5rem;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--gradient-1);
+            transform: scaleX(0);
+            transition: transform 0.6s ease;
+        }
+
+        .stat-card.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+            box-shadow: 0 10px 40px rgba(59, 130, 246, 0.2);
+        }
+
+        .stat-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .stat-icon svg {
+            width: 20px;
+            height: 20px;
+            color: var(--accent);
+        }
+
+        .stat-card:hover .stat-icon {
+            background: rgba(59, 130, 246, 0.2);
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .stat-bar {
+            width: 100%;
+            height: 4px;
+            background: var(--bg-secondary);
+            border-radius: 1rem;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .stat-bar-fill {
+            height: 100%;
+            background: var(--gradient-1);
+            width: 0;
+            transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .stat-bar-fill::after {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+                    animation: slideOnce 1.5s ease-out;
+                    animation-fill-mode: forwards;
+                }
+
+                @keyframes slideOnce {
+                    0% { 
+                        transform: translateX(-100%);
+                        opacity: 1;
+                    }
+                    100% { 
+                        transform: translateX(100%);
+                        opacity: 0;
+                    }
+                }
+        /* Advanced Chart */
+        .advanced-chart {
+            background: linear-gradient(135deg, rgba(22, 29, 39, 0.6), rgba(15, 20, 25, 0.8));
+            border: 1px solid var(--border);
+            border-radius: 1.25rem;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .advanced-chart::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-1);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .chart-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .chart-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .chart-metric {
+                    padding: 0.5rem 1rem;
+                    font-size: 0.75rem;
+                    color: var(--text-dim);
+                    background: var(--bg-secondary);
+                    border-radius: 0.5rem;
+                    border: 1px solid var(--border);
+                    font-weight: 600;
+                    text-transform: uppercase;
+                    letter-spacing: 0.05em;
+                    transition: all 0.3s ease;
+                    cursor: pointer;
+                }
+
+        .chart-metric:hover {
+                        border-color: var(--accent);
+                        color: var(--accent);
+                    }
+
+        .chart-metric.active {
+                                background: var(--accent);
+                                color: white;
+                                border-color: var(--accent);
+                                box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+                            }
+
+        @keyframes drawLine {
+                    to {
+                        stroke-dashoffset: 0;
+                    }
+                }
+
+                @keyframes fadeIn {
+                    from {
+                        opacity: 0;
+                        transform: translateY(10px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+
+        .chart-grid {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px 0;
+            pointer-events: none;
+        }
+
+        .grid-line {
+            width: 100%;
+            height: 1px;
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .chart-columns {
+            position: relative;
+            height: 100%;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            gap: 1rem;
+            padding: 20px 20px 50px;
+        }
+
+        .chart-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .chart-col.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .col-bar {
+            width: 100%;
+            max-width: 60px;
+            background: linear-gradient(180deg, var(--accent-tertiary), var(--accent));
+            border-radius: 0.5rem 0.5rem 0 0;
+            height: 0;
+            transition: height 1s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .col-bar.highlight {
+            background: var(--gradient-1);
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.6);
+        }
+
+        .col-bar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 0.5rem 0.5rem 0 0;
+        }
+
+        .col-bar::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(255,255,255,0.2), transparent);
+            border-radius: 0.5rem 0.5rem 0 0;
+        }
+
+        .col-value {
+            position: absolute;
+            top: -28px;
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: var(--accent);
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.4s ease 0.6s;
+        }
+
+        .chart-col.animate .col-value {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .col-label {
+            position: absolute;
+            bottom: -35px;
+            font-size: 0.8125rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        /* Section Divider */
+        .section-divider {
+            height: 100px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            overflow: hidden;
+        }
+
+        .divider-content {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .divider-line {
+            width: 120px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent));
+        }
+
+        .divider-line.right {
+            background: linear-gradient(90deg, var(--accent), transparent);
+        }
+
+        .divider-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--bg-tertiary);
+            border: 2px solid var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.4);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .divider-icon svg {
+            color: var(--accent);
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(5px); }
+        }
+
+        .divider-glow {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .compact-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .metrics-dashboard {
+                padding: 4rem 0;
+            }
+
+            .compact-stats {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .stat-card {
+                padding: 1.5rem;
+            }
+
+            .advanced-chart {
+                padding: 1.5rem;
+            }
+
+            .chart-canvas {
+                height: 220px;
+            }
+
+            .divider-content {
+                gap: 1rem;
+            }
+
+            .divider-line {
+                width: 60px;
+            }
+        }
         .projects-section::before {
             content: '';
             position: absolute;
@@ -1670,12 +2105,70 @@
         grid-template-rows: repeat(2, minmax(150px, auto)); /* two equal rows */
         gap: 1.25rem;
         }
+        /* === LOGO BADGES (replace icon bubbles) === */
+        /* Tighter, edge-to-edge fit */
+        .logo-badge{
+        width:44px;height:44px;min-width:44px;
+        display:flex;align-items:center;justify-content:center;
+        border-radius:.875rem;                 /* your rounded square */
+        background:#0f1419;                    /* or #fff if logo has transparent bg */
+        border:1px solid rgba(59,130,246,.30);
+        overflow:hidden;                       /* clip corners of the image */
+        }
+
+        /* Default: fill the box completely */
+        .logo-badge img{
+        width:100%;
+        height:100%;
+        object-fit:cover;                      /* uses full box, no letterboxing */
+        border-radius:inherit;                 /* matches container corners */
+        padding:0;                             /* remove inner gap */
+        transition: transform .25s ease, filter .25s ease, opacity .25s ease;
+        }
+
+        /* Optional variants you can toggle per-badge */
+        .logo-badge.contain img{ object-fit:contain; }   /* keep full logo visible if cropping occurs */
+        .logo-badge.white { background:#fff; }           /* for dark logos on dark theme */
+        .logo-badge.invert img{ filter: invert(100%); }  /* rescue very dark logos */
+
+
+        /* Hover polish (mirrors your existing card hovers) */
+        .education-item:hover .logo-badge,
+        .experience-box .experience-item:hover .logo-badge{
+        border-color: var(--accent);
+        box-shadow: 0 4px 12px rgba(59,130,246,.25);
+        background:linear-gradient(135deg,rgba(59,130,246,.16),rgba(96,165,250,.12));
+        }
+        .education-item:hover .logo-badge img,
+        .experience-box .experience-item:hover .logo-badge img{
+        transform: scale(1.05);
+        filter: grayscale(0%) contrast(1.1) brightness(1.05);
+        }
+
+        /* If an image fails to load, hide it and show a subtle fallback ring */
+        .logo-badge[data-fallback="true"]{
+        background:transparent;
+        border-style:dashed;
+        border-color: var(--border);
+        }
+        .logo-badge[data-fallback="true"]::after{
+        content:'';
+        position:absolute;inset:6px;border-radius:.5rem;
+        border:1px dashed var(--border);
+        opacity:.7;
+        }
+
+        /* Keep grid alignment you already set for icon + content */
+        .education-item,
+        .experience-box .experience-item{
+        grid-template-columns: 44px 1fr; /* unchanged */
+        }
 
         .education-item{
-        min-height: 150px;                 /* same visual weight as experience */
-        padding: 1.25rem 1.5rem;           /* slightly roomier */
-        display: grid;
-        grid-template-columns: 44px 1fr;   /* icon + content */
+        min-height: 150px;
+        padding: 1.25rem 1.5rem;
+        display: flex;
+        gap: 1.25rem;
         align-items: start;
         }
 
@@ -1690,7 +2183,38 @@
             flex-direction: column;
         }
         }
+    @keyframes drawLine {
+                from {
+                    stroke-dashoffset: var(--line-length);
+                }
+                to {
+                    stroke-dashoffset: 0;
+                }
+            }
 
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .line-value {
+            position: absolute;
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: var(--accent);
+            transform: translate(-50%, -100%);
+            pointer-events: none;
+        }
+
+        .line-label {
+            position: absolute;
+            bottom: -35px;
+            font-size: 0.8125rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            transform: translateX(-50%);
+        }
 
     </style>
 </head>
@@ -1824,31 +2348,42 @@
             </h3>
 
             <div class="education-grid">
+            <!-- Education item 1 -->
             <div class="education-item">
-                <div class="education-icon">
-                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                </div>
-                <div class="education-content">
+            <div class="logo-badge">
+                <img
+                src="assets/university-of-hertfordshire.png"
+                srcset="assets/university-of-hertfordshire.png 1x, assets/university-of-hertfordshire.png 2x"
+                alt="The University of Hertfordshire"
+                loading="lazy" decoding="async"
+                onerror="this.closest('.logo-badge').setAttribute('data-fallback','true'); this.style.display='none';"
+                />
+            </div>
+            <div class="education-content">
                 <h4 class="education-degree">BSc Supply Chain Management</h4>
-                <p class="education-school">University of Manchester</p>
+                <p class="education-school">University of Hertfordshire</p>
                 <p class="education-year">2015 – 2019</p>
-                </div>
+            </div>
             </div>
 
+            <!-- Education item 2 -->
             <div class="education-item">
-                <div class="education-icon">
-                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                </div>
-                <div class="education-content">
+            <div class="logo-badge">
+                <img
+                src="assets/university-of-hertfordshire.png"
+                srcset="assets/university-of-hertfordshire.png 1x, assets/university-of-hertfordshire.png 2x"
+                alt="University of Hertfordshire"
+                loading="lazy" decoding="async"
+                onerror="this.closest('.logo-badge').setAttribute('data-fallback','true'); this.style.display='none';"
+                />
+            </div>
+            <div class="education-content">
                 <h4 class="education-degree">Python Programming Certificate</h4>
                 <p class="education-school">Coursera / University of Michigan</p>
                 <p class="education-year">2020</p>
-                </div>
             </div>
+            </div>
+
             </div>
         </div>
 
@@ -1866,31 +2401,39 @@
 
 
             <div class="experience-list">
+            <!-- Job 1 -->
             <div class="experience-item">
-                <div class="experience-icon">
-                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
-                    </svg>
-                </div>
-                <div class="experience-content">
-                    <h4 class="experience-title">Process Automation Analyst</h4>
-                    <p class="experience-company">Amazon EU Operations</p>
-                    <p class="experience-period">2021 – 2024</p>
-                    <ul class="experience-highlights">
-                    <li>Built Python/Selenium automations saving 2,000+ hrs</li>
-                    <li>Deployed decision-support tools used across 400+ stations</li>
-                    <li>Cut validation time by 90% with audit workflows</li>
-                    </ul>
-                </div>
-                </div>
-<!-- Job 2 -->
+            <div class="logo-badge">
+                <img
+                src="assets/amazon.png"
+                srcset="assets/amazon.png 1x, assets/amazon.png 2x"
+                alt="Amazon EU Operations"
+                loading="lazy" decoding="async"
+                onerror="this.closest('.logo-badge').setAttribute('data-fallback','true'); this.style.display='none';"
+                />
+            </div>
+            <div class="experience-content">
+                <h4 class="experience-title">Process Automation Analyst</h4>
+                <p class="experience-company">Amazon EU Operations</p>
+                <p class="experience-period">2021 – 2024</p>
+                <ul class="experience-highlights">
+                <li>Built Python/Selenium automations saving 2,000+ hrs</li>
+                <li>Deployed decision-support tools used across 400+ stations</li>
+                <li>Cut validation time by 90% with audit workflows</li>
+                </ul>
+            </div>
+            </div>
+
+            <!-- Job 2 -->
             <div class="experience-item">
-            <div class="experience-icon">
-                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
-                </svg>
+            <div class="logo-badge">
+                <img
+                src="assets/amazon.png"
+                srcset="assets/amazon.png 1x, assets/amazon.png 2x"
+                alt="Amazon UK Last Mile"
+                loading="lazy" decoding="async"
+                onerror="this.closest('.logo-badge').setAttribute('data-fallback','true'); this.style.display='none';"
+                />
             </div>
             <div class="experience-content">
                 <h4 class="experience-title">Operations Coordinator</h4>
@@ -1904,6 +2447,7 @@
             </div>
             </div>
 
+
             </div>
         </div>
         <!-- END left column cards -->
@@ -1911,7 +2455,103 @@
     </div>
     </section>
 
-    <section id="projects" class="projects-section">
+        <!-- Metrics Dashboard Section -->
+        <section class="metrics-dashboard section-fade">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-label">Impact Overview</span>
+                    <h2 class="section-title">Measurable Results</h2>
+                    <p class="section-subtitle">Data-driven outcomes across 5 years of automation</p>
+                </div>
+
+                <!-- Compact Stats Grid -->
+                <div class="compact-stats">
+                    <div class="stat-card" data-delay="0">
+                        <div class="stat-icon">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <div class="stat-number" data-target="2000">0</div>
+                        <div class="stat-label">Hours Saved</div>
+                        <div class="stat-bar"><div class="stat-bar-fill" data-width="100"></div></div>
+                    </div>
+
+                    <div class="stat-card" data-delay="100">
+                        <div class="stat-icon">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <div class="stat-number" data-target="48000">0</div>
+                        <div class="stat-label">£ Saved</div>
+                        <div class="stat-bar"><div class="stat-bar-fill" data-width="85"></div></div>
+                    </div>
+
+                    <div class="stat-card" data-delay="200">
+                        <div class="stat-icon">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                            </svg>
+                        </div>
+                        <div class="stat-number" data-target="90">0</div>
+                        <div class="stat-label">% Efficiency</div>
+                        <div class="stat-bar"><div class="stat-bar-fill" data-width="90"></div></div>
+                    </div>
+                    <div class="stat-card" data-delay="300">
+                        <div class="stat-icon">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <div class="stat-number" data-target="1250">0</div>
+                        <div class="stat-label">Errors Prevented</div>
+                        <div class="stat-bar"><div class="stat-bar-fill" data-width="95"></div></div>
+                    </div>
+                </div>
+
+                <!-- Advanced Chart -->
+                <div class="advanced-chart">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Impact Growth Over Time</h3>
+                        <div class="chart-controls">
+                            <button class="chart-metric active" data-metric="hours">Hours Saved</button>
+                            <button class="chart-metric" data-metric="cost">£ Saved</button>
+                            <button class="chart-metric" data-metric="efficiency">% Efficiency</button>
+                            <button class="chart-metric" data-metric="errors">Errors Prevented</button>
+                        </div>
+                    </div>
+                    <div class="chart-canvas">
+                        <div class="chart-grid">
+                            <div class="grid-line"></div>
+                            <div class="grid-line"></div>
+                            <div class="grid-line"></div>
+                            <div class="grid-line"></div>
+                        </div>
+                        <div class="chart-columns" id="chartColumns">
+                            <!-- Chart bars will be inserted here by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Advanced Separator -->
+        <div class="section-divider">
+            <div class="divider-content">
+                <div class="divider-line left"></div>
+                <div class="divider-icon">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </div>
+                <div class="divider-line right"></div>
+            </div>
+            <div class="divider-glow"></div>
+        </div>
+
+        <section id="projects" class="projects-section section-fade">
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title">Projects</h2>
@@ -2119,7 +2759,7 @@
             const sections = document.querySelectorAll('.section-fade');
             sections.forEach(section => {
                 const rect = section.getBoundingClientRect();
-                const isVisible = rect.top < window.innerHeight * 0.75;
+                const isVisible = rect.top < window.innerHeight * 0.85;
                 
                 if (isVisible) {
                     section.classList.add('visible');
@@ -2203,13 +2843,308 @@
             checkSectionVisibility();
         });
 
+// Animate metrics cards
+        function animateMetrics() {
+            const statCards = document.querySelectorAll('.stat-card');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        const delay = entry.target.getAttribute('data-delay') || 0;
+                        setTimeout(() => {
+                            entry.target.classList.add('animate');
+                            
+                            // Animate number counter
+                            const numberEl = entry.target.querySelector('.stat-number');
+                            const target = parseInt(numberEl.getAttribute('data-target'));
+                            animateNumber(numberEl, target, 1500);
+                            
+                            // Animate progress bar
+                            const barFill = entry.target.querySelector('.stat-bar-fill');
+                            const width = barFill.getAttribute('data-width');
+                            setTimeout(() => {
+                                barFill.style.width = width + '%';
+                            }, 200);
+                        }, delay);
+                        
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.2 });
+            
+            statCards.forEach(card => observer.observe(card));
+        }
+
+        // Animate numbers
+        function animateNumber(element, target, duration) {
+            const start = 0;
+            const increment = target / (duration / 16);
+            let current = start;
+            
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    element.textContent = target.toLocaleString();
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(current).toLocaleString();
+                }
+            }, 16);
+        }
+
+        // Animate chart bars
+// Chart Data Sets
+        const chartData = {
+            hours: [
+                { year: '2020', value: 250, label: '250h' },
+                { year: '2021', value: 480, label: '480h' },
+                { year: '2022', value: 720, label: '720h' },
+                { year: '2023', value: 900, label: '900h' },
+                { year: '2024', value: 1050, label: '1,050h' }
+            ],
+            cost: [
+                { year: '2020', value: 4800, label: '£4.8K' },
+                { year: '2021', value: 9200, label: '£9.2K' },
+                { year: '2022', value: 17600, label: '£17.6K' },
+                { year: '2023', value: 28800, label: '£28.8K' },
+                { year: '2024', value: 48000, label: '£48K' }
+            ],
+            efficiency: [
+                { year: '2020', value: 35, label: '35%' },
+                { year: '2021', value: 55, label: '55%' },
+                { year: '2022', value: 70, label: '70%' },
+                { year: '2023', value: 82, label: '82%' },
+                { year: '2024', value: 90, label: '90%' }
+            ],
+            errors: [
+                { year: '2020', value: 120, label: '120' },
+                { year: '2021', value: 340, label: '340' },
+                { year: '2022', value: 580, label: '580' },
+                { year: '2023', value: 920, label: '920' },
+                { year: '2024', value: 1250, label: '1,250' }
+            ]
+        };
+
+        let currentMetric = 'hours';
+
+        function renderChart(metric) {
+                    const container = document.getElementById('chartColumns');
+                    const data = chartData[metric];
+                    
+                    container.innerHTML = '';
+                    
+                    const padding = { top: 40, right: 60, bottom: 60, left: 60 };
+                    const height = 240;
+                    
+                    const maxValue = Math.max(...data.map(d => d.value));
+                    const minValue = Math.min(...data.map(d => d.value));
+                    const valueRange = maxValue - minValue;
+                    
+                    const wrapper = document.createElement('div');
+                    wrapper.style.position = 'relative';
+                    wrapper.style.width = '100%';
+                    wrapper.style.height = height + 'px';
+                    wrapper.style.paddingTop = padding.top + 'px';
+                    wrapper.style.paddingBottom = padding.bottom + 'px';
+                    
+                    const chartHeight = height - padding.top - padding.bottom;
+                    const points = data.map((item, index) => {
+                        const xPercent = (index / (data.length - 1)) * 100;
+                        const yValue = ((item.value - minValue) / valueRange) * (chartHeight - 40) + 20;
+                        const y = chartHeight - yValue;
+                        return { x: xPercent, y, ...item };
+                    });
+                    
+                    // Canvas for smooth line drawing
+                    const canvas = document.createElement('canvas');
+                    canvas.width = wrapper.offsetWidth || 1000;
+                    canvas.height = chartHeight;
+                    canvas.style.position = 'absolute';
+                    canvas.style.top = padding.top + 'px';
+                    canvas.style.left = '0';
+                    canvas.style.width = '100%';
+                    canvas.style.height = chartHeight + 'px';
+                    canvas.style.pointerEvents = 'none';
+                    wrapper.appendChild(canvas);
+                    
+                    const ctx = canvas.getContext('2d');
+                    
+                    // Add dots first
+// Add dots first
+                    points.forEach((point, index) => {
+                        const dotContainer = document.createElement('div');
+                        dotContainer.style.position = 'absolute';
+                        dotContainer.style.left = point.x + '%';
+                        dotContainer.style.top = (padding.top + point.y) + 'px';
+                        dotContainer.style.transform = 'translate(-50%, -50%)';
+                        dotContainer.style.zIndex = '10';
+                        dotContainer.style.cursor = 'pointer';
+                        
+                        const dot = document.createElement('div');
+                        dot.style.width = '10px';
+                        dot.style.height = '10px';
+                        dot.style.background = '#3b82f6';
+                        dot.style.border = '3px solid #0a0e15';
+                        dot.style.borderRadius = '50%';
+                        dot.style.boxShadow = '0 0 12px rgba(59, 130, 246, 0.6)';
+                        dot.style.opacity = '0';
+                        dot.style.animation = `fadeIn 0.4s ease-out ${0.2 + index * 0.25}s forwards`;
+                        dot.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+                        dotContainer.appendChild(dot);
+                        
+                        const valueLabel = document.createElement('div');
+                        valueLabel.textContent = point.label;
+                        valueLabel.style.position = 'absolute';
+                        valueLabel.style.bottom = '20px';
+                        valueLabel.style.left = '50%';
+                        valueLabel.style.transform = 'translateX(-50%) scale(1)';
+                        valueLabel.style.fontSize = '0.875rem';
+                        valueLabel.style.fontWeight = '700';
+                        valueLabel.style.color = '#60a5fa';
+                        valueLabel.style.whiteSpace = 'nowrap';
+                        valueLabel.style.opacity = '0';
+                        valueLabel.style.animation = `fadeIn 0.4s ease-out ${0.3 + index * 0.25}s forwards`;
+                        valueLabel.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+                        valueLabel.style.pointerEvents = 'none';
+                        dotContainer.appendChild(valueLabel);
+                        
+                        // Hover effects
+                        dotContainer.addEventListener('mouseenter', () => {
+                            dot.style.width = '16px';
+                            dot.style.height = '16px';
+                            dot.style.boxShadow = '0 0 20px rgba(59, 130, 246, 1)';
+                            dot.style.background = '#60a5fa';
+                            valueLabel.style.transform = 'translateX(-50%) scale(1.3)';
+                            valueLabel.style.color = '#ffffff';
+                            valueLabel.style.fontWeight = '800';
+                        });
+                        
+                        dotContainer.addEventListener('mouseleave', () => {
+                            dot.style.width = '10px';
+                            dot.style.height = '10px';
+                            dot.style.boxShadow = '0 0 12px rgba(59, 130, 246, 0.6)';
+                            dot.style.background = '#3b82f6';
+                            valueLabel.style.transform = 'translateX(-50%) scale(1)';
+                            valueLabel.style.color = '#60a5fa';
+                            valueLabel.style.fontWeight = '700';
+                        });
+                        
+                        wrapper.appendChild(dotContainer);
+                        
+                        const yearLabel = document.createElement('div');
+                        yearLabel.textContent = point.year;
+                        yearLabel.style.position = 'absolute';
+                        yearLabel.style.left = point.x + '%';
+                        yearLabel.style.bottom = '15px';
+                        yearLabel.style.transform = 'translateX(-50%)';
+                        yearLabel.style.fontSize = '0.875rem';
+                        yearLabel.style.fontWeight = '600';
+                        yearLabel.style.color = '#94a3b8';
+                        yearLabel.style.opacity = '0';
+                        yearLabel.style.animation = `fadeIn 0.3s ease-out ${0.2 + index * 0.25}s forwards`;
+                        wrapper.appendChild(yearLabel);
+                    });
+                    
+                    // Draw line smoothly after dots appear
+                    setTimeout(() => {
+                        const canvasWidth = canvas.width;
+                        const pixelPoints = points.map(p => ({
+                            x: (p.x / 100) * canvasWidth,
+                            y: p.y
+                        }));
+                        
+                        let currentSegment = 0;
+                        let progress = 0;
+                        const segmentDuration = 750; // ms per segment
+                        const startTime = Date.now();
+                        
+                        function drawLine() {
+                            const elapsed = Date.now() - startTime;
+                            const totalProgress = elapsed / segmentDuration;
+                            
+                            currentSegment = Math.min(Math.floor(totalProgress), pixelPoints.length - 2);
+                            progress = totalProgress - currentSegment;
+                            
+                            ctx.clearRect(0, 0, canvas.width, canvas.height);
+                            
+                            // Draw completed segments
+                            ctx.strokeStyle = '#3b82f6';
+                            ctx.lineWidth = 3;
+                            ctx.lineCap = 'round';
+                            ctx.shadowBlur = 8;
+                            ctx.shadowColor = 'rgba(59, 130, 246, 0.6)';
+                            
+                            ctx.beginPath();
+                            ctx.moveTo(pixelPoints[0].x, pixelPoints[0].y);
+                            
+                            for (let i = 0; i <= currentSegment; i++) {
+                                if (i < currentSegment) {
+                                    ctx.lineTo(pixelPoints[i + 1].x, pixelPoints[i + 1].y);
+                                } else {
+                                    // Current segment being drawn
+                                    const x = pixelPoints[i].x + (pixelPoints[i + 1].x - pixelPoints[i].x) * progress;
+                                    const y = pixelPoints[i].y + (pixelPoints[i + 1].y - pixelPoints[i].y) * progress;
+                                    ctx.lineTo(x, y);
+                                }
+                            }
+                            
+                            ctx.stroke();
+                            
+                            if (currentSegment < pixelPoints.length - 2 || progress < 1) {
+                                requestAnimationFrame(drawLine);
+                            }
+                        }
+                        
+                        drawLine();
+                    }, 1400);
+                    
+                    container.appendChild(wrapper);
+                }
+        // Chart Button Click Handler
+        function initChartControls() {
+            const buttons = document.querySelectorAll('.chart-metric');
+            
+            buttons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const metric = button.getAttribute('data-metric');
+                    
+                    // Update active button
+                    buttons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    
+                    // Update chart
+                    currentMetric = metric;
+                    renderChart(metric);
+                });
+            });
+        }
+
+        // Animate chart on scroll (initial load)
+        function animateChart() {
+            const chartContainer = document.querySelector('.advanced-chart');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        renderChart(currentMetric);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.3 });
+            
+            if (chartContainer) {
+                observer.observe(chartContainer);
+            }
+        }
         window.addEventListener('load', () => {
             createParticles();
             animateCounters();
             checkSectionVisibility();
             updateScrollProgress();
+            animateMetrics();
+            animateChart();
+            initChartControls(); // Add this line
         });
     </script>
 </body>
 </html>
-
