@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browser Automation Scripts | Denis Gwizdala</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --cream: #FFF8E7;
+            --ink: #1A1A2E;
+            --orange: #FF6B35;
+            --teal: #00D9C0;
+            --yellow: #FFD23F;
+            --purple: #7B68EE;
+            --gray: #4A4A5E;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--cream);
+            color: var(--ink);
+            line-height: 1.6;
+        }
+
+        .mono {
+            font-family: 'Space Mono', monospace;
+        }
+
+        /* Comic-style Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: var(--ink);
+            padding: 1rem 2rem;
+            z-index: 1000;
+            border-bottom: 4px solid var(--orange);
+            box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
+        }
+
+        .nav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-back {
+            color: var(--cream);
+            text-decoration: none;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1.25rem;
+            border: 3px solid var(--cream);
+            transition: all 0.2s;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+            letter-spacing: 0.05em;
+        }
+
+        .nav-back:hover {
+            background: var(--cream);
+            color: var(--ink);
+            transform: translate(-2px, -2px);
+            box-shadow: 4px 4px 0 var(--orange);
+        }
+
+        .status-badge {
+            background: var(--teal);
+            color: var(--ink);
+            padding: 0.5rem 1rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            border: 3px solid var(--ink);
+            transform: rotate(-2deg);
+        }
+
+        /* Hero - Magazine Cover Style */
+        .hero {
+            min-height: 100vh;
+            padding: 8rem 2rem 4rem;
+            background: linear-gradient(135deg, var(--cream) 0%, #FFE5CC 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            background: var(--yellow);
+            opacity: 0.2;
+            border-radius: 50%;
+            filter: blur(100px);
+        }
+
+        .hero-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-left h1 {
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 900;
+            line-height: 0.9;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: -0.03em;
+        }
+
+        .hero-left h1 span {
+            display: block;
+            color: var(--orange);
+            text-shadow: 4px 4px 0 rgba(0,0,0,0.1);
+        }
+
+        .tagline {
+            font-size: 1.25rem;
+            color: var(--gray);
+            margin-bottom: 3rem;
+            font-weight: 500;
+            max-width: 550px;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-pill {
+            background: white;
+            padding: 1rem 1.75rem;
+            border: 3px solid var(--ink);
+            box-shadow: 4px 4px 0 var(--ink);
+            font-weight: 700;
+        }
+
+        .stat-pill strong {
+            font-size: 2rem;
+            color: var(--orange);
+            display: block;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .stat-pill span {
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Offset Definition Card */
+        .definition-card {
+            background: white;
+            padding: 2rem;
+            border: 4px solid var(--ink);
+            box-shadow: 8px 8px 0 var(--teal);
+            position: relative;
+        }
+
+        .definition-card::before {
+            content: 'INFO';
+            position: absolute;
+            top: -1rem;
+            right: 2rem;
+            background: var(--yellow);
+            color: var(--ink);
+            padding: 0.5rem 1.5rem;
+            font-weight: 900;
+            font-size: 0.75rem;
+            border: 3px solid var(--ink);
+            letter-spacing: 0.1em;
+        }
+
+        .definition-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            color: var(--orange);
+        }
+
+        .definition-card p {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: var(--gray);
+        }
+
+        /* Panel Layout Sections */
+        .section {
+            padding: 6rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            margin-bottom: 4rem;
+            text-align: center;
+        }
+
+        .section-label {
+            display: inline-block;
+            background: var(--ink);
+            color: var(--cream);
+            padding: 0.5rem 1.5rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+            letter-spacing: 0.1em;
+            margin-bottom: 1.5rem;
+            transform: rotate(-1deg);
+        }
+
+        .section-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 900;
+            text-transform: uppercase;
+            line-height: 1;
+            margin-bottom: 1rem;
+        }
+
+        .section-subtitle {
+            font-size: 1.25rem;
+            color: var(--gray);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Comic Panel Grid */
+        .panel-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+
+        .panel {
+            background: white;
+            padding: 2.5rem;
+            border: 4px solid var(--ink);
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .panel:hover {
+            transform: translate(-4px, -4px);
+            box-shadow: 8px 8px 0 var(--ink);
+        }
+
+        .panel-number {
+            position: absolute;
+            top: -1.5rem;
+            left: 2rem;
+            width: 3rem;
+            height: 3rem;
+            background: var(--orange);
+            color: white;
+            border: 4px solid var(--ink);
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            font-weight: 900;
+            font-size: 1.25rem;
+        }
+
+        .panel h3 {
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            color: var(--ink);
+        }
+
+        .panel p {
+            color: var(--gray);
+            line-height: 1.7;
+        }
+
+        .panel-accent-1 { border-color: var(--orange); }
+        .panel-accent-2 { border-color: var(--teal); }
+        .panel-accent-3 { border-color: var(--purple); }
+        .panel-accent-4 { border-color: var(--yellow); }
+
+        /* Speech Bubble Style */
+        .speech-bubble {
+            background: white;
+            padding: 2rem;
+            border: 4px solid var(--ink);
+            position: relative;
+            margin-bottom: 3rem;
+        }
+
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 3rem;
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 20px solid var(--ink);
+        }
+
+        .speech-bubble::before {
+            content: '';
+            position: absolute;
+            bottom: -13px;
+            left: 33px;
+            width: 0;
+            height: 0;
+            border-left: 17px solid transparent;
+            border-right: 17px solid transparent;
+            border-top: 17px solid white;
+            z-index: 1;
+        }
+
+        .speech-bubble h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            color: var(--orange);
+        }
+
+        .speech-bubble p {
+            font-size: 1.125rem;
+            color: var(--gray);
+            line-height: 1.7;
+        }
+
+        /* Diagonal Split Section */
+        .diagonal-section {
+            background: var(--ink);
+            color: var(--cream);
+            padding: 8rem 2rem;
+            margin: 4rem 0;
+            position: relative;
+            clip-path: polygon(0 5%, 100% 0, 100% 95%, 0 100%);
+        }
+
+        .diagonal-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .diagonal-section h2 {
+            font-size: 3rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            line-height: 1;
+            margin-bottom: 2rem;
+            color: var(--teal);
+        }
+
+        .feature-list {
+            list-style: none;
+        }
+
+        .feature-list li {
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            background: rgba(255,255,255,0.05);
+            border-left: 4px solid var(--orange);
+            font-weight: 500;
+        }
+
+        .feature-list li strong {
+            color: var(--yellow);
+            font-weight: 700;
+        }
+
+        /* Tech Stack - Sticker Style */
+        .sticker-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 3rem;
+        }
+
+        .sticker {
+            background: white;
+            padding: 1rem 2rem;
+            border: 3px solid var(--ink);
+            font-weight: 900;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+            letter-spacing: 0.05em;
+            transform: rotate(-2deg);
+            transition: transform 0.2s;
+        }
+
+        .sticker:nth-child(even) {
+            transform: rotate(2deg);
+        }
+
+        .sticker:hover {
+            transform: rotate(0deg) scale(1.1);
+        }
+
+        .sticker-1 { background: var(--yellow); }
+        .sticker-2 { background: var(--teal); }
+        .sticker-3 { background: var(--orange); color: white; }
+        .sticker-4 { background: var(--purple); color: white; }
+
+        /* Results - Billboard Style */
+        .billboard {
+            background: var(--yellow);
+            padding: 6rem 2rem;
+            border-top: 8px solid var(--ink);
+            border-bottom: 8px solid var(--ink);
+            text-align: center;
+            margin: 4rem 0;
+        }
+
+        .billboard h2 {
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            font-weight: 900;
+            text-transform: uppercase;
+            line-height: 1;
+            margin-bottom: 3rem;
+            color: var(--ink);
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .result-box {
+            background: white;
+            padding: 2.5rem 2rem;
+            border: 4px solid var(--ink);
+            box-shadow: 6px 6px 0 var(--ink);
+        }
+
+        .result-box strong {
+            font-size: 4rem;
+            font-weight: 900;
+            color: var(--orange);
+            display: block;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .result-box span {
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 700;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--ink);
+            color: var(--cream);
+            padding: 3rem 2rem;
+            text-align: center;
+            font-size: 0.875rem;
+        }
+
+        footer a {
+            color: var(--teal);
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .hero-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .panel-grid,
+            .diagonal-content,
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .diagonal-section {
+                clip-path: none;
+            }
+        }
+
+        /* Halftone Pattern Background */
+        .halftone-bg {
+            background-image:
+                radial-gradient(circle, var(--ink) 1px, transparent 1px);
+            background-size: 20px 20px;
+            opacity: 0.03;
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        /* Image Showcase */
+        .showcase-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin: 4rem 0;
+        }
+
+        .showcase-item {
+            background: white;
+            border: 4px solid var(--ink);
+            overflow: hidden;
+            transition: all 0.3s;
+            cursor: zoom-in;
+        }
+
+        .showcase-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 8px 8px 0 var(--ink);
+        }
+
+        .showcase-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-bottom: 4px solid var(--ink);
+        }
+
+        .showcase-caption {
+            padding: 1.5rem;
+            background: white;
+        }
+
+        .showcase-caption h4 {
+            font-size: 1.125rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            color: var(--ink);
+        }
+
+        .showcase-caption p {
+            font-size: 0.9375rem;
+            color: var(--gray);
+            line-height: 1.6;
+        }
+
+        .showcase-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: var(--orange);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            margin-bottom: 0.75rem;
+            letter-spacing: 0.05em;
+        }
+
+        .showcase-badge.success {
+            background: var(--teal);
+            color: var(--ink);
+        }
+
+        /* Lightbox */
+        .lightbox {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox-content {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            border: 4px solid var(--cream);
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            color: var(--cream);
+            font-size: 3rem;
+            font-weight: bold;
+            cursor: pointer;
+            background: var(--ink);
+            width: 50px;
+            height: 50px;
+            display: grid;
+            place-items: center;
+            line-height: 1;
+            border: 3px solid var(--cream);
+            transition: all 0.2s;
+        }
+
+        .lightbox-close:hover {
+            background: var(--orange);
+            border-color: var(--orange);
+        }
+
+        @media (max-width: 968px) {
+            .showcase-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-content">
+            <a href="STRONA.html" class="nav-back">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7"/>
+                </svg>
+                Back
+            </a>
+            <div class="status-badge">DEPLOYED</div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="halftone-bg"></div>
+        <div class="hero-grid">
+            <div class="hero-left">
+                <h1>
+                    Browser
+                    <span>Automation</span>
+                    Scripts
+                </h1>
+                <p class="tagline">
+                    Two Tampermonkey userscripts eliminating manual data entry and protecting platform integrity through automated guardrails
+                </p>
+                <div class="hero-stats">
+                    <div class="stat-pill">
+                        <strong>~650h</strong>
+                        <span>Saved Annually</span>
+                    </div>
+                    <div class="stat-pill">
+                        <strong>~2,600h</strong>
+                        <span>Since 2021</span>
+                    </div>
+                    <div class="stat-pill">
+                        <strong>~4</strong>
+                        <span>Years Deployed</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-right">
+                <div class="definition-card">
+                    <h3>What's an Offset?</h3>
+                    <p>
+                        <strong>Offsets</strong> are time buffers (in minutes) added to delivery routes to account for operational realities: driver breaks, traffic delays, station congestion, weather conditions, and return-to-station (RTS) time.
+                    </p>
+                    <p style="margin-top: 1rem;">
+                        Without accurate offsets, routes become overcompressed, waves clash, and customer delivery promises fail. Central planning teams provide daily offset updates via Excel multiple times per day—coordinators must manually upload these to the scheduling platform for D-0 and D-1 application.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- The Problem -->
+    <section class="section">
+        <div class="speech-bubble">
+            <h2>The Problem</h2>
+            <p>
+                Operations teams receive offset reports from central planning multiple times daily: morning and afternoon offsets for D-0, evening offsets for D-1. This <strong style="color: var(--orange);">repetitive daily task</strong> consumed <strong style="color: var(--orange);">~5-6 hours</strong> (combined across sessions) as one coordinator manually processed <strong style="color: var(--orange);">thousands of entries</strong>—copying station codes and offset values, then selecting matching items from platform dropdowns one by one.
+            </p>
+            <p style="margin-top: 1rem; font-weight: 600; color: var(--orange);">
+                The stakes were critical: incorrect offsets applied EU-wide would cascade through the entire supply chain, impacting routing algorithms, capacity planning, driver wave timing, and delivery promise accuracy across 400+ stations. With thousands of repetitive manual entries daily, human error was inevitable.
+            </p>
+        </div>
+
+        <div class="panel-grid">
+            <div class="panel panel-accent-1">
+                <div class="panel-number">1</div>
+                <h3>Repetitive Marathon</h3>
+                <p>
+                    The same task repeated daily: ~5-6 hours processing thousands of entries across multiple sessions (morning D-0, afternoon D-0, evening D-1). Repetitive manual work of this scale made errors inevitable.
+                </p>
+            </div>
+
+            <div class="panel panel-accent-2">
+                <div class="panel-number">2</div>
+                <h3>No File Validation</h3>
+                <p>
+                    Platform accepted any CSV file regardless of naming convention—leading to wrong offset types being uploaded (e.g., "Weather" data with "RTS" filename).
+                </p>
+            </div>
+
+            <div class="panel panel-accent-3">
+                <div class="panel-number">3</div>
+                <h3>Date Errors</h3>
+                <p>
+                    Offsets are applied on D-1 and validated on D-0. Uploading files with today's date instead of tomorrow's caused sequencing conflicts.
+                </p>
+            </div>
+
+            <div class="panel panel-accent-4">
+                <div class="panel-number">4</div>
+                <h3>Critical Risk</h3>
+                <p>
+                    Incorrect offsets applied EU-wide would cascade through the entire supply chain—affecting routing, capacity, wave timing, and delivery promises across 400+ stations. No validation existed to catch errors before dispatch.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Visual Proof -->
+    <section class="section" style="background: linear-gradient(135deg, #FFE5CC 0%, var(--cream) 100%);">
+        <div class="section-header">
+            <div class="section-label">Visual Proof</div>
+            <h2 class="section-title">Scripts in Action</h2>
+            <p class="section-subtitle">Real examples of automation and validation guardrails protecting operations since 2021</p>
+        </div>
+
+        <div class="showcase-grid">
+            <div class="showcase-item" onclick="openLightbox('project18.png')">
+                <img src="project18.png" alt="Ctrl+X bulk paste demonstration" loading="lazy">
+                <div class="showcase-caption">
+                    <span class="showcase-badge success">Automation</span>
+                    <h4>Bulk Data Entry</h4>
+                    <p>Ctrl+X auto-pastes values from Excel into dropdowns sequentially—eliminating manual selection and human error</p>
+                    <p style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--text-tertiary); font-style: italic;">
+                        <strong>Note:</strong> First version interface, no longer in active use. For demonstration purposes only.
+                    </p>
+                </div>
+            </div>
+
+            <div class="showcase-item" onclick="openLightbox('project16.png')">
+                <img src="project16.png" alt="Guardrail blocking wrong offset" loading="lazy">
+                <div class="showcase-caption">
+                    <span class="showcase-badge">Blocked</span>
+                    <h4>Wrong Offset Type</h4>
+                    <p>Guardrail prevented uploading incorrect offset file to entire country—catching mismatch before production</p>
+                    <p style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--text-tertiary); font-style: italic;">
+                        <strong>Note:</strong> First version interface, no longer in active use. For demonstration purposes only.
+                    </p>
+                </div>
+            </div>
+
+            <div class="showcase-item" onclick="openLightbox('project17.png')">
+                <img src="project17.png" alt="Date validation blocking upload" loading="lazy">
+                <div class="showcase-caption">
+                    <span class="showcase-badge">Blocked</span>
+                    <h4>Wrong Date (D-0)</h4>
+                    <p>Date validator blocked file with today's date instead of tomorrow's—preventing sequencing conflicts</p>
+                    <p style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--text-tertiary); font-style: italic;">
+                        <strong>Note:</strong> First version interface, no longer in active use. For demonstration purposes only.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- The Solution -->
+    <div class="diagonal-section">
+        <div class="diagonal-content">
+            <div>
+                <h2>The Solution</h2>
+                <p style="font-size: 1.125rem; margin-bottom: 2rem; color: var(--cream);">
+                    Two complementary Tampermonkey scripts: one for <strong style="color: var(--yellow);">speed</strong> (bulk data entry), one for <strong style="color: var(--teal);">safety</strong> (validation guardrails).
+                </p>
+                <ul class="feature-list">
+                    <li><strong>Dropdown Injector (Ctrl+X):</strong> Copy from Excel, press Ctrl+X to auto-paste into platform dropdowns sequentially</li>
+                    <li><strong>Guardrail Script:</strong> Validates CSV filenames against selected bucket types before allowing upload</li>
+                    <li><strong>Date Validator:</strong> Scans CSV content and input fields for D-0 compliance, blocking incorrect dates</li>
+                    <li><strong>Protection Toggle:</strong> ON/OFF switch allows coordinators to bypass checks when needed</li>
+                </ul>
+            </div>
+
+            <div>
+                <div style="background: rgba(255,255,255,0.05); padding: 2rem; border: 3px solid var(--teal);">
+                    <h3 style="font-size: 1.5rem; color: var(--yellow); margin-bottom: 1rem; text-transform: uppercase;">How It Works</h3>
+                    <ol style="list-style: none; counter-reset: step;">
+                        <li style="counter-increment: step; padding: 1rem 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                            <strong style="color: var(--teal); font-family: 'Space Mono', monospace;">STEP 1:</strong>
+                            User copies values from Excel report
+                        </li>
+                        <li style="counter-increment: step; padding: 1rem 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                            <strong style="color: var(--teal); font-family: 'Space Mono', monospace;">STEP 2:</strong>
+                            Script detects dropdown type (native/ARIA/custom)
+                        </li>
+                        <li style="counter-increment: step; padding: 1rem 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                            <strong style="color: var(--teal); font-family: 'Space Mono', monospace;">STEP 3:</strong>
+                            Matches clipboard values to options sequentially
+                        </li>
+                        <li style="counter-increment: step; padding: 1rem 0;">
+                            <strong style="color: var(--teal); font-family: 'Space Mono', monospace;">STEP 4:</strong>
+                            Guardrail validates filename & date before upload
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tech Stack -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-label">Tech Stack</div>
+            <h2 class="section-title">Built With</h2>
+        </div>
+        <div class="sticker-grid">
+            <div class="sticker sticker-1">JavaScript ES6+</div>
+            <div class="sticker sticker-2">Tampermonkey API</div>
+            <div class="sticker sticker-3">DOM Manipulation</div>
+            <div class="sticker sticker-4">Clipboard API</div>
+            <div class="sticker sticker-1">Event Listeners</div>
+            <div class="sticker sticker-2">Regex Validation</div>
+        </div>
+    </section>
+
+    <!-- Results -->
+    <div class="billboard">
+        <h2>Impact</h2>
+        <div class="results-grid">
+            <div class="result-box">
+                <strong>~650h</strong>
+                <span>Saved Annually</span>
+            </div>
+            <div class="result-box">
+                <strong>~2,600h</strong>
+                <span>Total Since 2021</span>
+            </div>
+            <div class="result-box">
+                <strong>100%</strong>
+                <span>Error Prevention</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Key Benefits -->
+    <section class="section" style="padding-bottom: 8rem;">
+        <div class="section-header">
+            <div class="section-label">Benefits</div>
+            <h2 class="section-title">Why It Matters</h2>
+        </div>
+
+        <div class="panel-grid">
+            <div class="panel" style="border-color: var(--orange);">
+                <h3 style="color: var(--orange);">⚡ Speed</h3>
+                <p>
+                    Reduced repetitive daily data entry from ~5-6 hours to ~2-3 hours—saving <strong>~650 hours annually</strong>. Deployed in 2021 and still in use today, the scripts have saved <strong>~2,600 hours</strong> (~325 working days) across ~4 years of continuous operation.
+                </p>
+            </div>
+
+            <div class="panel" style="border-color: var(--teal);">
+                <h3 style="color: var(--teal);">🛡️ Safety</h3>
+                <p>
+                    Pre-upload validation catches filename and date errors before they reach dispatch—protecting EU-wide supply chain operations from cascading failures that would impact routing, capacity planning, and delivery promises across 400+ stations. Four years of error-free uploads.
+                </p>
+            </div>
+
+            <div class="panel" style="border-color: var(--purple);">
+                <h3 style="color: var(--purple);">🔄 Compatibility</h3>
+                <p>
+                    Works universally across native HTML selects, ARIA comboboxes, and custom framework dropdowns (React, Material-UI, etc.).
+                </p>
+            </div>
+
+            <div class="panel" style="border-color: var(--yellow);">
+                <h3 style="color: var(--ink);">⏱️ Longevity</h3>
+                <p>
+                    Deployed in 2021 and still actively used today—demonstrating robust design, maintainability, and enduring operational value. Four years of reliable daily automation with zero downtime.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p style="max-width: 800px; margin: 0 auto; line-height: 1.6;">
+            <strong>Disclaimer:</strong> Portfolio content is for demonstration only. It showcases tools I personally developed and does not represent current systems, processes, or proprietary information at Amazon or any other company.
+        </p>
+    </footer>
+
+    <!-- Lightbox -->
+    <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+        <span class="lightbox-close">&times;</span>
+        <img class="lightbox-content" id="lightbox-img" src="" alt="Zoomed screenshot">
+    </div>
+
+    <script>
+        function openLightbox(imageSrc) {
+            event.stopPropagation();
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            lightbox.classList.add('active');
+            lightboxImg.src = imageSrc;
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeLightbox();
+            }
+        });
+
+        document.querySelector('.lightbox-close').addEventListener('click', function(e) {
+            e.stopPropagation();
+            closeLightbox();
+        });
+    </script>
+</body>
+</html>

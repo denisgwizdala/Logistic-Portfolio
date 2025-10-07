@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Review Automation | Denis Gwizdala</title>
+    <!-- Updated: 2025-10-07 -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --blue: #60A5FA;
+            --blue-dark: #3B82F6;
+            --blue-light: #93C5FD;
+            --cyan: #22D3EE;
+            --cyan-dark: #06B6D4;
+            --cyan-light: #67E8F9;
+            --dark: #0F172A;
+            --darker: #020617;
+            --gray: #64748B;
+            --gray-light: #CBD5E1;
+            --gray-lighter: #E2E8F0;
+            --white: #FFFFFF;
+            --transition: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+            background: var(--darker);
+            color: var(--white);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Scroll Progress Bar */
+        .scroll-progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--blue), var(--cyan));
+            z-index: 9999;
+            transition: width 0.1s ease-out;
+            box-shadow: 0 0 10px rgba(96, 165, 250, 0.5);
+        }
+
+        /* Particle Canvas */
+        #particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 72px;
+            background: rgba(2, 6, 23, 0.85);
+            backdrop-filter: blur(24px);
+            border-bottom: 1px solid rgba(96, 165, 250, 0.12);
+            z-index: 1000;
+            transform: translateY(0);
+            transition: transform 0.3s var(--transition);
+        }
+
+        nav.nav-hidden {
+            transform: translateY(-100%);
+        }
+
+        .nav-container {
+            max-width: 1280px;
+            height: 100%;
+            margin: 0 auto;
+            padding: 0 48px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-back {
+            color: var(--gray-lighter);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: -0.01em;
+            transition: color 0.2s var(--transition);
+            position: relative;
+        }
+
+        .nav-back:hover {
+            color: var(--blue-light);
+        }
+
+        .nav-status {
+            font-size: 11px;
+            color: var(--gray);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            padding: 6px 12px;
+            background: rgba(96, 165, 250, 0.08);
+            border: 1px solid rgba(96, 165, 250, 0.16);
+            border-radius: 6px;
+        }
+
+        /* Fade-in animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s var(--transition), transform 0.8s var(--transition);
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .fade-in-left {
+            opacity: 0;
+            transform: translateX(-30px);
+            transition: opacity 0.8s var(--transition), transform 0.8s var(--transition);
+        }
+
+        .fade-in-left.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .fade-in-right {
+            opacity: 0;
+            transform: translateX(30px);
+            transition: opacity 0.8s var(--transition), transform 0.8s var(--transition);
+        }
+
+        .fade-in-right.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            padding: 168px 48px 120px;
+            max-width: 1280px;
+            margin: 0 auto;
+            min-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            z-index: 1;
+        }
+
+        .hero-title {
+            font-size: clamp(40px, 6vw, 72px);
+            font-weight: 700;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+            margin-bottom: 32px;
+            color: var(--white);
+            max-width: 900px;
+        }
+
+        .hero-description {
+            font-size: 20px;
+            line-height: 1.7;
+            color: var(--gray-light);
+            max-width: 720px;
+            margin-bottom: 64px;
+            font-weight: 400;
+            letter-spacing: -0.01em;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            max-width: 960px;
+        }
+
+        .stat-card {
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(96, 165, 250, 0.12);
+            border-radius: 12px;
+            padding: 32px 24px;
+            transition: all 0.3s var(--transition);
+            position: relative;
+            will-change: transform;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(96, 165, 250, 0.24);
+            background: rgba(15, 23, 42, 0.7);
+            box-shadow: 0 12px 32px rgba(96, 165, 250, 0.12);
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 6px;
+            display: block;
+            color: var(--blue-light);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--gray);
+            font-weight: 500;
+            letter-spacing: 0.02em;
+        }
+
+        /* Section Divider with Animation */
+        .section-divider {
+            position: relative;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .section-divider::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 0%;
+            background: linear-gradient(180deg,
+                transparent 0%,
+                rgba(96, 165, 250, 0.3) 20%,
+                rgba(96, 165, 250, 0.6) 50%,
+                rgba(96, 165, 250, 0.3) 80%,
+                transparent 100%);
+            transition: height 0.6s var(--transition);
+        }
+
+        .section-divider.visible::before {
+            height: 100%;
+        }
+
+        .section-divider-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(96, 165, 250, 0.2), rgba(34, 211, 238, 0.2));
+            border: 2px solid rgba(96, 165, 250, 0.4);
+            backdrop-filter: blur(16px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+            transform: scale(0);
+            transition: transform 0.4s var(--transition) 0.3s;
+        }
+
+        .section-divider.visible .section-divider-icon {
+            transform: scale(1);
+        }
+
+        .section-divider-icon::before {
+            content: '';
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--blue), var(--cyan));
+            box-shadow: 0 0 20px rgba(96, 165, 250, 0.5);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+        }
+
+        /* Section Styles */
+        section:not(.hero) {
+            position: relative;
+            padding: 120px 48px;
+            z-index: 1;
+        }
+
+        .section-container {
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            margin-bottom: 64px;
+        }
+
+        .section-tag {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--blue);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .section-title {
+            font-size: clamp(36px, 4vw, 52px);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+            color: var(--white);
+            max-width: 800px;
+        }
+
+        /* Problem Section */
+        .problem-section {
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0) 0%, rgba(15, 23, 42, 0.4) 100%);
+        }
+
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 32px;
+        }
+
+        .problem-card {
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(34, 211, 238, 0.12);
+            border-radius: 16px;
+            padding: 40px;
+            transition: all 0.3s var(--transition);
+            will-change: transform;
+        }
+
+        .problem-card:hover {
+            border-color: rgba(34, 211, 238, 0.24);
+            background: rgba(15, 23, 42, 0.6);
+        }
+
+        .problem-number {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--cyan);
+            margin-bottom: 20px;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 0.05em;
+        }
+
+        .problem-title {
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            margin-bottom: 12px;
+            line-height: 1.3;
+            color: var(--white);
+        }
+
+        .problem-desc {
+            font-size: 15px;
+            line-height: 1.7;
+            color: var(--gray-light);
+            font-weight: 400;
+        }
+
+        /* Solution Section */
+        .solution-section {
+            background: var(--darker);
+        }
+
+        .solution-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 32px;
+            margin-top: 64px;
+        }
+
+        .solution-card {
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid rgba(96, 165, 250, 0.16);
+            border-radius: 16px;
+            padding: 48px;
+            transition: all 0.3s var(--transition);
+            will-change: transform;
+        }
+
+        .solution-card:hover {
+            border-color: rgba(96, 165, 250, 0.32);
+            background: rgba(15, 23, 42, 0.6);
+            transform: translateY(-4px);
+        }
+
+        .solution-number {
+            font-size: 64px;
+            font-weight: 700;
+            color: rgba(96, 165, 250, 0.08);
+            line-height: 1;
+            margin-bottom: 24px;
+            letter-spacing: -0.02em;
+        }
+
+        .solution-title {
+            font-size: 28px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            margin-bottom: 16px;
+            color: var(--white);
+        }
+
+        .solution-desc {
+            font-size: 16px;
+            line-height: 1.7;
+            color: var(--gray-light);
+            font-weight: 400;
+        }
+
+        /* Demo Section */
+        .demo-section {
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0) 0%, rgba(15, 23, 42, 0.4) 100%);
+        }
+
+        .demo-container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .demo-disclaimer {
+            font-size: 14px;
+            color: var(--gray);
+            margin-top: 16px;
+            font-style: italic;
+            font-weight: 400;
+        }
+
+        .demo-item {
+            margin-bottom: 96px;
+        }
+
+        .demo-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .demo-info {
+            margin-bottom: 32px;
+        }
+
+        .demo-info h3 {
+            font-size: 32px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            margin-bottom: 12px;
+            line-height: 1.2;
+            color: var(--white);
+        }
+
+        .demo-info p {
+            font-size: 16px;
+            color: var(--gray-light);
+            line-height: 1.6;
+            max-width: 640px;
+            font-weight: 400;
+        }
+
+        .demo-image-wrapper {
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(16px);
+            padding: 32px;
+            border: 1px solid rgba(96, 165, 250, 0.12);
+            border-radius: 12px;
+            transition: all 0.3s var(--transition);
+            overflow: hidden;
+        }
+
+        .demo-image-wrapper:hover {
+            border-color: rgba(96, 165, 250, 0.24);
+            transform: scale(1.01);
+        }
+
+        .demo-image-wrapper img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 8px;
+            transition: transform 0.3s var(--transition);
+        }
+
+        .demo-image-wrapper:hover img {
+            transform: scale(1.02);
+        }
+
+        /* Timeline Section */
+        .timeline-section {
+            background: var(--darker);
+        }
+
+        .timeline-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-top: 64px;
+        }
+
+        .timeline-card {
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(34, 211, 238, 0.12);
+            border-radius: 12px;
+            padding: 32px;
+            transition: all 0.3s var(--transition);
+            will-change: transform;
+        }
+
+        .timeline-card:hover {
+            border-color: rgba(34, 211, 238, 0.24);
+            background: rgba(15, 23, 42, 0.6);
+            transform: translateY(-4px);
+        }
+
+        .timeline-week {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--cyan);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .timeline-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            letter-spacing: -0.01em;
+            color: var(--white);
+        }
+
+        .timeline-desc {
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--gray-light);
+            font-weight: 400;
+        }
+
+        /* Impact Section - Dashboard Style */
+        .impact-section {
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0) 0%, rgba(15, 23, 42, 0.6) 100%);
+            padding: 120px 48px 140px;
+        }
+
+        .impact-dashboard {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-top: 64px;
+        }
+
+        .impact-card {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.6));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(96, 165, 250, 0.2);
+            border-radius: 16px;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s var(--transition);
+            will-change: transform;
+        }
+
+        .impact-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--blue), var(--cyan));
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .impact-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(96, 165, 250, 0.4);
+            box-shadow: 0 20px 60px rgba(96, 165, 250, 0.2);
+        }
+
+        .impact-card:hover::before {
+            opacity: 1;
+        }
+
+        .impact-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            margin-bottom: 24px;
+        }
+
+        .impact-trend {
+            font-size: 12px;
+            color: var(--cyan);
+            font-weight: 600;
+            padding: 4px 10px;
+            background: rgba(34, 211, 238, 0.15);
+            border-radius: 6px;
+            letter-spacing: 0.05em;
+        }
+
+        .impact-value {
+            font-size: 56px;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 8px;
+            line-height: 1;
+            background: linear-gradient(135deg, var(--blue-light), var(--cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .impact-label {
+            font-size: 14px;
+            color: var(--gray-light);
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            margin-bottom: 16px;
+        }
+
+        .impact-description {
+            font-size: 13px;
+            color: var(--gray);
+            line-height: 1.6;
+            padding-top: 16px;
+            border-top: 1px solid rgba(96, 165, 250, 0.1);
+        }
+
+        .impact-card.featured {
+            grid-column: span 2;
+            background: linear-gradient(135deg, rgba(96, 165, 250, 0.15), rgba(34, 211, 238, 0.1));
+        }
+
+        .impact-card.featured .impact-value {
+            font-size: 72px;
+        }
+
+        /* Footer */
+        footer {
+            padding: 48px 48px;
+            max-width: 1280px;
+            margin: 0 auto;
+            text-align: center;
+            border-top: 1px solid rgba(96, 165, 250, 0.08);
+            background: var(--darker);
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-text {
+            font-size: 13px;
+            color: var(--gray);
+            font-weight: 400;
+            margin-bottom: 16px;
+        }
+
+        .footer-disclaimer {
+            font-size: 12px;
+            color: var(--gray);
+            font-weight: 400;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            opacity: 0.7;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .problem-grid,
+            .solution-grid,
+            .timeline-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .impact-dashboard {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .impact-card.featured {
+                grid-column: span 2;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-container {
+                padding: 0 24px;
+            }
+
+            .hero {
+                padding: 144px 24px 96px;
+            }
+
+            section:not(.hero) {
+                padding: 96px 24px;
+            }
+
+            .stats-grid,
+            .impact-dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .impact-card.featured {
+                grid-column: span 1;
+            }
+
+            .solution-card,
+            .problem-card {
+                padding: 32px 24px;
+            }
+        }
+
+        /* Smooth scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Selection */
+        ::selection {
+            background: rgba(96, 165, 250, 0.3);
+            color: var(--white);
+        }
+
+        /* Text Highlights - Dark Blue Only */
+        .highlight {
+            color: var(--blue-dark);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <!-- Scroll Progress Bar -->
+    <div class="scroll-progress-bar"></div>
+
+    <!-- Particle Canvas -->
+    <canvas id="particles"></canvas>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="strona.html" class="nav-back">← Portfolio</a>
+            <div class="nav-status">2023 – Active</div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1 class="hero-title fade-in">Eliminating manual data collection through <span class="highlight">automation</span></h1>
+        <p class="hero-description fade-in">
+            Built an automated business review tool consolidating three data sources into a single standardized output—reducing daily data collection time by <span class="highlight">94%</span> for EU Last Mile Analytics.
+        </p>
+
+        <div class="stats-grid">
+            <div class="stat-card fade-in">
+                <span class="stat-value">94%</span>
+                <span class="stat-label">Time Reduction</span>
+            </div>
+            <div class="stat-card fade-in">
+                <span class="stat-value">100%</span>
+                <span class="stat-label">Error Free</span>
+            </div>
+            <div class="stat-card fade-in">
+                <span class="stat-value">~724h</span>
+                <span class="stat-label">Total Saved (Through H1 2025)</span>
+            </div>
+            <div class="stat-card fade-in">
+                <span class="stat-value">3→1</span>
+                <span class="stat-label">Sources</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section Divider -->
+    <div class="section-divider">
+        <div class="section-divider-icon"></div>
+    </div>
+
+    <!-- Problem Section -->
+    <section class="problem-section">
+        <div class="section-container">
+            <div class="section-header fade-in">
+                <span class="section-tag">The Challenge</span>
+                <h2 class="section-title">Identifying critical <span class="highlight">workflow bottlenecks</span></h2>
+            </div>
+
+            <div class="problem-grid">
+                <div class="problem-card fade-in-left">
+                    <div class="problem-number">[01]</div>
+                    <h3 class="problem-title">Time-intensive process</h3>
+                    <p class="problem-desc">Three analysts spending 30 minutes each day collecting data from multiple sources, totaling <span class="highlight">1.5 hours</span> of manual work daily.</p>
+                </div>
+
+                <div class="problem-card fade-in-right">
+                    <div class="problem-number">[02]</div>
+                    <h3 class="problem-title">Human error prone</h3>
+                    <p class="problem-desc">Manual copy-paste operations from dashboards and email reports led to frequent data inconsistencies and formatting errors.</p>
+                </div>
+
+                <div class="problem-card fade-in-left">
+                    <div class="problem-number">[03]</div>
+                    <h3 class="problem-title">No standardization</h3>
+                    <p class="problem-desc">Each analyst had their own formatting approach, making business reviews difficult to compare and analyze over time.</p>
+                </div>
+
+                <div class="problem-card fade-in-right">
+                    <div class="problem-number">[04]</div>
+                    <h3 class="problem-title">Scattered data sources</h3>
+                    <p class="problem-desc">Information distributed across <span class="highlight">2 dashboards + 1 email</span> required constant context switching and data hunting.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section Divider -->
+    <div class="section-divider">
+        <div class="section-divider-icon"></div>
+    </div>
+
+    <!-- Solution Section -->
+    <section class="solution-section">
+        <div class="section-container">
+            <div class="section-header fade-in">
+                <span class="section-tag">The Solution</span>
+                <h2 class="section-title">Automated <span class="highlight">database integration</span> for instant, error-free reporting</h2>
+            </div>
+
+            <div class="solution-grid">
+                <div class="solution-card fade-in-left">
+                    <div class="solution-number">01</div>
+                    <h3 class="solution-title">Discovery and access</h3>
+                    <p class="solution-desc">Identified that all manual data sources originated from queryable cloud databases. Collaborated with the tech team to obtain read-only database credentials for secure, direct data access.</p>
+                </div>
+
+                <div class="solution-card fade-in-right">
+                    <div class="solution-number">02</div>
+                    <h3 class="solution-title">Development and deployment</h3>
+                    <p class="solution-desc">Built a <span class="highlight">Python automation tool</span> using SQL queries to pull data directly from source databases and generate standardized business reviews. Reduced the entire process from <span class="highlight">90 minutes to 5 minutes</span> with zero errors.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section Divider -->
+    <div class="section-divider">
+        <div class="section-divider-icon"></div>
+    </div>
+
+    <!-- Demo Section -->
+    <section class="demo-section">
+        <div class="demo-container">
+            <div class="section-header fade-in">
+                <span class="section-tag">In Action</span>
+                <h2 class="section-title"><span class="highlight">Automated</span> analytics outputs</h2>
+                <p class="demo-disclaimer">Note: Visualizations shown are adjusted representations for confidentiality purposes and do not reflect actual production data.</p>
+            </div>
+
+            <div class="demo-item fade-in">
+                <div class="demo-info">
+                    <h3>Route Misses Analysis</h3>
+                    <p>Automated tracking of route completion rates across the EU network, highlighting performance gaps and trends.</p>
+                </div>
+                <div class="demo-image-wrapper">
+                    <img src="project22.gif" alt="Route Misses Analysis">
+                    <p style="margin-top: 0.75rem; font-size: 0.8125rem; color: rgba(255, 255, 255, 0.5); font-style: italic; text-align: center;">
+                        <strong>Note:</strong> First version interface, no longer in active use. For demonstration purposes only.
+                    </p>
+                </div>
+            </div>
+
+            <div class="demo-item fade-in">
+                <div class="demo-info">
+                    <h3>Volume Changes Monitor</h3>
+                    <p>Daily volume trend analysis with variance calculations to identify capacity planning needs.</p>
+                </div>
+                <div class="demo-image-wrapper">
+                    <img src="project23.gif" alt="Volume Changes Monitor">
+                    <p style="margin-top: 0.75rem; font-size: 0.8125rem; color: rgba(255, 255, 255, 0.5); font-style: italic; text-align: center;">
+                        <strong>Note:</strong> First version interface, no longer in active use. For demonstration purposes only.
+                    </p>
+                </div>
+            </div>
+
+            <div class="demo-item fade-in">
+                <div class="demo-info">
+                    <h3>Delivery Performance Metrics</h3>
+                    <p>Comprehensive delivery success rate tracking with country-level breakdowns across the EU network.</p>
+                </div>
+                <div class="demo-image-wrapper">
+                    <img src="project24.gif" alt="Delivery Performance Metrics">
+                    <p style="margin-top: 0.75rem; font-size: 0.8125rem; color: rgba(255, 255, 255, 0.5); font-style: italic; text-align: center;">
+                        <strong>Note:</strong> First version interface, no longer in active use. For demonstration purposes only.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section Divider -->
+    <div class="section-divider">
+        <div class="section-divider-icon"></div>
+    </div>
+
+    <!-- Timeline Section -->
+    <section class="timeline-section">
+        <div class="section-container">
+            <div class="section-header fade-in">
+                <span class="section-tag">Timeline</span>
+                <h2 class="section-title"><span class="highlight">4-week implementation</span> from discovery to deployment</h2>
+            </div>
+
+            <div class="timeline-grid">
+                <div class="timeline-card fade-in">
+                    <div class="timeline-week">Week 1</div>
+                    <h4 class="timeline-title">Problem Analysis</h4>
+                    <p class="timeline-desc">Shadowed analysts during daily business reviews to map out data sources, pain points, and manual workflows.</p>
+                </div>
+
+                <div class="timeline-card fade-in">
+                    <div class="timeline-week">Week 2</div>
+                    <h4 class="timeline-title">Database Setup</h4>
+                    <p class="timeline-desc">Worked with tech team to secure database access and documented table schemas and relationships.</p>
+                </div>
+
+                <div class="timeline-card fade-in">
+                    <div class="timeline-week">Week 3</div>
+                    <h4 class="timeline-title">Build and Testing</h4>
+                    <p class="timeline-desc">Developed Python tool with SQL queries and GUI interface. Validated outputs against manual reviews.</p>
+                </div>
+
+                <div class="timeline-card fade-in">
+                    <div class="timeline-week">Week 4</div>
+                    <h4 class="timeline-title">Deployment</h4>
+                    <p class="timeline-desc">Trained analytics team, deployed tool to shared drive, and established ongoing support process.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section Divider -->
+    <div class="section-divider">
+        <div class="section-divider-icon"></div>
+    </div>
+
+    <!-- Impact Section - Dashboard Style -->
+    <section class="impact-section">
+        <div class="section-container">
+            <div class="section-header fade-in">
+                <span class="section-tag">Results</span>
+                <h2 class="section-title"><span class="highlight">Measurable</span> impact</h2>
+            </div>
+
+            <div class="impact-dashboard">
+                <div class="impact-card featured fade-in">
+                    <div class="impact-card-header">
+                        <div class="impact-trend">↓ 94%</div>
+                    </div>
+                    <div class="impact-value">1.5h</div>
+                    <div class="impact-label">Daily Time Saved</div>
+                    <div class="impact-description">Reduced daily manual work from 90 minutes to just 5 minutes per business review cycle</div>
+                </div>
+
+                <div class="impact-card fade-in">
+                    <div class="impact-card-header">
+                        <div class="impact-trend">365 days</div>
+                    </div>
+                    <div class="impact-value">355h</div>
+                    <div class="impact-label">Annual Savings</div>
+                    <div class="impact-description">Equivalent to 44 full working days saved per year</div>
+                </div>
+
+                <div class="impact-card fade-in">
+                    <div class="impact-value">0</div>
+                    <div class="impact-label">Data Errors</div>
+                    <div class="impact-description">100% accuracy achieved through automated data extraction</div>
+                </div>
+
+                <div class="impact-card fade-in">
+                    <div class="impact-value">3→1</div>
+                    <div class="impact-label">People Required</div>
+                    <div class="impact-description">Reduced from 3 analysts to 1 person running the tool</div>
+                </div>
+
+                <div class="impact-card featured fade-in">
+                    <div class="impact-card-header">
+                        <div class="impact-trend">Since End of 2023 (Through H1 2025)</div>
+                    </div>
+                    <div class="impact-value">~724h</div>
+                    <div class="impact-label">Total Time Saved</div>
+                    <div class="impact-description">Cumulative time saved since deployment through H1 2025 (177h in 2023 + 355h in 2024 + 192h in H1 2025 at 1.5h daily × 128 working days), still actively running in production</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="fade-in">
+        <div class="footer-text">© 2025 Denis Gwizdala</div>
+        <div class="footer-disclaimer">
+            All figures and metrics presented are estimates or have been adjusted for confidentiality purposes. Time savings calculations are based on observed manual process durations and automated tool performance.
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Scroll Progress Bar
+        function updateScrollProgress() {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrollPercent = (scrollTop / scrollHeight) * 100;
+            document.querySelector('.scroll-progress-bar').style.width = scrollPercent + '%';
+        }
+
+        window.addEventListener('scroll', updateScrollProgress);
+
+        // Nav Hide on Scroll Down
+        let lastScrollTop = 0;
+        const nav = document.querySelector('nav');
+
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+            if (scrollTop > lastScrollTop && scrollTop > 100) {
+                nav.classList.add('nav-hidden');
+            } else {
+                nav.classList.remove('nav-hidden');
+            }
+
+            lastScrollTop = scrollTop;
+        });
+
+        // Intersection Observer for Fade-in Animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('visible');
+                    }, index * 100);
+                }
+            });
+        }, observerOptions);
+
+        // Observe all fade-in elements
+        document.querySelectorAll('.fade-in, .fade-in-left, .fade-in-right, .section-divider').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Particle Animation Script
+        const canvas = document.getElementById('particles');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let particlesArray = [];
+        const numberOfParticles = 60;
+        const mouse = {
+            x: null,
+            y: null,
+            radius: 150
+        };
+
+        window.addEventListener('mousemove', function(event) {
+            mouse.x = event.x;
+            mouse.y = event.y;
+        });
+
+        window.addEventListener('resize', function() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            init();
+        });
+
+        class Particle {
+            constructor(x, y, directionX, directionY, size, color) {
+                this.x = x;
+                this.y = y;
+                this.directionX = directionX;
+                this.directionY = directionY;
+                this.size = size;
+                this.color = color;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+
+            update() {
+                if (this.x > canvas.width || this.x < 0) {
+                    this.directionX = -this.directionX;
+                }
+                if (this.y > canvas.height || this.y < 0) {
+                    this.directionY = -this.directionY;
+                }
+
+                let dx = mouse.x - this.x;
+                let dy = mouse.y - this.y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < mouse.radius + this.size) {
+                    if (mouse.x < this.x && this.x < canvas.width - this.size * 10) {
+                        this.x += 2;
+                    }
+                    if (mouse.x > this.x && this.x > this.size * 10) {
+                        this.x -= 2;
+                    }
+                    if (mouse.y < this.y && this.y < canvas.height - this.size * 10) {
+                        this.y += 2;
+                    }
+                    if (mouse.y > this.y && this.y > this.size * 10) {
+                        this.y -= 2;
+                    }
+                }
+
+                this.x += this.directionX;
+                this.y += this.directionY;
+                this.draw();
+            }
+        }
+
+        function init() {
+            particlesArray = [];
+            for (let i = 0; i < numberOfParticles; i++) {
+                let size = (Math.random() * 2) + 1;
+                let x = (Math.random() * ((canvas.width - size * 2) - (size * 2)) + size * 2);
+                let y = (Math.random() * ((canvas.height - size * 2) - (size * 2)) + size * 2);
+                let directionX = (Math.random() * 0.3) - 0.15;
+                let directionY = (Math.random() * 0.3) - 0.15;
+
+                let colors = ['rgba(96, 165, 250, 0.6)', 'rgba(34, 211, 238, 0.6)', 'rgba(147, 197, 253, 0.4)'];
+                let color = colors[Math.floor(Math.random() * colors.length)];
+
+                particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
+            }
+        }
+
+        function connect() {
+            let opacityValue = 1;
+            for (let a = 0; a < particlesArray.length; a++) {
+                for (let b = a; b < particlesArray.length; b++) {
+                    let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x))
+                    + ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
+
+                    if (distance < (canvas.width / 7) * (canvas.height / 7)) {
+                        opacityValue = 1 - (distance / 20000);
+                        ctx.strokeStyle = 'rgba(96, 165, 250,' + (opacityValue * 0.5) + ')';
+                        ctx.lineWidth = 0.8;
+                        ctx.beginPath();
+                        ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                        ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+            }
+            connect();
+        }
+
+        init();
+        animate();
+    </script>
+</body>
+</html>

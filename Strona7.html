@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rescue Route Validator | Denis Gwizdala</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-start: #020409;
+            --bg-end: #0b0f15;
+            --accent-cyan: #00D9FF;
+            --accent-violet: #6E56CF;
+            --text: #FFFFFF;
+            --text-dim: #94A3B8;
+            --text-muted: #475569;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glow: rgba(0, 217, 255, 0.3);
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(180deg, var(--bg-start) 0%, var(--bg-end) 100%);
+            color: var(--text);
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-start);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-cyan);
+            border-radius: 4px;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 1.5rem 3rem;
+            backdrop-filter: blur(20px);
+            background: rgba(2, 4, 9, 0.8);
+            border-bottom: 1px solid var(--glass-border);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-back {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.9375rem;
+            font-weight: 500;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-back:hover {
+            color: var(--accent-cyan);
+        }
+
+        .nav-status {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 1rem;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--accent-cyan);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--accent-cyan);
+            border-radius: 50%;
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            padding: 10rem 3rem 6rem;
+            max-width: 1600px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, var(--accent-cyan) 0%, transparent 70%);
+            opacity: 0.1;
+            filter: blur(100px);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-30px); }
+        }
+
+        .hero-badge {
+            display: inline-block;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--accent-cyan);
+            padding: 0.5rem 1rem;
+            background: rgba(0, 217, 255, 0.1);
+            border: 1px solid var(--accent-cyan);
+            border-radius: 4px;
+            margin-bottom: 2rem;
+            animation: slideDown 0.8s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-size: clamp(3.5rem, 7vw, 6rem);
+            font-weight: 900;
+            line-height: 0.95;
+            letter-spacing: -0.04em;
+            margin-bottom: 2rem;
+            animation: slideUp 0.8s ease 0.2s both;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--text) 0%, var(--accent-cyan) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-description {
+            font-size: 1.375rem;
+            font-weight: 300;
+            line-height: 1.6;
+            color: var(--text-dim);
+            max-width: 800px;
+            margin-bottom: 3rem;
+            animation: slideUp 0.8s ease 0.4s both;
+        }
+
+        /* Stats Row */
+        .stats-row {
+            display: flex;
+            gap: 3rem;
+            flex-wrap: wrap;
+            animation: slideUp 0.8s ease 0.6s both;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .stat-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--accent-cyan);
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        /* Problem Section */
+        .section {
+            padding: 6rem 3rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 800;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .problem-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .problem-text h3 {
+            font-size: 1.875rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent-cyan);
+        }
+
+        .problem-text p {
+            font-size: 1.125rem;
+            line-height: 1.7;
+            color: var(--text-dim);
+            margin-bottom: 2rem;
+        }
+
+        .problem-visual {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 2rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .problem-visual::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+            animation: scan 3s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .code-line {
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .code-key {
+            color: var(--text-muted);
+        }
+
+        .code-value {
+            color: var(--accent-cyan);
+            font-weight: 600;
+        }
+
+        .code-critical {
+            color: var(--warning);
+            animation: blink 2s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Solution Grid */
+        .solution-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin: 4rem 0;
+        }
+
+        .solution-card {
+            background: linear-gradient(135deg, var(--glass) 0%, rgba(0, 217, 255, 0.02) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 2rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .solution-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--accent-cyan);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .solution-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--accent-cyan);
+            box-shadow: 0 20px 40px rgba(0, 217, 255, 0.2);
+        }
+
+        .solution-card:hover::after {
+            transform: scaleX(1);
+        }
+
+        .solution-number {
+            display: inline-block;
+            width: 32px;
+            height: 32px;
+            background: rgba(0, 217, 255, 0.1);
+            border: 2px solid var(--accent-cyan);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            margin-bottom: 1rem;
+        }
+
+        .solution-card h4 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .solution-card p {
+            color: var(--text-dim);
+            line-height: 1.6;
+        }
+
+        /* Interface Showcase */
+        .interface-section {
+            padding: 6rem 3rem;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .interface-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .interface-subtitle {
+            font-size: 1.125rem;
+            color: var(--text-dim);
+            margin-top: 1rem;
+        }
+
+        .screens-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .screen-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            transition: all 0.4s ease;
+        }
+
+        .screen-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 30px 60px rgba(0, 217, 255, 0.3);
+        }
+
+        .screen-header {
+            padding: 1rem;
+            background: rgba(0, 217, 255, 0.05);
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .screen-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .screen-status {
+            font-size: 0.75rem;
+            color: var(--warning);
+            font-weight: 700;
+        }
+
+        .screen-image {
+            padding: 1rem;
+        }
+
+        .screen-image img {
+            width: 100%;
+            height: auto;
+            border-radius: 4px;
+        }
+
+        /* Before vs After Comparison */
+        .comparison-wrapper {
+            max-width: 1400px;
+            margin: 4rem auto;
+        }
+
+        .comparison-header-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .comparison-header-card {
+            text-align: center;
+            padding: 2rem;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+        }
+
+        .comparison-header-card.before {
+            border-left: 4px solid var(--error);
+        }
+
+        .comparison-header-card.after {
+            border-left: 4px solid var(--success);
+        }
+
+        .comparison-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 1rem;
+        }
+
+        .comparison-header-card.before .comparison-label {
+            color: var(--error);
+        }
+
+        .comparison-header-card.after .comparison-label {
+            color: var(--success);
+        }
+
+        .comparison-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .comparison-time {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 3.5rem;
+            font-weight: 900;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .comparison-header-card.before .comparison-time {
+            color: var(--warning);
+        }
+
+        .comparison-header-card.after .comparison-time {
+            color: var(--success);
+        }
+
+        .comparison-subtitle {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .comparison-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+        }
+
+        .comparison-column {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 2rem;
+        }
+
+        .process-steps {
+            margin-bottom: 2rem;
+        }
+
+        .process-step {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 8px;
+            border-left: 3px solid var(--glass-border);
+            transition: all 0.3s ease;
+        }
+
+        .comparison-column.after .process-step {
+            border-left-color: var(--success);
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .step-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            min-width: 24px;
+        }
+
+        .step-text {
+            font-size: 0.9375rem;
+            color: var(--text-dim);
+            line-height: 1.5;
+        }
+
+        .outcome-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .outcome-tag {
+            font-size: 0.6875rem;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .comparison-column.before .outcome-tag {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+            border: 1px solid var(--warning);
+        }
+
+        .comparison-column.after .outcome-tag {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        /* System Capabilities */
+        .capabilities-section {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 6rem 3rem;
+        }
+
+        .capabilities-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1.5rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .capabilities-grid::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+            z-index: 0;
+        }
+
+        .capability-item {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            transition: all 0.4s ease;
+        }
+
+        .capability-item:hover {
+            transform: translateY(-12px);
+            border-color: var(--accent-cyan);
+            box-shadow: 0 25px 50px rgba(0, 217, 255, 0.25);
+        }
+
+        .capability-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--accent-cyan);
+            line-height: 1;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .capability-name {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+
+        .capability-desc {
+            font-size: 0.8125rem;
+            line-height: 1.5;
+            color: var(--text-dim);
+            margin-bottom: 1rem;
+        }
+
+        .capability-tech {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.625rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding-top: 1rem;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        /* Impact Metrics */
+        .impact-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 4rem auto;
+        }
+
+        .impact-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .impact-card::before {
+            content: '';
+            position: absolute;
+            top: -100%;
+            left: -100%;
+            width: 300%;
+            height: 300%;
+            background: radial-gradient(circle, var(--accent-cyan) 0%, transparent 70%);
+            opacity: 0.05;
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .impact-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--accent-cyan);
+            box-shadow: 0 20px 40px rgba(0, 217, 255, 0.2);
+        }
+
+        .impact-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: var(--accent-cyan);
+            line-height: 1;
+            margin-bottom: 1rem;
+        }
+
+        .impact-label {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .impact-desc {
+            font-size: 0.8125rem;
+            color: var(--text-dim);
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        footer {
+            padding: 4rem 3rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .footer-content {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 2rem;
+        }
+
+        .footer-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8125rem;
+            line-height: 1.8;
+            color: var(--text-muted);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .problem-container,
+            .solution-grid,
+            .screens-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .comparison-header-section,
+            .comparison-content {
+                grid-template-columns: 1fr;
+            }
+
+            .capabilities-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .capabilities-grid::before {
+                display: none;
+            }
+
+            .impact-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Fade In Animation */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .lightbox { display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.95); align-items: center; justify-content: center; animation: fadeIn 0.3s ease; }
+        .lightbox.active { display: flex; }
+        .lightbox-content { max-width: 90%; max-height: 90%; object-fit: contain; animation: zoomIn 0.3s ease; }
+        .lightbox-close { position: absolute; top: 20px; right: 40px; color: white; font-size: 40px; font-weight: bold; cursor: pointer; transition: color 0.3s; z-index: 10000; }
+        .lightbox-close:hover { color: #ccc; }
+        .zoomable-image { cursor: zoom-in; transition: opacity 0.3s; }
+        .zoomable-image:hover { opacity: 0.9; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <a href="STRONA.html" class="nav-back">
+            ← Back to Portfolio
+        </a>
+        <div class="nav-status">
+            <span class="status-dot"></span>
+            LIVE · EU Network
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>
+            <span class="gradient-text">Rescue Route</span><br>
+            Validator
+        </h1>
+        <p class="hero-description">
+            Decision-making tool for rescue validation workflows across EU operations—transforming 30-minute manual processes into 3-minute data-driven decisions with 100% SOP compliance.
+        </p>
+        <div class="stats-row">
+            <div class="stat-item">
+                <div class="stat-value">~85%</div>
+                <div class="stat-label">Time Saved</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">~3min</div>
+                <div class="stat-label">Per Validation</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">100%</div>
+                <div class="stat-label">SOP Compliance</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">EU</div>
+                <div class="stat-label">Network Wide</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem Section -->
+    <section class="section fade-in">
+        <h2 class="section-title">The Validation Crisis</h2>
+        <div class="problem-container">
+            <div class="problem-text">
+                <h3>Manual Process Breaking at Scale</h3>
+                <p>Routes frequently fall behind schedule across EU supply chain operations. Rescue validation—determining if backup support is needed—was critical but entirely manual.</p>
+                <p>Schedulers spent 30 minutes per validation, manually pulling data from multiple disconnected spreadsheets and internal systems. Without automated checks, validation quality varied by scheduler—risking missed routes or unnecessary rescues.</p>
+            </div>
+            <div class="problem-visual">
+                <div class="code-line">
+                    <span class="code-key">Data Sources:</span>
+                    <span class="code-critical">MULTIPLE_SYSTEMS</span>
+                </div>
+                <div class="code-line">
+                    <span class="code-key">Validation Time:</span>
+                    <span class="code-value">~30 minutes</span>
+                </div>
+                <div class="code-line">
+                    <span class="code-key">Weekly Hours Lost:</span>
+                    <span class="code-critical">~14 hours</span>
+                </div>
+                <div class="code-line">
+                    <span class="code-key">Staging Check:</span>
+                    <span class="code-critical">MANUAL</span>
+                </div>
+                <div class="code-line">
+                    <span class="code-key">Dispatch Check:</span>
+                    <span class="code-critical">MANUAL</span>
+                </div>
+                <div class="code-line">
+                    <span class="code-key">Decision Quality:</span>
+                    <span class="code-critical">INCONSISTENT</span>
+                </div>
+                <div class="code-line">
+                    <span class="code-key">Scalability:</span>
+                    <span class="code-critical">LIMITED</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solution Section -->
+    <section class="section fade-in">
+        <h2 class="section-title">Three-View Validation System</h2>
+        <div class="solution-grid">
+            <div class="solution-card">
+                <div class="solution-number">1</div>
+                <h4>Stage Validation</h4>
+                <p>Confirms all routes properly staged before dispatch with instant 100% completion status. Automated checks eliminate manual cross-referencing.</p>
+            </div>
+            <div class="solution-card">
+                <div class="solution-number">2</div>
+                <h4>Dispatch Validation</h4>
+                <p>Real-time tracking of dispatched versus pending routes with live progress status. API pulls ensure data is always current.</p>
+            </div>
+            <div class="solution-card">
+                <div class="solution-number">3</div>
+                <h4>Itinerary Progress</h4>
+                <p>Live performance tracking with automated risk calculations and rescue recommendations. Built-in SOP checks guide consistent decisions.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interface Showcase -->
+    <section class="interface-section fade-in">
+        <div class="interface-header">
+            <h2 class="section-title">Validation Interface</h2>
+            <p class="interface-subtitle">Historical interface version — no longer in active use</p>
+        </div>
+        <div class="screens-container">
+            <div class="screen-card">
+                <div class="screen-header">
+                    <span class="screen-title">Stage Validation</span>
+                    <span class="screen-status">● LEGACY</span>
+                </div>
+                <div class="screen-image">
+                    <img src="project13.png" alt="Stage Validation Interface">
+                    <p style="margin-top: 0.75rem; font-size: 0.75rem; color: var(--text-tertiary); text-align: center; font-style: italic;">
+                        <strong>Note:</strong> First version interface, no longer in active use. For demonstration purposes only.
+                    </p>
+                </div>
+            </div>
+            <div class="screen-card">
+                <div class="screen-header">
+                    <span class="screen-title">Dispatch Tracking</span>
+                    <span class="screen-status">● LEGACY</span>
+                </div>
+                <div class="screen-image">
+                    <img src="project14.png" alt="Dispatch Validation Interface">
+                    <p style="margin-top: 0.75rem; font-size: 0.75rem; color: var(--text-tertiary); text-align: center; font-style: italic;">
+                        <strong>Note:</strong> First version interface, no longer in active use. For demonstration purposes only.
+                    </p>
+                </div>
+            </div>
+            <div class="screen-card">
+                <div class="screen-header">
+                    <span class="screen-title">Itinerary Progress</span>
+                    <span class="screen-status">● LEGACY</span>
+                </div>
+                <div class="screen-image">
+                    <img src="project15.png" alt="Itinerary Progress Interface">
+                    <p style="margin-top: 0.75rem; font-size: 0.75rem; color: var(--text-tertiary); text-align: center; font-style: italic;">
+                        <strong>Note:</strong> First version interface, no longer in active use. For demonstration purposes only.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Before vs After Comparison -->
+    <section class="section fade-in">
+        <h2 class="section-title">Before vs After</h2>
+        <div class="comparison-wrapper">
+            <div class="comparison-header-section">
+                <div class="comparison-header-card before">
+                    <div class="comparison-label">Manual Process</div>
+                    <h3 class="comparison-title">Complicated Manual process</h3>
+                    <div class="comparison-time">~30min +/-</div>
+                    <div class="comparison-subtitle">Per Validation</div>
+                </div>
+                <div class="comparison-header-card after">
+                    <div class="comparison-label">Automated System</div>
+                    <h3 class="comparison-title">Standardised Platform</h3>
+                    <div class="comparison-time">~3min</div>
+                    <div class="comparison-subtitle">Per Validation</div>
+                </div>
+            </div>
+
+            <div class="comparison-content">
+                <div class="comparison-column before">
+                    <div class="process-steps">
+                        <div class="process-step">
+                            <span class="step-num">01</span>
+                            <span class="step-text">Open SIM ticket manually</span>
+                        </div>
+                        <div class="process-step">
+                            <span class="step-num">02</span>
+                            <span class="step-text">Identify delayed driver/agency</span>
+                        </div>
+                        <div class="process-step">
+                            <span class="step-num">03</span>
+                            <span class="step-text">Cross-reference SOP for given country decision rules</span>
+                        </div>
+                        <div class="process-step">
+                            <span class="step-num">04</span>
+                            <span class="step-text">Check if route staged in spreadsheet</span>
+                        </div>
+                        <div class="process-step">
+                            <span class="step-num">05</span>
+                            <span class="step-text">Verify dispatch status in separate system</span>
+                        </div>
+                        <div class="process-step">
+                            <span class="step-num">06</span>
+                            <span class="step-text">Calculate delta manually</span>
+                        </div>
+                        <div class="process-step">
+                            <span class="step-num">07</span>
+                            <span class="step-text">Draft recommendation</span>
+                        </div>
+                        <div class="process-step">
+                            <span class="step-num">08</span>
+                            <span class="step-text">Wait for station confirmation</span>
+                        </div>
+                        <div class="process-step">
+                            <span class="step-num">09</span>
+                            <span class="step-text">Manually add rescue routes</span>
+                        </div>
+                    </div>
+                    <div class="outcome-tags">
+                        <span class="outcome-tag">Missed SLAs</span>
+                        <span class="outcome-tag">Improper Assignments</span>
+                        <span class="outcome-tag">High Frustration</span>
+                        <span class="outcome-tag">Constant Delays</span>
+                        <span class="outcome-tag">Fragmented Data</span>
+                    </div>
+                </div>
+
+<div class="comparison-column after">
+    <div class="process-steps">
+        <div class="process-step">
+            <span class="step-num">01</span>
+            <span class="step-text">Enter station code</span>
+        </div>
+        <div class="process-step">
+            <span class="step-num">02</span>
+            <span class="step-text">Auto-pull live API data</span>
+        </div>
+        <div class="process-step">
+            <span class="step-num">03</span>
+            <span class="step-text">Dashboard displays all validation checks</span>
+        </div>
+        <div class="process-step">
+            <span class="step-num">04</span>
+            <span class="step-text">SOP rules automatically applied</span>
+        </div>
+        <div class="process-step">
+            <span class="step-num">05</span>
+            <span class="step-text">Instant rescue recommendation</span>
+        </div>
+        <div class="process-step">
+            <span class="step-num">06</span>
+            <span class="step-text">After confirmation, one click to open rescue route automatically</span>
+        </div>
+    </div>
+    <div class="outcome-tags">
+        <span class="outcome-tag">100% SOP Compliance</span>
+        <span class="outcome-tag">85% Time Saved</span>
+        <span class="outcome-tag">Consistent Decisions</span>
+        <span class="outcome-tag">Real-time Data</span>
+        <span class="outcome-tag">Unified Interface</span>
+    </div>
+</div>
+            </div>
+        </div>
+    </section>
+<!-- Organizational Adoption -->
+<section class="section fade-in" style="background: rgba(0, 0, 0, 0.2);">
+    <h2 class="section-title">From Tool to Standard</h2>
+    <div style="max-width: 1400px; margin: 0 auto;">
+        <p class="interface-subtitle" style="text-align: center; margin-bottom: 4rem; max-width: 900px; margin-left: auto; margin-right: auto;">
+            Validation decisions transitioned from individual judgment calls to centrally managed, SOP-enforced outcomes
+        </p>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin-bottom: 4rem;">
+            <!-- Enforcement Card -->
+            <div style="background: var(--glass); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 16px; padding: 2.5rem; border-left: 4px solid var(--accent-cyan);">
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                    <div style="width: 48px; height: 48px; background: rgba(0, 217, 255, 0.1); border: 2px solid var(--accent-cyan); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-weight: 800; color: var(--accent-cyan);">✓</div>
+                    <h3 style="font-size: 1.5rem; font-weight: 700; margin: 0;">Mandatory Validation</h3>
+                </div>
+                <p style="font-size: 1.0625rem; line-height: 1.7; color: var(--text-dim); margin-bottom: 1.5rem;">
+                    Tool adoption became mandatory across all EU scheduling operations. Only decisions validated through the platform were recognized as SOP-compliant—eliminating ad-hoc manual validations and ensuring consistent operational standards.
+                </p>
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; padding-top: 1rem; border-top: 1px solid var(--glass-border);">
+                    Organization-Wide Enforcement
+                </div>
+            </div>
+
+            <!-- Configuration Management Card -->
+            <div style="background: var(--glass); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 16px; padding: 2.5rem; border-left: 4px solid var(--success);">
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                    <div style="width: 48px; height: 48px; background: rgba(16, 185, 129, 0.1); border: 2px solid var(--success); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-weight: 800; color: var(--success);">⚙</div>
+                    <h3 style="font-size: 1.5rem; font-weight: 700; margin: 0;">Dynamic SOP Updates</h3>
+                </div>
+                <p style="font-size: 1.0625rem; line-height: 1.7; color: var(--text-dim); margin-bottom: 1.5rem;">
+                    Management gained centralized control over SOP configurations. When operational requirements changed, administrators updated rule parameters in the backend—automatically propagating new decision logic to all schedulers without retraining, documentation updates, or communication delays.
+                </p>
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; padding-top: 1rem; border-top: 1px solid var(--glass-border);">
+                    Zero-Training Policy Changes
+                </div>
+            </div>
+        </div>
+
+        <!-- Impact Visualization -->
+        <div style="background: linear-gradient(135deg, var(--glass) 0%, rgba(0, 217, 255, 0.02) 100%); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 16px; padding: 2.5rem; position: relative; overflow: hidden;">
+            <div style="position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent); animation: scan 3s linear infinite;"></div>
+            
+            <h3 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 2rem; text-align: center;">Standardization Benefits</h3>
+            
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem;">
+                <div style="text-align: center;">
+                    <div style="font-family: 'JetBrains Mono', monospace; font-size: 2.5rem; font-weight: 900; color: var(--accent-cyan); line-height: 1; margin-bottom: 0.75rem;">100%</div>
+                    <div style="font-size: 0.875rem; color: var(--text-dim); line-height: 1.5;">Scheduler adoption across EU network</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-family: 'JetBrains Mono', monospace; font-size: 2.5rem; font-weight: 900; color: var(--accent-cyan); line-height: 1; margin-bottom: 0.75rem;">0min</div>
+                    <div style="font-size: 0.875rem; color: var(--text-dim); line-height: 1.5;">Training time for SOP updates</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-family: 'JetBrains Mono', monospace; font-size: 2.5rem; font-weight: 900; color: var(--accent-cyan); line-height: 1; margin-bottom: 0.75rem;">Instant</div>
+                    <div style="font-size: 0.875rem; color: var(--text-dim); line-height: 1.5;">Policy change implementation</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-family: 'JetBrains Mono', monospace; font-size: 2.5rem; font-weight: 900; color: var(--accent-cyan); line-height: 1; margin-bottom: 0.75rem;">Single</div>
+                    <div style="font-size: 0.875rem; color: var(--text-dim); line-height: 1.5;">Source of truth for decisions</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+    <!-- System Capabilities -->
+    <section class="capabilities-section fade-in">
+        <h2 class="section-title">System Capabilities</h2>
+        <p class="interface-subtitle" style="text-align: center; margin-bottom: 4rem;">Standardized decision-making process reducing validation time and ensuring SOP consistency</p>
+        <div class="capabilities-grid">
+            <div class="capability-item">
+                <div class="capability-num">01</div>
+                <h4 class="capability-name">Monitor</h4>
+                <p class="capability-desc">Retrieves real-time operational data from APIs—staged routes, dispatch status, and performance metrics</p>
+                <div class="capability-tech">Live Data Integration</div>
+            </div>
+            <div class="capability-item">
+                <div class="capability-num">02</div>
+                <h4 class="capability-name">Validate</h4>
+                <p class="capability-desc">Automatically applies SOP criteria to every route, eliminating manual lookups and interpretation variance</p>
+                <div class="capability-tech">Python Validation Engine</div>
+            </div>
+            <div class="capability-item">
+                <div class="capability-num">03</div>
+                <h4 class="capability-name">Analyze</h4>
+                <p class="capability-desc">Calculates risk levels and time impact, presenting clear data to support consistent rescue decisions</p>
+                <div class="capability-tech">SOP Rule Logic</div>
+            </div>
+            <div class="capability-item">
+                <div class="capability-num">04</div>
+                <h4 class="capability-name">Decide</h4>
+                <p class="capability-desc">Schedulers make informed decisions in minutes using unified data—no more conflicting conclusions</p>
+                <div class="capability-tech">Interactive Dashboard</div>
+            </div>
+            <div class="capability-item">
+                <div class="capability-num">05</div>
+                <h4 class="capability-name">Audit</h4>
+                <p class="capability-desc">Maintains complete decision history with justification trail for operational review</p>
+                <div class="capability-tech">Data Logging</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Impact Section -->
+    <section class="section fade-in">
+        <h2 class="section-title">Measurable Impact</h2>
+        <div class="impact-grid">
+            <div class="impact-card">
+                <div class="impact-number">~85%</div>
+                <h4 class="impact-label">Efficiency Gain</h4>
+                <p class="impact-desc">Reduced validation time from ~30 minutes to ~3 minutes</p>
+            </div>
+            <div class="impact-card">
+                <div class="impact-number">~657hrs</div>
+                <h4 class="impact-label">Annual Hours Saved</h4>
+                <p class="impact-desc">Based on ~3-5 daily validations across 365-day operations</p>
+            </div>
+            <div class="impact-card">
+                <div class="impact-number">100%</div>
+                <h4 class="impact-label">SOP Compliance</h4>
+                <p class="impact-desc">Standardized decisions across all EU schedulers</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <p class="footer-text">
+                DISCLAIMER: Projects represent real work completed during employment. Content reviewed to exclude confidential information and comply with NDAs. Metrics and processes generalized where necessary. Interfaces shown represent versions no longer in active use.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Fade in animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+    </script>
+    <div id="lightbox" class="lightbox"><span class="lightbox-close" id="lightbox-close">&times;</span><img class="lightbox-content" id="lightbox-img" src="" alt="Zoomed image"></div>
+    <script>(function() { const lb = document.getElementById('lightbox'), img = document.getElementById('lightbox-img'), cls = document.getElementById('lightbox-close'); document.querySelectorAll('img[src*=".png"], img[src*=".jpg"], img[src*=".jpeg"], .image-wrapper img').forEach(i => { i.classList.add('zoomable-image'); i.style.cursor = 'zoom-in'; i.addEventListener('click', function(e) { e.preventDefault(); lb.classList.add('active'); img.src = this.src; document.body.style.overflow = 'hidden'; }); }); function close() { lb.classList.remove('active'); document.body.style.overflow = ''; } cls.addEventListener('click', close); lb.addEventListener('click', e => { if (e.target === lb) close(); }); document.addEventListener('keydown', e => { if (e.key === 'Escape' && lb.classList.contains('active')) close(); }); })();</script>
+</body>
+</html>

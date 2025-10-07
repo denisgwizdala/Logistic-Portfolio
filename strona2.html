@@ -1,0 +1,1904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EU Offset Validator | Denis Gwizdala</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0e15;
+            --bg-secondary: #0f1419;
+            --bg-tertiary: #161d27;
+            --accent: #3b82f6;
+            --accent-secondary: #2563eb;
+            --accent-tertiary: #60a5fa;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-dim: #64748b;
+            --border: #1e293b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --gradient-1: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(10, 14, 21, 0.7);
+            backdrop-filter: blur(24px) saturate(180%);
+            border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+        }
+
+        .nav-inner {
+            max-width: 1500px;
+            margin: 0 auto;
+            padding: 1.5rem 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-back {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-back:hover {
+            color: var(--accent);
+            transform: translateX(-4px);
+        }
+
+        .nav-status {
+            display: flex;
+            align-items: center;
+            gap: 0.625rem;
+            padding: 0.5rem 1rem;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 100px;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: var(--success);
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.3); }
+        }
+
+        /* Hero */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 10rem 4rem 2rem;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.18) 0%, transparent 50%);
+            animation: pulse 8s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.5; }
+            50% { transform: scale(1.1) rotate(2deg); opacity: 0.3; }
+        }
+
+        #particles-js {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .hero-content {
+            max-width: 1100px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.625rem;
+            padding: 0.625rem 1.25rem;
+            background: rgba(59, 130, 246, 0.12);
+            border: 1px solid rgba(59, 130, 246, 0.25);
+            border-radius: 100px;
+            font-size: 0.8125rem;
+            font-weight: 700;
+            margin-bottom: 2.5rem;
+            color: var(--accent);
+            backdrop-filter: blur(12px);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .hero-tag-dot {
+            width: 5px;
+            height: 5px;
+            background: var(--accent);
+            border-radius: 50%;
+            box-shadow: 0 0 8px rgba(59, 130, 246, 0.6);
+        }
+
+        .hero-title {
+            font-size: clamp(3.5rem, 9vw, 6.5rem);
+            font-weight: 900;
+            line-height: 1;
+            letter-spacing: -0.04em;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, #ffffff 0%, #60a5fa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            font-weight: 400;
+            color: var(--text-secondary);
+            max-width: 750px;
+            margin: 0 auto 4rem;
+            line-height: 1.65;
+        }
+
+        .hero-metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            max-width: 900px;
+            margin: 0 auto 2rem;
+        }
+
+        .metric {
+            text-align: center;
+            padding: 2.5rem 2rem;
+            background: rgba(22, 29, 39, 0.4);
+            border: 1px solid rgba(59, 130, 246, 0.15);
+            border-radius: 1.25rem;
+            backdrop-filter: blur(20px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--gradient-1);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .metric:hover::before {
+            transform: scaleX(1);
+        }
+
+        .metric:hover {
+            transform: translateY(-8px);
+            border-color: rgba(59, 130, 246, 0.4);
+            box-shadow: 0 20px 50px rgba(59, 130, 246, 0.25);
+        }
+
+        .metric-value {
+            font-size: 3rem;
+            font-weight: 900;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1;
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.03em;
+        }
+
+        .metric-label {
+            font-size: 0.875rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            font-weight: 700;
+        }
+
+        /* Sections */
+        .section {
+            padding: 10rem 4rem;
+            position: relative;
+        }
+
+        .section-inner {
+            max-width: 1500px;
+            margin: 0 auto;
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.5), transparent);
+        }
+
+        /* Image Showcase */
+        .images-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto 6rem;
+        }
+
+        .image-showcase {
+            position: relative;
+            border-radius: 2rem;
+            overflow: hidden;
+            background: var(--bg-tertiary);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            box-shadow: 0 30px 80px rgba(0,0,0,0.4),
+                        0 0 0 1px rgba(59, 130, 246, 0.1);
+        }
+
+        .image-showcase img {
+            width: 100%;
+            height: auto;
+            display: block;
+            filter: brightness(0.95) contrast(1.08);
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), filter 0.8s ease;
+        }
+
+        .image-showcase:hover img {
+            transform: scale(1.02);
+            filter: brightness(1) contrast(1.12);
+        }
+
+        .image-caption {
+            position: absolute;
+            bottom: 1.5rem;
+            left: 1.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(10, 14, 21, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(16px);
+            border-radius: 100px;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .image-caption .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 8px rgba(59, 130, 246, 0.6);
+        }
+
+        /* Split Layout */
+        .split-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8rem;
+            align-items: start;
+        }
+
+        .content-block h2 {
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 2rem;
+            letter-spacing: -0.03em;
+            line-height: 1.05;
+        }
+
+        .content-block p {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            line-height: 1.85;
+            margin-bottom: 1.75rem;
+        }
+
+        .highlight {
+            color: var(--accent-tertiary);
+            font-weight: 700;
+        }
+
+        /* Stats Panel */
+        .stats-panel {
+            background: rgba(22, 29, 39, 0.5);
+            border: 1px solid rgba(59, 130, 246, 0.15);
+            border-radius: 2rem;
+            padding: 3.5rem;
+            backdrop-filter: blur(20px);
+            position: sticky;
+            top: 8rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 3rem;
+        }
+
+        .stat-item {
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .stat-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.5rem;
+            width: 3px;
+            height: calc(100% - 1rem);
+            background: var(--gradient-1);
+            border-radius: 2px;
+        }
+
+        .stat-item h3 {
+            font-size: 2.25rem;
+            font-weight: 900;
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.02em;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-item p {
+            font-size: 1.0625rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* Solution Section */
+        .section--solution {
+            background: radial-gradient(1400px 700px at 20% -10%, rgba(59,130,246,.12), transparent 50%),
+                        radial-gradient(1000px 600px at 90% 15%, rgba(96,165,250,.09), transparent 55%),
+                        var(--bg-secondary);
+            padding-bottom: 4rem;
+        }
+
+        .section-head {
+            max-width: 1000px;
+            margin: 0 auto 5rem;
+            text-align: center;
+        }
+
+        .section-head h2 {
+            font-size: clamp(2.5rem, 4vw, 3.5rem);
+            font-weight: 900;
+            letter-spacing: -0.03em;
+            line-height: 1;
+            margin-bottom: 1.25rem;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-head .lead {
+            font-size: 1.375rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .section-head .underline {
+            width: 140px;
+            height: 3px;
+            margin: 1.5rem auto 0;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            border-radius: 999px;
+        }
+
+        /* Feature Grid */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+        }
+
+        .feature-card {
+            position: relative;
+            padding: 2.5rem;
+            border-radius: 1.5rem;
+            background: rgba(22, 29, 39, 0.5);
+            border: 1px solid rgba(59, 130, 246, 0.15);
+            backdrop-filter: blur(12px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-1);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.5s ease;
+        }
+
+        .feature-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(59, 130, 246, 0.4);
+            box-shadow: 0 20px 60px rgba(59, 130, 246, 0.2);
+        }
+
+        .feature-number {
+            position: absolute;
+            top: 1.25rem;
+            right: 1.25rem;
+            font-weight: 800;
+            font-size: 0.8125rem;
+            letter-spacing: 0.08em;
+            padding: 0.4rem 0.7rem;
+            border-radius: 100px;
+            background: rgba(59, 130, 246, 0.15);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: var(--accent);
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            margin-bottom: 1.5rem;
+            background: rgba(59, 130, 246, 0.15);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .feature-icon svg {
+            width: 24px;
+            height: 24px;
+            color: var(--accent);
+        }
+
+        .feature-title {
+            font-size: 1.375rem;
+            font-weight: 800;
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.01em;
+        }
+
+        .feature-description {
+            color: var(--text-secondary);
+            line-height: 1.75;
+            font-size: 1rem;
+        }
+
+        /* Tech Stack */
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .tech-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.625rem;
+            padding: 0.875rem 1.5rem;
+            background: rgba(22, 29, 39, 0.6);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 100px;
+            font-size: 0.9375rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            backdrop-filter: blur(12px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .tech-badge:hover {
+            border-color: rgba(59, 130, 246, 0.5);
+            color: var(--accent);
+            transform: translateY(-3px);
+            background: rgba(59, 130, 246, 0.12);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.2);
+        }
+
+        /* Process Delta */
+        .profile-section {
+            padding: 2rem 4rem 10rem;
+            background: var(--bg-secondary);
+        }
+
+        .process-delta {
+            background: rgba(22, 29, 39, 0.5);
+            border: 1px solid rgba(59, 130, 246, 0.15);
+            border-radius: 2rem;
+            padding: 4rem;
+            backdrop-filter: blur(20px);
+        }
+
+        .process-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 3rem;
+        }
+
+        .process-title {
+            font-size: 2.75rem;
+            font-weight: 900;
+            letter-spacing: -0.03em;
+            line-height: 1.05;
+        }
+
+        .delta-badge {
+            padding: 0.625rem 1.25rem;
+            border-radius: 100px;
+            background: rgba(59, 130, 246, 0.15);
+            border: 1px solid rgba(59, 130, 246, 0.35);
+            color: var(--accent);
+            font-size: 0.875rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .delta-grid {
+            display: grid;
+            grid-template-columns: 1fr 100px 1fr;
+            gap: 2.5rem;
+        }
+
+        .process-col {
+            background: rgba(10, 14, 21, 0.4);
+            border: 1px solid rgba(59, 130, 246, 0.15);
+            border-radius: 1.5rem;
+            padding: 2.25rem;
+        }
+
+        .process-col h3 {
+            font-size: 1.375rem;
+            font-weight: 800;
+            margin-bottom: 1.25rem;
+            letter-spacing: -0.01em;
+        }
+
+        .process-col.old h3 {
+            color: var(--warning);
+        }
+
+        .process-col.new h3 {
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .process-steps {
+            list-style: none;
+            display: grid;
+            gap: 1rem;
+        }
+
+        .process-steps li {
+            padding: 1.25rem;
+            border: 1.5px dashed rgba(59, 130, 246, 0.2);
+            border-radius: 1rem;
+            background: rgba(15, 20, 25, 0.4);
+        }
+
+        .step-title {
+            font-weight: 800;
+            font-size: 1.125rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .step-note {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            line-height: 1.65;
+        }
+
+        .delta-connector {
+            position: relative;
+            display: grid;
+            place-items: center;
+        }
+
+        .connector-core {
+            width: 3px;
+            height: 100%;
+            background: linear-gradient(180deg, transparent, var(--accent), transparent);
+            border-radius: 2px;
+        }
+
+        .connector-arrow {
+            position: absolute;
+            bottom: 20px;
+            width: 0;
+            height: 0;
+            border-left: 12px solid transparent;
+            border-right: 12px solid transparent;
+            border-top: 14px solid var(--accent);
+            filter: drop-shadow(0 2px 12px rgba(59, 130, 246, 0.4));
+        }
+
+        /* Comparison */
+        .comparison {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2.5rem;
+            margin-top: 4rem;
+        }
+
+        .comparison-card {
+            background: rgba(22, 29, 39, 0.5);
+            border: 1px solid rgba(59, 130, 246, 0.15);
+            border-radius: 1.5rem;
+            padding: 3rem;
+            position: relative;
+            backdrop-filter: blur(20px);
+            transition: all 0.4s ease;
+        }
+
+        .comparison-card:hover {
+            transform: translateY(-6px);
+        }
+
+        .comparison-card.before {
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+
+        .comparison-card.before:hover {
+            box-shadow: 0 15px 40px rgba(245, 158, 11, 0.2);
+        }
+
+        .comparison-card.after {
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .comparison-card.after:hover {
+            box-shadow: 0 15px 40px rgba(16, 185, 129, 0.2);
+        }
+
+        .comparison-badge {
+        position: relative;       /* no longer absolute */
+        display: inline-block;
+        margin-bottom: 1rem;
+        padding: 0.5rem 1rem;
+        background: var(--bg-secondary);
+        border: 1px solid;
+        border-radius: 100px;
+        font-size: 0.8125rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        }
+
+
+        .comparison-card.before .comparison-badge {
+            color: var(--warning);
+            border-color: rgba(245, 158, 11, 0.4);
+        }
+
+        .comparison-card.after .comparison-badge {
+            color: var(--success);
+            border-color: rgba(16, 185, 129, 0.4);
+        }
+
+        .comparison-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 2.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .comparison-metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            padding: 1.25rem 0;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+        }
+
+        .comparison-metric:last-child {
+            border-bottom: none;
+        }
+
+        .comparison-label {
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .comparison-value {
+            font-size: 1.625rem;
+            font-weight: 800;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 3.5rem;
+            margin-top: 3rem;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(180deg, var(--accent) 0%, transparent 100%);
+            border-radius: 2px;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 3.5rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -3.875rem;
+            top: 0.375rem;
+            width: 14px;
+            height: 14px;
+            background: var(--accent);
+            border: 3px solid var(--bg-primary);
+            border-radius: 50%;
+            box-shadow: 0 0 0 5px rgba(59, 130, 246, 0.25);
+        }
+
+        .timeline-title {
+            font-size: 1.375rem;
+            font-weight: 800;
+            margin-bottom: 0.75rem;
+        }
+
+        .timeline-description {
+            font-size: 1.0625rem;
+            color: var(--text-secondary);
+            line-height: 1.75;
+        }
+
+        /* Benefits List */
+        .benefits-list {
+            list-style: none;
+            margin-top: 2.5rem;
+        }
+
+        .benefits-list li {
+            position: relative;
+            padding-left: 2.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            line-height: 1.75;
+        }
+
+        .benefits-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--success);
+            font-weight: 800;
+            font-size: 1.5rem;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            text-align: center;
+            padding: 10rem 4rem;
+        }
+
+        .cta-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .cta-title {
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 1.75rem;
+            letter-spacing: -0.03em;
+            line-height: 1.05;
+        }
+
+        .cta-description {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 2.5rem;
+        }
+
+        .cta-stats {
+            display: flex;
+            justify-content: center;
+            gap: 5rem;
+            margin-top: 4rem;
+        }
+
+        .cta-stat {
+            text-align: center;
+        }
+
+        .cta-stat-value {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: var(--success);
+            line-height: 1;
+            margin-bottom: 0.75rem;
+        }
+
+        .cta-stat-label {
+            font-size: 0.9375rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            font-weight: 700;
+        }
+
+        /* Footer */
+        .footer {
+            padding: 4rem;
+            text-align: center;
+            border-top: 1px solid rgba(59, 130, 246, 0.1);
+        }
+
+        .footer-text {
+            font-size: 0.9375rem;
+            color: var(--text-dim);
+            font-weight: 500;
+        }
+
+        /* Responsive */
+        @media (max-width: 1280px) {
+            .feature-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .delta-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .delta-connector {
+                display: none;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .split-layout {
+                grid-template-columns: 1fr;
+                gap: 4rem;
+            }
+
+            .stats-panel {
+                position: static;
+            }
+
+            .stats-grid,
+            .comparison {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-inner,
+            .section {
+                padding-left: 2rem;
+                padding-right: 2rem;
+            }
+
+            .hero {
+                padding: 8rem 2rem 4rem;
+            }
+
+            .hero-metrics,
+            .feature-grid,
+            .images-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cta-stats {
+                flex-direction: column;
+                gap: 3rem;
+            }
+        }
+    /* Enhanced Process Delta */
+    .process-delta {
+        background: rgba(22, 29, 39, 0.5);
+        border: 1px solid rgba(59, 130, 246, 0.15);
+        border-radius: 2rem;
+        padding: 4rem;
+        backdrop-filter: blur(20px);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .process-delta::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: var(--gradient-1);
+        transform: scaleX(0);
+        animation: slideInBar 1.5s ease-out 0.5s forwards;
+    }
+
+    @keyframes slideInBar {
+        to { transform: scaleX(1); }
+    }
+
+    .process-header {
+        opacity: 0;
+        transform: translateY(-20px);
+        animation: fadeInDown 0.8s ease-out 0.3s forwards;
+    }
+
+    @keyframes fadeInDown {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .delta-badge {
+        animation: pulse-glow 3s ease-in-out infinite;
+    }
+
+    @keyframes pulse-glow {
+        0%, 100% { 
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+        }
+        50% { 
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
+        }
+    }
+
+    /* Animated Process Columns */
+    .process-col {
+        opacity: 0;
+        transform: translateX(-30px);
+        animation: slideInLeft 0.8s ease-out forwards;
+    }
+
+    .process-col.old {
+        animation-delay: 0.6s;
+    }
+
+    .process-col.new {
+        transform: translateX(30px);
+        animation: slideInRight 0.8s ease-out 0.8s forwards;
+    }
+
+    @keyframes slideInLeft {
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes slideInRight {
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    /* Enhanced Process Steps */
+    .process-steps li {
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeInUp 0.6s ease-out forwards;
+        transition: all 0.3s ease;
+    }
+
+    .process-steps li:nth-child(1) { animation-delay: 1s; }
+    .process-steps li:nth-child(2) { animation-delay: 1.2s; }
+    .process-steps li:nth-child(3) { animation-delay: 1.4s; }
+
+    @keyframes fadeInUp {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .process-steps li:hover {
+        transform: translateX(8px) scale(1.02);
+        border-color: var(--accent);
+        background: rgba(15, 20, 25, 0.6);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+    }
+
+    .step-title {
+        position: relative;
+        padding-left: 1.5rem;
+    }
+
+    .step-title::before {
+        content: '→';
+        position: absolute;
+        left: 0;
+        color: var(--accent);
+        font-weight: 800;
+        opacity: 0;
+        transform: translateX(-10px);
+        transition: all 0.3s ease;
+    }
+
+    .process-steps li:hover .step-title::before {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    /* Animated Connector */
+    .delta-connector {
+        opacity: 0;
+        animation: fadeIn 0.8s ease-out 0.7s forwards;
+    }
+
+    .connector-core {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .connector-core::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 0;
+        background: var(--accent);
+        animation: fillCore 2s ease-out 1.5s forwards;
+        box-shadow: 0 0 10px rgba(59, 130, 246, 0.6);
+    }
+
+    @keyframes fillCore {
+        to { height: 100%; }
+    }
+
+    .connector-arrow {
+        opacity: 0;
+        transform: translateY(-20px);
+        animation: dropArrow 0.6s ease-out 3.5s forwards;
+    }
+
+    @keyframes dropArrow {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Glowing effect on hover */
+    .process-col:hover {
+        box-shadow: 0 8px 32px rgba(59, 130, 246, 0.2);
+    }
+
+    .process-col h3 {
+        position: relative;
+        display: inline-block;
+    }
+
+    .process-col.old h3::after {
+        content: '';
+        position: absolute;
+        bottom: -4px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: var(--warning);
+        transition: width 0.4s ease;
+    }
+
+    .process-col.new h3::after {
+        content: '';
+        position: absolute;
+        bottom: -4px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: var(--accent);
+        transition: width 0.4s ease;
+    }
+
+    .process-col:hover h3::after {
+        width: 100%;
+    }
+        /* Animations */
+        @keyframes fade-in {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fade-in 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        .delay-1 { animation-delay: 0.15s; opacity: 0; }
+        .delay-2 { animation-delay: 0.3s; opacity: 0; }
+        .delay-3 { animation-delay: 0.45s; opacity: 0; }
+        /* Container pinned to the top-right corner */
+
+        /* Lightbox Styles */
+        .lightbox {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox-content {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            animation: zoomIn 0.3s ease;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s;
+            z-index: 10000;
+        }
+
+        .lightbox-close:hover {
+            color: #ccc;
+        }
+
+        .zoomable-image {
+            cursor: zoom-in;
+            transition: opacity 0.3s;
+        }
+
+        .zoomable-image:hover {
+            opacity: 0.9;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes zoomIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+    </style>
+</head>
+<body>
+<!-- Navigation -->
+        <nav class="nav">
+        <div class="nav-inner">
+            <!-- Left -->
+            <a href="STRONA.html" class="nav-back">
+            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+            Back to Portfolio
+            </a>
+
+            <!-- Right -->
+            <div class="nav-status">
+                <span class="status-dot"></span>
+                PRODUCTION
+            </div>
+    </div>
+    </nav>
+
+
+    <!-- Hero -->
+    <section class="hero">
+        <canvas id="particles-js"></canvas>
+        <div class="hero-content">
+            <div class="hero-tag fade-in">
+                <span class="hero-tag-dot"></span>
+                Process Automation
+            </div>
+            <h1 class="hero-title fade-in delay-1">EU Offset Validator</h1>
+            <p class="hero-subtitle fade-in delay-2">
+                Automated offset auditing system for 400+ European delivery stations, reducing validation time by 90% while eliminating human error
+            </p>
+            <div class="hero-metrics">
+                <div class="metric fade-in delay-3">
+                    <div class="metric-value">~90%</div>
+                    <div class="metric-label">Time Reduction</div>
+                </div>
+                <div class="metric fade-in delay-3">
+                    <div class="metric-value">~350</div>
+                    <div class="metric-label">Hours Saved/Year</div>
+                </div>
+                <div class="metric fade-in delay-3">
+                    <div class="metric-value">400+</div>
+                    <div class="metric-label">Stations</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem -->
+    <section class="section" style="padding-top: 2rem;">
+        <div class="section-inner">
+            <div class="images-grid">
+                <div class="image-showcase fade-in delay-1">
+                    <img src="project.png" alt="Offset validation interface" loading="lazy">
+                    <div class="image-caption">
+                        <span class="dot"></span>
+                        Offset Validator · User Interface
+                    </div>
+                    <p style="margin-top: 0.5rem; font-size: 0.8125rem; color: var(--text-tertiary); text-align: center; font-style: italic;">
+                        <strong>Note:</strong> First version interface, no longer in active use. For demonstration purposes only.
+                    </p>
+                </div>
+
+                <div class="image-showcase fade-in delay-2">
+                    <img src="project1.png" alt="Webhook notification" loading="lazy">
+                    <div class="image-caption">
+                        <span class="dot"></span>
+                        Example webhook notification delivered to stakeholders
+                    </div>
+                    <p style="margin-top: 0.5rem; font-size: 0.8125rem; color: var(--text-tertiary); text-align: center; font-style: italic;">
+                        <strong>Note:</strong> First version interface, no longer in active use. For demonstration purposes only.
+                    </p>
+                </div>
+            </div>
+
+            <div class="split-layout">
+                <div class="content-block">
+                    <h2>The Challenge</h2>
+                    <p>
+                        In last-mile operations, each delivery route requires an <span class="highlight">offset buffer</span> — critical minutes added to account for breaks, traffic, station congestion, and weather variables.
+                    </p>
+                    <p>
+                        These offsets are applied on D-1 during route sequencing and must be validated on D-0 before routes go live. Without correct offsets, driver waves clash, routes become over-compressed, and customer promises are at risk.
+                    </p>
+                    <p>
+                        Manual validation across the entire EU network consumed <span class="highlight">7 labour hours per week</span>, was vulnerable to human error, and lacked real-time visibility for stakeholders.
+                    </p>
+                </div>
+                <div class="stats-panel">
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <h3>~7 hrs</h3>
+                            <p>Weekly manual validation time per coordinator</p>
+                        </div>
+                        <div class="stat-item">
+                            <h3>400+</h3>
+                            <p>Stations requiring daily checks</p>
+                        </div>
+                        <div class="stat-item">
+                            <h3>High</h3>
+                            <p>Risk of human error in repetitive tasks</p>
+                        </div>
+                        <div class="stat-item">
+                            <h3>Zero</h3>
+                            <p>Real-time visibility for stakeholders</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solution -->
+    <section class="section section--solution">
+        <div class="section-inner">
+            <div class="section-head">
+                <h2>The Solution</h2>
+                <p class="lead">
+                    Built a Python automation with Selenium and webhook integration to eliminate manual offset validation across the EU network
+                </p>
+                <div class="underline"></div>
+            </div>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-number">01</div>
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 7c0-2.2 4-4 8-4s8 1.8 8 4-4 4-8 4-8-1.8-8-4Z"/>
+                            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 12c0 2.2 4 4 8 4s8-1.8 8-4"/>
+                            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 17c0 2.2 4 4 8 4s8-1.8 8-4"/>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Data Retrieval</h3>
+                    <p class="feature-description">
+                        Connects to the scheduling platform and extracts offset configuration for every station in parallel
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-number">02</div>
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Automated Validation</h3>
+                    <p class="feature-description">
+                        Confirms each route includes required offset buffers and D-1 changes were applied on D-0
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-number">03</div>
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Audit Trail</h3>
+                    <p class="feature-description">
+                        Compares expected vs. actual values, flags discrepancies, and stores logs for accountability
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-number">04</div>
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Stakeholder Reporting</h3>
+                    <p class="feature-description">
+                        Sends webhook notifications to managers confirming validation or highlighting issues
+                    </p>
+                </div>
+            </div>
+
+            <div style="margin-top: 3rem;">
+                <h3 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 2rem; text-align: center; letter-spacing: -0.01em;">Technical Stack</h3>
+                <div class="tech-stack">
+                    <div class="tech-badge">Python 3.10+</div>
+                    <div class="tech-badge">Selenium WebDriver</div>
+                    <div class="tech-badge">Slack API</div>
+                    <div class="tech-badge">Internal API</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Process Delta -->
+    <section class="profile-section">
+        <div class="section-inner">
+            <div class="process-delta">
+                <div class="process-header">
+                    <h3 class="process-title">From Manual Validation to Automation</h3>
+                    <span class="delta-badge">Workflow Reinvented</span>
+                </div>
+
+                <div class="delta-grid">
+                    <div class="process-col old">
+                        <h3>Old Process</h3>
+                        <ul class="process-steps">
+                            <li>
+                                <div class="step-title">Manual Report Retrieval</div>
+                                <div class="step-note">Schedulers manually downloaded reports from email</div>
+                            </li>
+                            <li>
+                                <div class="step-title">Spreadsheet Lookups</div>
+                                <div class="step-note">Validation required manual checks — error-prone and slow</div>
+                            </li>
+                            <li>
+                                <div class="step-title">Delayed Updates</div>
+                                <div class="step-note">Issues reported after changes, missing real-time visibility</div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="delta-connector">
+                        <div class="connector-core"></div>
+                        <div class="connector-arrow"></div>
+                    </div>
+
+                    <div class="process-col new">
+                        <h3>New Process</h3>
+                        <ul class="process-steps">
+                            <li>
+                                <div class="step-title">Parallel Data Retrieval</div>
+                                <div class="step-note">System collects offset values for all stations simultaneously</div>
+                            </li>
+                            <li>
+                                <div class="step-title">Deterministic Validation</div>
+                                <div class="step-note">Data retrieved from API and cross-checked for accuracy</div>
+                            </li>
+                            <li>
+                                <div class="step-title">Real-Time Alerts</div>
+                                <div class="step-note">Instant Slack notifications with full audit trail</div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+        <!-- Before/After -->
+        <section class="section">
+        <div class="section-inner">
+            <div style="max-width:900px;margin:0 auto 5rem;text-align:center;">
+            <h2 style="font-size:3rem;font-weight:900;margin-bottom:1.25rem;letter-spacing:-0.03em;">Before vs After</h2>
+            <p style="font-size:1.25rem;color:var(--text-secondary);">Transforming manual validation into an automated, reliable system</p>
+            </div>
+
+            <div class="comparison">
+            <!-- BEFORE card -->
+            <div class="comparison-card before" style="position:relative;overflow:hidden;">
+                <canvas class="particles" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;"></canvas>
+                <span class="comparison-badge">Before</span>
+                <h3 class="comparison-title">Manual Process</h3>
+
+                <div class="comparison-metric">
+                <span class="comparison-label">Validation Time</span>
+                <span class="comparison-value">~1 hour +/- daily</span>
+                </div>
+                <div class="comparison-metric">
+                <span class="comparison-label">Error Rate</span>
+                <span class="comparison-value">High</span>
+                </div>
+                <div class="comparison-metric">
+                <span class="comparison-label">Scalability</span>
+                <span class="comparison-value">Limited</span>
+                </div>
+                <div class="comparison-metric">
+                <span class="comparison-label">Visibility</span>
+                <span class="comparison-value">Delayed</span>
+                </div>
+            </div>
+
+            <!-- AFTER card -->
+            <div class="comparison-card after" style="position:relative;overflow:hidden;">
+                <canvas class="particles" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;"></canvas>
+                <span class="comparison-badge">After</span>
+                <h3 class="comparison-title">Automated Process</h3>
+
+                <div class="comparison-metric">
+                <span class="comparison-label">Validation Time</span>
+                <span class="comparison-value">&lt;~5 minutes</span>
+                </div>
+                <div class="comparison-metric">
+                <span class="comparison-label">Error Rate</span>
+                <span class="comparison-value">Zero</span>
+                </div>
+                <div class="comparison-metric">
+                <span class="comparison-label">Scalability</span>
+                <span class="comparison-value">EU-wide</span>
+                </div>
+                <div class="comparison-metric">
+                <span class="comparison-label">Visibility</span>
+                <span class="comparison-value">Real-time</span>
+                </div>
+            </div>
+            </div>
+        </div>
+        </section>
+
+
+        <!-- Implementation -->
+        <section class="section" style="background: var(--bg-secondary);">
+            <div class="section-inner">
+                <div class="split-layout">
+                    <div class="content-block">
+                        <h2>Implementation</h2>
+                        <p>
+                            The system ingests scheduling reports, connects to the API, and executes end-to-end audits — identifying discrepancies and applying corrections in real time.
+                        </p>
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <h4 class="timeline-title">Monitor</h4>
+                                <p class="timeline-description">
+                                    Extracts live offset configuration data directly from the scheduling platform.
+                                </p>
+                            </div>
+                            <div class="timeline-item">
+                                <h4 class="timeline-title">Validate</h4>
+                                <p class="timeline-description">
+                                    Verifies that offsets set on D-1 are accurately applied and active on D-0.
+                                </p>
+                            </div>
+                            <div class="timeline-item">
+                                <h4 class="timeline-title">Report</h4>
+                                <p class="timeline-description">
+                                    Issues webhook notifications with full audit outcomes for stakeholder visibility.
+                                </p>
+                            </div>
+                            <div class="timeline-item">
+                                <h4 class="timeline-title">Archive</h4>
+                                <p class="timeline-description">
+                                    Maintains detailed logs of all audits for traceability and accountability.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                <div class="content-block">
+                    <h3 style="font-size: 1.75rem; font-weight: 800; margin-bottom: 2rem; letter-spacing: -0.01em;">Key Benefits</h3>
+                    <ul class="benefits-list">
+                        <li>
+                            <strong>Time Savings:</strong> Reduced validation from ~1 hour +/- daily to under ~5 minutes — a ~90% efficiency improvement
+                        </li>
+                        <li>
+                            <strong>EU-wide Scalability:</strong> One script audits 400+ stations in parallel with zero additional labor
+                        </li>
+                        <li>
+                            <strong>Reliability:</strong> Automatic checks ensure no station is missed, eliminating oversight risk
+                        </li>
+                        <li>
+                            <strong>Transparency:</strong> Stakeholders receive real-time notifications with details of any mismatches
+                        </li>
+                        <li>
+                            <strong>Resource Reallocation:</strong> Enabled operations teams to redirect capacity toward higher-value decision-making and problem-solving.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Results -->
+    <section class="cta-section">
+        <div class="cta-content">
+            <h2 class="cta-title">Measurable Impact</h2>
+            <p class="cta-description">
+                Transforming operational efficiency across the European logistics network
+            </p>
+            <div class="cta-stats">
+                <div class="cta-stat">
+                    <div class="cta-stat-value">~350</div>
+                    <div class="cta-stat-label">Hours Saved Annually</div>
+                </div>
+                <div class="cta-stat">
+                    <div class="cta-stat-value">~91.7%</div>
+                    <div class="cta-stat-label">Efficency Increase</div>
+                </div>
+                <div class="cta-stat">
+                    <div class="cta-stat-value">12X</div>
+                    <div class="cta-stat-label">Faster</div>
+                </div>
+                <div class="cta-stat">
+                    <div class="cta-stat-value">0</div>
+                    <div class="cta-stat-label">Human Errors</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="footer-inner">
+        <p class="footer-text" style="font-size: 0.75rem; line-height: 1.4; color: var(--text-dim); text-align: center; max-width: 800px; margin: 0 auto;">
+            <strong>Disclaimer:</strong> Portfolio content is for demonstration only. 
+            It showcases tools I personally developed and does not represent current systems, processes, or proprietary information at Amazon or any other company.
+        </p>
+    </div>
+</footer>
+
+
+
+    <script>
+        document.querySelector('.nav-back').addEventListener('click', (e) => {
+            e.preventDefault();
+            window.history.back();
+        });
+
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Particles
+        const canvas = document.getElementById('particles-js');
+        const ctx = canvas.getContext('2d');
+        let particlesArray = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = document.querySelector('.hero').offsetHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2.5 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.5;
+                this.speedY = (Math.random() - 0.5) * 0.5;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.size > 0.2) this.size -= 0.004;
+            }
+            draw() {
+                ctx.fillStyle = 'rgba(59,130,246,0.6)';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particlesArray = [];
+            const numberOfParticles = Math.floor((canvas.width * canvas.height) / 12000);
+            for (let i = 0; i < numberOfParticles; i++) {
+                particlesArray.push(new Particle());
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+                if (particlesArray[i].size <= 0.2) {
+                    particlesArray[i] = new Particle();
+                }
+            }
+            requestAnimationFrame(animateParticles);
+        }
+
+        (() => {
+        function initParticles(canvas, opts = {}) {
+            const ctx = canvas.getContext('2d');
+            const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+            let w = 0, h = 0, running = true;
+
+            const conf = {
+            count: opts.count ?? 60,
+            speed: opts.speed ?? 0.5,
+            link: 100,
+            color: '96,165,250' // rgb without alpha (Tailwind sky-400ish)
+            };
+
+            const parent = canvas.parentElement;
+            const ro = new ResizeObserver(() => {
+            const r = parent.getBoundingClientRect();
+            w = Math.max(1, Math.floor(r.width * dpr));
+            h = Math.max(1, Math.floor(r.height * dpr));
+            canvas.width = w; canvas.height = h;
+            canvas.style.width = r.width + 'px';
+            canvas.style.height = r.height + 'px';
+            if (!particles.length) spawn();
+            });
+            ro.observe(parent);
+
+            const pm = window.matchMedia('(prefers-reduced-motion: reduce)');
+            if (pm.matches) { canvas.remove(); return; }
+
+            const particles = [];
+            function spawn() {
+            particles.length = 0;
+            const areaFactor = (w*h)/(1200*dpr*700*dpr);
+            const target = Math.max(12, Math.round(conf.count * areaFactor));
+            for (let i=0;i<target;i++) {
+                const a = Math.random()*Math.PI*2;
+                const s = conf.speed*(0.5+Math.random())*dpr;
+                particles.push({
+                x: Math.random()*w, y: Math.random()*h,
+                vx: Math.cos(a)*s, vy: Math.sin(a)*s,
+                r: (0.8+Math.random()*1.2)*dpr
+                });
+            }
+            }
+
+            function tick() {
+            if (!running) return;
+            ctx.clearRect(0,0,w,h);
+
+            // links
+            const ld2 = (conf.link*dpr)*(conf.link*dpr);
+            for (let i=0;i<particles.length;i++){
+                const a = particles[i];
+                for (let j=i+1;j<particles.length;j++){
+                const b = particles[j];
+                const dx=a.x-b.x, dy=a.y-b.y, d2=dx*dx+dy*dy;
+                if (d2 < ld2){
+                    const alpha = 0.22*(1 - d2/ld2);
+                    ctx.beginPath();
+                    ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y);
+                    ctx.strokeStyle = `rgba(${conf.color},${alpha})`;
+                    ctx.lineWidth = dpr;
+                    ctx.stroke();
+                }
+                }
+            }
+
+            // dots
+            for (const p of particles){
+                p.x += p.vx; p.y += p.vy;
+                if (p.x < 0) { p.x=0; p.vx*=-1; }
+                if (p.x > w) { p.x=w; p.vx*=-1; }
+                if (p.y < 0) { p.y=0; p.vy*=-1; }
+                if (p.y > h) { p.y=h; p.vy*=-1; }
+                ctx.beginPath();
+                ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+                ctx.fillStyle = `rgba(${conf.color},0.9)`;
+                ctx.fill();
+            }
+
+            requestAnimationFrame(tick);
+            }
+
+            document.addEventListener('visibilitychange', () => {
+            running = !document.hidden;
+            if (running) requestAnimationFrame(tick);
+            });
+
+            spawn();
+            requestAnimationFrame(tick);
+        }
+
+        // auto-init all canvases with class "particles"
+        window.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.particles').forEach(cv => initParticles(cv, {
+            count: 65,  // tweak density
+            speed: 0.55 // tweak speed
+            }));
+        });
+        })();
+
+
+        initParticles();
+        animateParticles();
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+            initParticles();
+        });
+    </script>
+
+    <!-- Lightbox -->
+    <div id="lightbox" class="lightbox">
+        <span class="lightbox-close" id="lightbox-close">&times;</span>
+        <img class="lightbox-content" id="lightbox-img" src="" alt="Zoomed image">
+    </div>
+
+    <script>
+    // Lightbox functionality
+    (function() {
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const lightboxClose = document.getElementById('lightbox-close');
+
+        // Make all images zoomable
+        const images = document.querySelectorAll('img[src*=".png"], img[src*=".jpg"], img[src*=".jpeg"], .image-wrapper img');
+
+        images.forEach(img => {
+            img.classList.add('zoomable-image');
+            img.style.cursor = 'zoom-in';
+
+            img.addEventListener('click', function(e) {
+                e.preventDefault();
+                lightbox.classList.add('active');
+                lightboxImg.src = this.src;
+                document.body.style.overflow = 'hidden';
+            });
+        });
+
+        // Close lightbox
+        function closeLightbox() {
+            lightbox.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        lightboxClose.addEventListener('click', closeLightbox);
+
+        lightbox.addEventListener('click', function(e) {
+            if (e.target === lightbox) {
+                closeLightbox();
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+                closeLightbox();
+            }
+        });
+    })();
+    </script>
+</body>
+</html>

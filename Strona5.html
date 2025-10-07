@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flex Nurseries | Operational Risk Mitigation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #13131a;
+            --bg-tertiary: #1a1a24;
+            --accent-primary: #6366f1;
+            --accent-secondary: #8b5cf6;
+            --accent-tertiary: #0ea5e9;
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1aa;
+            --text-tertiary: #71717a;
+            --border-color: #27272a;
+            --border-accent: #3f3f46;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            position: relative;
+        }
+
+        #particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(10, 10, 15, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            transition: all 0.2s;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .nav-back:hover {
+            border-color: var(--accent-primary);
+            color: var(--text-primary);
+        }
+
+        .metric-tooltip {
+            position: relative;
+            display: inline-block;
+            border-bottom: 1px dotted var(--accent-primary);
+            cursor: help;
+            color: var(--accent-primary);
+            font-weight: 600;
+        }
+
+        .metric-tooltip::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: calc(100% + 12px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-tertiary);
+            border: 1px solid var(--accent-primary);
+            color: var(--text-primary);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 400;
+            line-height: 1.5;
+            white-space: normal;
+            width: 280px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+            z-index: 10000;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(99, 102, 241, 0.3);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .metric-tooltip.align-right::after {
+            left: auto;
+            right: 0;
+            transform: translateX(0);
+        }
+
+        .metric-tooltip.align-left::after {
+            left: 0;
+            transform: translateX(0);
+        }
+
+        .metric-tooltip::before {
+            content: '';
+            position: absolute;
+            bottom: calc(100% + 6px);
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-top-color: var(--accent-primary);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 10000;
+        }
+
+        .metric-tooltip.align-right::before {
+            left: auto;
+            right: 10px;
+            transform: translateX(0);
+        }
+
+        .metric-tooltip.align-left::before {
+            left: 10px;
+            transform: translateX(0);
+        }
+
+        .metric-tooltip:hover::after,
+        .metric-tooltip:hover::before {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .metric-tooltip:hover {
+            color: var(--text-primary);
+        }
+
+        .hero {
+            padding: 8rem 2rem 4rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .hero-tag {
+            display: inline-block;
+            padding: 0.375rem 0.75rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-accent);
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--accent-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 800px;
+            margin-bottom: 3rem;
+            line-height: 1.7;
+        }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .stat-card {
+            padding: 1.5rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .stat-card:hover::after {
+            transform: scaleX(1);
+        }
+
+        .stat-card:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.2);
+        }
+
+        .stat-card:hover .stat-value {
+            transform: scale(1.05);
+            color: var(--text-primary);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            margin-bottom: 0.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            transition: all 0.3s ease;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 500;
+        }
+
+        .section {
+            padding: 6rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            margin-bottom: 3rem;
+        }
+
+        .section-tag {
+            display: inline-block;
+            font-size: 0.75rem;
+            color: var(--accent-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            letter-spacing: -0.01em;
+        }
+
+        .section-desc {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .card {
+            padding: 2rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: visible;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(99, 102, 241, 0.15), transparent 50%);
+            opacity: 0;
+            transition: opacity 0.4s;
+            pointer-events: none;
+            border-radius: 8px;
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.2), 0 0 80px rgba(99, 102, 241, 0.1);
+        }
+
+        .card:hover .card-icon {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+        }
+
+        .card:hover .card-title {
+            color: var(--accent-primary);
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card-icon svg {
+            width: 24px;
+            height: 24px;
+            stroke: white;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        .card-text {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .card-metric {
+            display: inline-block;
+            padding: 0.375rem 0.75rem;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            color: var(--danger);
+            font-weight: 600;
+        }
+
+        .timeline {
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 3rem;
+            padding-bottom: 3rem;
+            border-left: 2px solid var(--border-color);
+        }
+
+        .timeline-item:last-child {
+            padding-bottom: 0;
+            border-left: none;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -9px;
+            top: 0;
+            width: 16px;
+            height: 16px;
+            background: var(--accent-primary);
+            border: 3px solid var(--bg-primary);
+            border-radius: 50%;
+        }
+
+        .timeline-phase {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--accent-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .timeline-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .timeline-desc {
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .metric-card {
+            padding: 2rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: visible;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, rgba(99, 102, 241, 0.1), transparent 70%);
+            opacity: 0;
+            transition: opacity 0.4s;
+            border-radius: 8px;
+        }
+
+        .metric-card:hover::before {
+            opacity: 1;
+        }
+
+        .metric-card:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.3);
+        }
+
+        .metric-card:hover .metric-icon {
+            transform: scale(1.15) rotateY(10deg);
+            box-shadow: 0 15px 35px rgba(99, 102, 241, 0.5);
+        }
+
+        .metric-card:hover .metric-value {
+            transform: scale(1.1);
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .metric-icon {
+            width: 56px;
+            height: 56px;
+            margin: 0 auto 1.5rem;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+
+        .metric-icon svg {
+            width: 28px;
+            height: 28px;
+            stroke: white;
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            transition: all 0.4s ease;
+        }
+
+        .metric-label {
+            font-size: 0.875rem;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        .metric-sublabel {
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+            font-weight: 400;
+            margin-top: 0.25rem;
+            text-transform: none;
+            letter-spacing: 0;
+        }
+
+        .workflow-steps {
+            display: grid;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .workflow-step {
+            display: flex;
+            gap: 1rem;
+            padding: 1.5rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .workflow-step:hover {
+            border-color: var(--accent-primary);
+            transform: translateX(8px);
+        }
+
+        .workflow-number {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .workflow-content h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .workflow-content p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .section-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border-accent), transparent);
+            margin: 6rem 0;
+            position: relative;
+        }
+
+        .section-divider::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 8px;
+            background: var(--accent-primary);
+            border-radius: 50%;
+            box-shadow: 0 0 20px var(--accent-primary);
+        }
+
+        .gui-showcase {
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .gui-frame {
+            max-width: 1200px;
+            margin: 3rem auto;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-accent);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        .gui-header {
+            background: var(--bg-tertiary);
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .gui-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--border-accent);
+        }
+
+        .gui-dot:nth-child(1) { background: #ef4444; }
+        .gui-dot:nth-child(2) { background: #f59e0b; }
+        .gui-dot:nth-child(3) { background: #22c55e; }
+
+        .gui-body {
+            padding: 2rem;
+        }
+
+        .cta {
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .cta-box {
+            padding: 3rem;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+            border: 1px solid var(--border-accent);
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .cta-title {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .cta-subtitle {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-badge {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .footer {
+            padding: 3rem 2rem;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .footer-text {
+            font-size: 0.875rem;
+            color: var(--text-tertiary);
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                padding: 6rem 1.5rem 3rem;
+            }
+
+            .section {
+                padding: 4rem 1.5rem;
+            }
+
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .section-title {
+                font-size: 1.75rem;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .metric-tooltip::after {
+                width: 240px;
+                font-size: 0.8rem;
+                padding: 0.625rem 0.875rem;
+            }
+
+            .metric-tooltip.align-left::after,
+            .metric-tooltip.align-right::after {
+                left: 50%;
+                right: auto;
+                transform: translateX(-50%);
+            }
+        }
+
+        @media (max-width: 1400px) and (min-width: 769px) {
+            .cards-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        .lightbox { display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.95); align-items: center; justify-content: center; animation: fadeIn 0.3s ease; }
+        .lightbox.active { display: flex; }
+        .lightbox-content { max-width: 90%; max-height: 90%; object-fit: contain; animation: zoomIn 0.3s ease; }
+        .lightbox-close { position: absolute; top: 20px; right: 40px; color: white; font-size: 40px; font-weight: bold; cursor: pointer; transition: color 0.3s; z-index: 10000; }
+        .lightbox-close:hover { color: #ccc; }
+        .zoomable-image { cursor: zoom-in; transition: opacity 0.3s; }
+        .zoomable-image:hover { opacity: 0.9; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="STRONA.html" class="nav-back">
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+                <span>Back to Portfolio</span>
+            </a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-tag mono">CUSTOMER-CENTRIC OPERATIONS</div>
+        <h1 class="hero-title">Flex Nurseries Capacity Tool</h1>
+        <p class="hero-subtitle">Automated system protecting customer delivery promises by predicting and preventing <span class="metric-tooltip" data-tooltip="No-Show: When a scheduled driver fails to report for their assigned shift, creating immediate capacity gaps and requiring emergency route reassignments">driver no-shows</span> while improving operational efficiency across the entire UK delivery network.</p>
+        
+        <div class="hero-stats">
+            <div class="stat-card">
+                <div class="stat-value">~30-45%</div>
+                <div class="stat-label">Fewer Team Requests</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">~200</div>
+                <div class="stat-label">Routes Saved Weekly</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">UK-Wide</div>
+                <div class="stat-label">National Scale</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">~10%→~2%</div>
+                <div class="stat-label">Carryover Reduction</div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <section class="section">
+        <div class="section-header">
+            <div class="section-tag mono">01 — PROBLEM STATEMENT</div>
+            <h2 class="section-title">Systemic Capacity Risk</h2>
+        </div>
+
+        <div class="cards-grid">
+            <div class="card">
+                <div class="card-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/>
+                    </svg>
+                </div>
+                <h3 class="card-title">Operational Impact</h3>
+                <p class="card-text"><span class="metric-tooltip" data-tooltip="No-Show Pattern: Historical data showing when and how frequently drivers fail to report for shifts, used to predict future capacity gaps">No-show patterns</span> led to significant operational costs through dispatch failures, next-day volume surges, and increased overtime rates—creating measurable strain on team resources, network stability, and overall service quality.</p>
+                <span class="card-metric">Major efficiency burden</span>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                </div>
+                <h3 class="card-title">Service Degradation</h3>
+                <p class="card-text">Peak-wave no-shows (~6-8% in final dispatch) created ~200 weekly route failures, affecting <span class="metric-tooltip" data-tooltip="FDDS (First Delivery Dispatch Success): Measures the percentage of routes that successfully dispatch on their first scheduled time without delays or cancellations">FDDS</span> metrics and compounding next-day volume by ~8-12%</p>
+                <span class="card-metric">~3.2% <span class="metric-tooltip" data-tooltip="SLA (Service Level Agreement): Contractual commitment to maintain specific performance standards. SLA breach means failure to meet promised delivery timeframes">SLA</span> breach rate</span>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                    </svg>
+                </div>
+                <h3 class="card-title">Operational Inefficiency</h3>
+                <p class="card-text">Manual intervention consumed an estimated ~20–30 scheduler hours daily across the UK network, as ~10–15 schedulers on shift spent ~2–3 hours each reopening routes due to driver no-shows. This reactive process—repeated every day of the week—prevented predictive planning and diverted resources from strategic capacity management.</p>
+                <span class="card-metric">~9,000 hours lost annually</span>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <h3 class="card-title">Cut-Off Pressure</h3>
+                <p class="card-text">With only a ~45-minute buffer before dispatch, any late no-shows after this point couldn't be reopened—routes had to finish by 21:00, making late absences impossible to recover within delivery constraints.</p>
+                <span class="card-metric">≤~45 min reopen window</span>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <section class="section">
+        <div class="section-header">
+            <div class="section-tag mono">02 — STRATEGIC EXECUTION</div>
+            <h2 class="section-title">From Problem to Scale</h2>
+            <p class="section-desc">End-to-end ownership from quantitative analysis and stakeholder alignment to technical delivery and scalability validation—supported by management facilitation to enable cross-level implementation.</p>
+        </div>
+
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-phase">Phase 1: Discovery & Analysis</div>
+                <h3 class="timeline-title">Data-Driven Problem Validation</h3>
+                <p class="timeline-desc">Identified recurring no-show patterns during routine operations and proposed a detailed analysis to the shift manager. With their support, conducted an ~8-week quantitative deep dive analyzing historical data from the UK network to identify patterns, impact, and root causes. Based on the findings, the shift manager escalated the proposal to senior management, who approved a 6-station pilot focused on evening same day cycles only, supported by a data-driven business case projecting a ~45% reduction in team <span class="metric-tooltip" data-tooltip="Escalation: Urgent request for intervention, typically occurring when scheduled drivers don't show up and routes need immediate reassignment">escalations</span>.</p>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-phase">Phase 2: Design & Stakeholder Alignment</div>
+                <h3 class="timeline-title">Cross-Functional Framework Development</h3>
+                <p class="timeline-desc">Following the successful small-scale pilot, management endorsed expanding the initiative with an analytical engine driven by key performance metrics and referred me to the Tech team for advanced development support. Coordinated cross-functional collaboration between Data Analytics, Scheduling, Operations, and Tech teams to align scope, data inputs, and system requirements. Facilitated creation of the EU-wide <span class="metric-tooltip" data-tooltip="SOP (Standard Operating Procedure): Documented step-by-step instructions for routine operations, ensuring consistency across multiple locations and teams">SOP</span> and supporting process documentation covering calculation methodology, eligibility criteria, escalation protocols, and success metrics. Supported development of a <span class="metric-tooltip" data-tooltip="KPI (Key Performance Indicator): Quantifiable measures used to evaluate success in meeting operational objectives and business goals">KPI</span> framework tracking no-show rates, route coverage, carryover %, time on task, and customer promise adherence, ensuring senior management alignment at each milestone.</p>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-phase">Phase 3: Pilot Execution</div>
+                <h3 class="timeline-title">Proof of Concept</h3>
+                <p class="timeline-desc">With senior manager sponsorship and direct manager oversight, coordinated development of an automated calculation engine with Tech team support—integrating rostering data to generate station-specific <span class="metric-tooltip" data-tooltip="Nursery Offset: Additional capacity buffer calculated by the system, representing extra routes opened proactively to absorb predicted no-shows and protect customer delivery promises">offset recommendations</span>. Following the successful pilot across 6 <span class="metric-tooltip" data-tooltip="Evening Cycle: Final dispatch wave of the day, typically with tightest time constraints and highest no-show risk. Last opportunity to ensure same-day customer promises are met">evening-cycle stations</span>, upper management approved expansion to 12 stations covering all <span class="metric-tooltip" data-tooltip="Same-Day Cycles: Delivery waves where packages must reach customers on the same day they're dispatched, requiring precise capacity planning and high operational reliability">same-day cycles</span>, where results consistently mirrored the initial success, reducing escalation requests and maintaining high operational predictive accuracy. At this stage, configuration ownership and ongoing optimisation were transitioned to the central Analytics team.</p>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-phase">Phase 4: Validation & Scale Planning</div>
+                <h3 class="timeline-title">Network Expansion & Handover</h3>
+                <p class="timeline-desc">Documented significant operational improvements including measurable reduction in team escalations and improved service consistency across pilot stations. Senior manager presented results to upper senior leadership with expansion roadmap covering all UK stations (12-week rollout) and EU network readiness assessment (400+ stations). Successfully transitioned ownership to dedicated Analytics team for ongoing development and management.</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <section class="section" style="background: var(--bg-secondary);">
+        <div class="section-header">
+            <div class="section-tag mono">03 — OPERATIONAL METRICS IMPACT</div>
+            <h2 class="section-title">Comprehensive Performance Improvements</h2>
+           
+        </div>
+
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                    </svg>
+                </div>
+                <div class="metric-value">↓~30-40%</div>
+                <div class="metric-label">
+                    <span class="metric-tooltip" data-tooltip="Team Escalation Requests: Urgent requests to leadership for emergency capacity intervention when driver absences create route coverage gaps">Team Escalations</span>
+                    <div class="metric-sublabel">Reduction in emergency requests</div>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
+                    </svg>
+                </div>
+                <div class="metric-value">Significantly<br>Reduced</div>
+                <div class="metric-label">
+                    <span class="metric-tooltip" data-tooltip="Carryover Rate: Percentage of packages not delivered on scheduled day that roll to next delivery day, increasing operational burden and risking customer promise violations">Carryover Rate</span>
+                    <div class="metric-sublabel">Volume rollover reduction</div>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <div class="metric-value">Improved</div>
+                <div class="metric-label">
+                    <span class="metric-tooltip" data-tooltip="On-Time Delivery Rate: Percentage of packages delivered by their promised date to customers, critical for customer satisfaction and service quality">OTDR</span>
+                    <div class="metric-sublabel">On-time delivery rate</div>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <div class="metric-value">Increased</div>
+                <div class="metric-label">
+                    <span class="metric-tooltip" data-tooltip="First Delivery Dispatch Success: Percentage of routes successfully dispatched on first scheduled time without delays, cancellations, or reopening">FDDS Rate</span>
+                    <div class="metric-sublabel">First dispatch success</div>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                    </svg>
+                </div>
+                <div class="metric-value">Improved</div>
+                <div class="metric-label">
+                    <span class="metric-tooltip" data-tooltip="Capacity Reliability: Measures delivery partner reliability in fulfilling route commitments, tracking consistency between scheduled and actual delivered routes">Capacity Reliability</span>
+                    <div class="metric-sublabel">Partner commitment fulfillment</div>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                    </svg>
+                </div>
+                <div class="metric-value">Below<br>Target</div>
+                <div class="metric-label">
+                    <span class="metric-tooltip" data-tooltip="Not Inducted on Time: Percentage of packages not inducted and processed on schedule at delivery stations, impacting downstream operations">NIOT</span>
+                    <div class="metric-sublabel">Within operational standards</div>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                </div>
+                <div class="metric-value">Enhanced</div>
+                <div class="metric-label">
+                    <span class="metric-tooltip" data-tooltip="Forecast Accuracy: Measures prediction accuracy for operational capacity planning, enabling better resource allocation">Forecast Accuracy</span>
+                    <div class="metric-sublabel">Prediction improvement</div>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/>
+                    </svg>
+                </div>
+                <div class="metric-value">Reduced</div>
+                <div class="metric-label">
+                    <span class="metric-tooltip" data-tooltip="Variable Costs: Operational costs that fluctuate with volume and efficiency, including overtime, emergency capacity, and service recovery expenses">Variable Costs</span>
+                    <div class="metric-sublabel">Efficiency-driven savings</div>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                </div>
+                <div class="metric-value">Improved</div>
+                <div class="metric-label">
+                    <span class="metric-tooltip" data-tooltip="Operational Efficiency: Composite metric measuring quality, resource availability, and throughput across delivery network for overall operational performance">OEE Metrics</span>
+                    <div class="metric-sublabel">Quality × Availability × Throughput</div>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                    </svg>
+                </div>
+                <div class="metric-value">Increased</div>
+                <div class="metric-label">
+                    <span class="metric-tooltip" data-tooltip="Driver Productivity: Measures packages delivered per hour spent in active delivery zone, indicating route efficiency and driver performance">Productivity</span>
+                    <div class="metric-sublabel">Delivery efficiency rate</div>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <div class="metric-value">Improved</div>
+                <div class="metric-label">
+                    <span class="metric-tooltip" data-tooltip="Route Acceptance Rate: Percentage of opened delivery routes accepted by drivers before departure time, indicating effective capacity planning and scheduling">Route Acceptance</span>
+                    <div class="metric-sublabel">Route acceptance rate</div>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/>
+                    </svg>
+                </div>
+                <div class="metric-value">Protected</div>
+                <div class="metric-label">
+                    <span class="metric-tooltip" data-tooltip="Customer Promise Date: Committed delivery date communicated to customers at order placement. Protecting this promise is critical for customer satisfaction and brand trust">Customer Promise</span>
+                    <div class="metric-sublabel">Delivery date commitments</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <section class="gui-showcase">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-tag mono">04 — OPERATIONAL WORKFLOW</div>
+                <h2 class="section-title">How It Works</h2>
+                <p class="section-desc">Automated offset calculation integrated into daily scheduling operations</p>
+            </div>
+
+            <div class="workflow-steps">
+                <div class="workflow-step">
+                    <div class="workflow-number">1</div>
+                    <div class="workflow-content">
+                        <h4>Download Roster & Manifest Data</h4>
+                        <p>Scheduler downloads driver <span class="metric-tooltip" data-tooltip="Roster: Schedule showing which drivers are assigned to work specific shifts, used as input to determine baseline capacity before applying no-show predictions">roster</span>, sequencing output showing total routes and shipments, and complete <span class="metric-tooltip" data-tooltip="Manifest: Complete list of all packages scheduled for delivery during a specific time window, used to calculate total capacity requirements">manifest</span> file for the cycle. Selects which cycle they're planning (primarily evening cycles during pilot phase).</p>
+                    </div>
+                </div>
+
+                <div class="workflow-step">
+                    <div class="workflow-number">2</div>
+                    <div class="workflow-content">
+                        <h4>Automated Offset Calculation</h4>
+                        <p>Tool analyzes pre-scheduled driver count versus routes needing coverage. Uses historical 30-day no-show patterns to calculate optimal buffer. Outputs exact number: "Open X additional blocks on top of pre-scheduled capacity." This happens automatically—no manual calculation needed.</p>
+                    </div>
+                </div>
+
+                <div class="workflow-step">
+                    <div class="workflow-number">3</div>
+                    <div class="workflow-content">
+                        <h4>Proactive Block Opening</h4>
+                        <p>Scheduler applies recommended offset BEFORE departure time, avoiding the problems of <span class="metric-tooltip" data-tooltip="Block: A delivery route assignment that drivers can accept, containing a set of packages for delivery within a specific time window">blocks</span> opened too close to dispatch (low acceptance rates) or inability to reopen for later time. Blocks are opened with enough buffer  that drivers can accept them. No more reactive firefighting.</p>
+                    </div>
+                </div>
+
+                <div class="workflow-step">
+                    <div class="workflow-number">4</div>
+                    <div class="workflow-content">
+                        <h4>Team Capacity Freed Up</h4>
+                        <p>Instead of constant requests to our team for emergency block openings, the process is handled proactively. Team saw 30-40% reduction in no-show related escalations. Time previously spent on reactive requests now available for strategic work and network optimization.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="gui-frame">
+                <div class="gui-header">
+                    <div class="gui-dot"></div>
+                    <div class="gui-dot"></div>
+                    <div class="gui-dot"></div>
+                    <span style="margin-left: 1rem; font-size: 0.875rem; color: var(--text-tertiary);">
+
+                    </span>
+                </div>
+
+                <div class="gui-body"
+                    style="min-height: 400px; display: flex; align-items: center; justify-content: center; background: var(--bg-tertiary); flex-direction: column; padding: 1.5rem;">
+                    <img src="project9.png"
+                        alt="Nursery Offset Calculator Interface"
+                        style="max-width: 100%; height: auto; border-radius: 0.75rem; filter: brightness(0.95) contrast(1.05); box-shadow: 0 8px 24px rgba(0,0,0,0.4);">
+                    <p style="margin-top: 1rem; font-size: 0.875rem; color: var(--text-tertiary); text-align: center; font-style: italic; max-width: 600px;">
+                        <strong>Note:</strong> Interface shown is the first version developed during pilot phase, no longer in active use. Displayed for demonstration purposes only.
+                    </p>
+                </div>
+            </div>
+
+
+
+    </section>
+
+    <div class="section-divider"></div>
+
+    <section class="section" style="background: var(--bg-secondary);">
+        <div class="section-header">
+            <div class="section-tag mono">05 — QUANTIFIED RESULTS</div>
+            <h2 class="section-title">Department-Wide Impact & Measurement</h2>
+        </div>
+
+        <div style="max-width: 900px; margin: 0 auto;">
+            <div style="background: var(--bg-primary); border: 2px solid var(--primary); border-radius: 12px; padding: 2.5rem; margin-bottom: 2rem;">
+                <h3 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem; color: var(--primary);">~9,000 Hours Saved Annually</h3>
+                <p style="font-size: 1.125rem; line-height: 1.8; color: var(--text); margin-bottom: 1.5rem;">
+                    I identified the no-show problem, proposed this solution, and gained management sponsorship and approval. Management tracked department-wide workload reduction through <strong>analytical dashboards measuring task assignments and escalation request categories by station</strong>. Data collection showed the no-show request category—which represented the majority of our scheduler workload—<strong>significantly decreased following deployment of this new process and tool</strong>.
+                </p>
+                <p style="font-size: 1.125rem; line-height: 1.8; color: var(--text); margin-bottom: 1.5rem;">
+                    The ~9,000 hours annual savings figure is based on <strong>management's operational data analysis</strong> comparing before/after task volumes across the scheduler department. This represents time previously spent on reactive no-show crisis management that was eliminated through the proactive capacity planning process I designed and built.
+                </p>
+                <p style="font-size: 1.125rem; line-height: 1.8; color: var(--text);">
+                    <strong>Critical Impact:</strong> Hours saved were not eliminated positions—they were <strong>reallocated to other high-value tasks and responsibilities</strong>. This efficiency gain enabled the department to <strong>expand operational scope and take on additional network optimization initiatives without requiring additional headcount</strong>, demonstrating measurable productivity improvement.
+                </p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.05) 100%); border: 1px solid rgba(99, 102, 241, 0.3); border-left: 4px solid var(--accent-primary); border-radius: 8px; padding: 2rem; margin-bottom: 2rem;">
+                <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem; color: var(--text-primary);">My Contributions & Cross-Team Collaboration</h3>
+                <p style="font-size: 1.0625rem; line-height: 1.7; color: var(--text-secondary); margin-bottom: 1rem;">
+                    <strong style="color: var(--text-primary);">I originated the idea, designed the capacity planning process, and built the complete tool</strong> (calculation engine + UI). Analytics team conducted historical data analysis and provided configuration parameters based on their findings. <strong style="color: var(--text-primary);">Tech team's role was strictly providing database access following security best practices and advisory support when requested</strong>—all process design, business logic, and tool development was my work.
+                </p>
+                <p style="font-size: 1.0625rem; line-height: 1.7; color: var(--text-secondary);">
+                    Following successful pilot validation, ownership was transitioned to the central Analytics team for UK-wide rollout and ongoing optimization as part of broader operational planning infrastructure.
+                </p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+                <div style="background: var(--bg-primary); border-radius: 8px; padding: 1.5rem; text-align: center; border: 1px solid var(--border-color);">
+                    <div style="font-size: 2.5rem; font-weight: 700; color: var(--primary); margin-bottom: 0.5rem;">~9,000h</div>
+                    <div style="font-size: 0.9375rem; color: var(--text-light); font-weight: 500;">Annual Department Savings</div>
+                </div>
+                <div style="background: var(--bg-primary); border-radius: 8px; padding: 1.5rem; text-align: center; border: 1px solid var(--border-color);">
+                    <div style="font-size: 2.5rem; font-weight: 700; color: var(--primary); margin-bottom: 0.5rem;">~30-40%</div>
+                    <div style="font-size: 0.9375rem; color: var(--text-light); font-weight: 500;">Reduction in Escalations</div>
+                </div>
+                <div style="background: var(--bg-primary); border-radius: 8px; padding: 1.5rem; text-align: center; border: 1px solid var(--border-color);">
+                    <div style="font-size: 2.5rem; font-weight: 700; color: var(--primary); margin-bottom: 0.5rem;">0</div>
+                    <div style="font-size: 0.9375rem; color: var(--text-light); font-weight: 500;">Additional Headcount Required</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <footer class="footer">
+        <p class="footer-text">
+            <strong>Disclaimer:</strong>The projects and achievements presented represent real work completed during my employment. All content has been reviewed to exclude confidential information and comply with non-disclosure obligations. Specific metrics, targets, and proprietary processes have been generalized where necessary. Any interfaces or tools shown represent early versions I developed that are no longer in active use or have since been redesigned. This portfolio demonstrates my actual contributions, problem-solving methodology, and measurable operational impact.
+        </p>
+    </footer>
+
+    <div id="particles"></div>
+
+    <script>
+        function createParticles() {
+            const container = document.getElementById('particles');
+            const particleCount = 60;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                const size = Math.random() * 3 + 1;
+                const x = Math.random() * 100;
+                const y = Math.random() * 100;
+                const delay = Math.random() * 20;
+                const duration = Math.random() * 20 + 20;
+                
+                particle.style.cssText = `
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${x}%;
+                    top: ${y}%;
+                    background: rgba(99, 102, 241, ${Math.random() * 0.5 + 0.2});
+                    animation: float ${duration}s ${delay}s infinite ease-in-out;
+                `;
+                
+                container.appendChild(particle);
+            }
+
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes float {
+                    0%, 100% {
+                        transform: translate(0, 0);
+                        opacity: 0.2;
+                    }
+                    25% {
+                        transform: translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px);
+                        opacity: 0.5;
+                    }
+                    50% {
+                        transform: translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px);
+                        opacity: 0.3;
+                    }
+                    75% {
+                        transform: translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px);
+                        opacity: 0.6;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        document.querySelectorAll('.card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = ((e.clientX - rect.left) / rect.width) * 100;
+                const y = ((e.clientY - rect.top) / rect.height) * 100;
+                card.style.setProperty('--mouse-x', `${x}%`);
+                card.style.setProperty('--mouse-y', `${y}%`);
+            });
+        });
+
+        function reveal() {
+            const reveals = document.querySelectorAll('.reveal');
+            
+            reveals.forEach(element => {
+                const windowHeight = window.innerHeight;
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+                
+                if (elementTop < windowHeight - elementVisible) {
+                    element.classList.add('active');
+                }
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            createParticles();
+            reveal();
+        });
+
+        window.addEventListener('scroll', reveal);
+
+        document.querySelectorAll('.section, .card, .stat-card, .metric-card').forEach(el => {
+            el.classList.add('reveal');
+        });
+
+        // Tooltip positioning handler
+        document.querySelectorAll('.metric-tooltip').forEach(tooltip => {
+            tooltip.addEventListener('mouseenter', function(e) {
+                // Reset classes
+                this.classList.remove('align-left', 'align-right');
+                
+                // Small delay to let the tooltip render
+                setTimeout(() => {
+                    const rect = this.getBoundingClientRect();
+                    const tooltipWidth = 280;
+                    const viewportWidth = window.innerWidth;
+                    const margin = 20;
+                    
+                    // Calculate potential overflow
+                    const centerPosition = rect.left + (rect.width / 2);
+                    const leftEdge = centerPosition - (tooltipWidth / 2);
+                    const rightEdge = centerPosition + (tooltipWidth / 2);
+                    
+                    // Adjust alignment if would overflow
+                    if (rightEdge > (viewportWidth - margin)) {
+                        this.classList.add('align-right');
+                    } else if (leftEdge < margin) {
+                        this.classList.add('align-left');
+                    }
+                }, 10);
+            });
+        });
+    </script>
+    <div id="lightbox" class="lightbox"><span class="lightbox-close" id="lightbox-close">&times;</span><img class="lightbox-content" id="lightbox-img" src="" alt="Zoomed image"></div>
+    <script>(function() { const lb = document.getElementById('lightbox'), img = document.getElementById('lightbox-img'), cls = document.getElementById('lightbox-close'); document.querySelectorAll('img[src*=".png"], img[src*=".jpg"], img[src*=".jpeg"], .image-wrapper img').forEach(i => { i.classList.add('zoomable-image'); i.style.cursor = 'zoom-in'; i.addEventListener('click', function(e) { e.preventDefault(); lb.classList.add('active'); img.src = this.src; document.body.style.overflow = 'hidden'; }); }); function close() { lb.classList.remove('active'); document.body.style.overflow = ''; } cls.addEventListener('click', close); lb.addEventListener('click', e => { if (e.target === lb) close(); }); document.addEventListener('keydown', e => { if (e.key === 'Escape' && lb.classList.contains('active')) close(); }); })();</script>
+</body>
+</html>

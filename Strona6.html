@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PHANTOM PROTOCOL // CLASSIFIED</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --phantom-orange: #ff6b35;
+            --phantom-cyan: #00d9ff;
+            --phantom-teal: #00a6b8;
+            --bg-black: #000000;
+            --text-white: #ffffff;
+            --text-gray: #b8c5d6;
+        }
+
+        html {
+            overflow-x: hidden;
+            overflow-y: scroll;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: var(--bg-black);
+            color: var(--text-white);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* OPENING SEQUENCE */
+        .opening-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: var(--bg-black);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 1.2s cubic-bezier(0.76, 0, 0.24, 1);
+        }
+
+        .opening-screen.hide {
+            transform: translateY(-100%);
+        }
+
+        .logo-frame {
+            position: relative;
+            width: 500px;
+            height: 500px;
+            opacity: 0;
+            animation: fadeInLogo 1s ease forwards;
+        }
+
+        @keyframes fadeInLogo {
+            to { opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .logo-frame::before,
+        .logo-frame::after {
+            content: '';
+            position: absolute;
+            background: var(--phantom-cyan);
+            animation: drawFrame 1.5s ease forwards;
+        }
+
+        .logo-frame::before {
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            animation: drawTop 1s ease 0.3s forwards;
+        }
+
+        .logo-frame::after {
+            top: 0;
+            right: 0;
+            width: 2px;
+            height: 0;
+            animation: drawRight 1s ease 0.8s forwards;
+        }
+
+        @keyframes drawTop {
+            to { width: 100%; }
+        }
+
+        @keyframes drawRight {
+            to { height: 100%; }
+        }
+
+        .logo-frame-bottom,
+        .logo-frame-left {
+            position: absolute;
+            background: var(--phantom-orange);
+        }
+
+        .logo-frame-bottom {
+            bottom: 0;
+            right: 0;
+            width: 0;
+            height: 2px;
+            animation: drawBottom 1s ease 1.3s forwards;
+        }
+
+        .logo-frame-left {
+            bottom: 0;
+            left: 0;
+            width: 2px;
+            height: 0;
+            animation: drawLeft 1s ease 1.8s forwards;
+        }
+
+        @keyframes drawBottom {
+            to { width: 100%; }
+        }
+
+        @keyframes drawLeft {
+            to { height: 100%; }
+        }
+
+        .logo-corners {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            opacity: 0;
+            animation: fadeInCorners 0.5s ease 2.3s forwards;
+        }
+
+        @keyframes fadeInCorners {
+            to { opacity: 1; }
+        }
+
+        .corner {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--phantom-cyan);
+        }
+
+        .corner.tl {
+            top: 0;
+            left: 0;
+            border-right: none;
+            border-bottom: none;
+        }
+
+        .corner.tr {
+            top: 0;
+            right: 0;
+            border-left: none;
+            border-bottom: none;
+        }
+
+        .corner.bl {
+            bottom: 0;
+            left: 0;
+            border-right: none;
+            border-top: none;
+        }
+
+        .corner.br {
+            bottom: 0;
+            right: 0;
+            border-left: none;
+            border-top: none;
+        }
+
+        .logo-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            opacity: 0;
+            transform: scale(0.8);
+            animation: revealLogo 0.8s ease 2.5s forwards;
+        }
+
+        @keyframes revealLogo {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .access-text {
+            position: absolute;
+            bottom: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.875rem;
+            color: var(--phantom-cyan);
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            opacity: 0;
+            animation: blinkAccess 0.5s ease 3s forwards, blink 1s ease 3.5s infinite;
+        }
+
+        @keyframes blinkAccess {
+            to { opacity: 1; }
+        }
+
+        @keyframes blink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+
+        /* MAIN CONTENT */
+        .main-content {
+            opacity: 0;
+            transition: opacity 0.5s ease 0.5s;
+        }
+
+        .main-content.visible {
+            opacity: 1;
+        }
+
+        .nav-minimal {
+            position: fixed !important;
+            top: 20px !important;
+            left: 20px !important;
+            z-index: 99999 !important;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .nav-minimal.visible {
+            opacity: 1;
+        }
+
+        .nav-back {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--phantom-cyan);
+            text-decoration: none;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--phantom-cyan);
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+        }
+
+        .nav-back:hover {
+            background: var(--phantom-cyan);
+            color: var(--bg-black);
+        }
+
+        /* ASYMMETRIC LAYOUT */
+        .content-grid {
+            position: relative;
+            min-height: 100vh;
+        }
+
+        .section {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 4rem 2rem;
+        }
+
+        /* SECTION 1: TITLE REVEAL */
+        .title-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            max-width: 1600px;
+            margin: 0 auto;
+            align-items: center;
+        }
+
+        .title-left {
+            transform: translateX(-100px);
+            opacity: 0;
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .title-left.visible {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .project-tag {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--phantom-orange);
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            margin-bottom: 2rem;
+            display: inline-block;
+            border-left: 3px solid var(--phantom-orange);
+            padding-left: 1rem;
+        }
+
+        .main-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(3rem, 8vw, 7rem);
+            font-weight: 900;
+            line-height: 0.9;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, var(--phantom-cyan), var(--phantom-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .title-right {
+            transform: translateX(100px);
+            opacity: 0;
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s;
+        }
+
+        .title-right.visible {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .meta-grid {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .meta-item {
+            border-left: 2px solid var(--phantom-cyan);
+            padding-left: 1.5rem;
+        }
+
+        .meta-label {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--phantom-cyan);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 0.5rem;
+        }
+
+        .meta-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        /* SECTION 2: DIAGONAL SPLIT */
+        .diagonal-section {
+            position: relative;
+            background: linear-gradient(135deg, transparent 50%, rgba(0, 217, 255, 0.05) 50%);
+        }
+
+        .diagonal-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 6rem;
+            align-items: start;
+        }
+
+        .problem-block {
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .problem-block.visible {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .section-number {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 8rem;
+            font-weight: 900;
+            color: var(--phantom-orange);
+            opacity: 0.1;
+            line-height: 1;
+            margin-bottom: -3rem;
+        }
+
+        .section-heading {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            line-height: 1.1;
+        }
+
+        .description {
+            font-size: 1.25rem;
+            line-height: 1.8;
+            color: var(--text-gray);
+            margin-bottom: 2rem;
+        }
+
+        .stats-mini {
+            display: flex;
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+
+        .stat-mini {
+            border-left: 3px solid var(--phantom-orange);
+            padding-left: 1rem;
+        }
+
+        .stat-mini-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--phantom-cyan);
+            line-height: 1;
+        }
+
+        .stat-mini-label {
+            font-size: 0.875rem;
+            color: var(--text-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 0.5rem;
+        }
+
+        .challenge-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            transform: translateX(100px);
+            opacity: 0;
+            transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.3s;
+        }
+
+        .challenge-stack.visible {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .challenge-card {
+            background: rgba(255, 107, 53, 0.05);
+            border-left: 3px solid var(--phantom-orange);
+            padding: 2rem;
+            transform: translateX(20px);
+            transition: transform 0.3s;
+        }
+
+        .challenge-card:hover {
+            transform: translateX(0);
+            background: rgba(255, 107, 53, 0.1);
+        }
+
+        .challenge-number {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            color: var(--phantom-orange);
+            margin-bottom: 1rem;
+        }
+
+        .challenge-text {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: var(--text-gray);
+        }
+
+        /* SECTION 3: OFFSET GRID */
+        .offset-section {
+            background: radial-gradient(ellipse at center, rgba(0, 217, 255, 0.1), transparent 70%);
+        }
+
+        .offset-grid {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 3fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .solution-header {
+            transform: scale(0.8);
+            opacity: 0;
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .solution-header.visible {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .function-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            transform: translateX(100px);
+            opacity: 0;
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s;
+        }
+
+        .function-list.visible {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .function-item {
+            display: flex;
+            gap: 2rem;
+            padding: 1.5rem;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .function-item:hover {
+            border-color: var(--phantom-cyan);
+            background: rgba(0, 217, 255, 0.05);
+            transform: translateX(10px);
+        }
+
+        .func-number {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--phantom-cyan);
+            line-height: 1;
+            min-width: 80px;
+        }
+
+        .func-content h4 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .func-content p {
+            color: var(--text-gray);
+            line-height: 1.7;
+        }
+
+        /* SECTION 4: RESULTS MOSAIC */
+        .results-section {
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 107, 53, 0.05) 30%, rgba(255, 107, 53, 0.05) 70%, transparent 70%);
+        }
+
+        .results-mosaic {
+            max-width: 100%;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2.5rem;
+        }
+
+        .result-tile {
+            aspect-ratio: 1;
+            background: var(--bg-black);
+            border: 2px solid var(--phantom-cyan);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            transform: rotateY(90deg);
+            opacity: 0;
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .result-tile.visible {
+            transform: rotateY(0);
+            opacity: 1;
+        }
+
+        .result-tile:nth-child(1) { transition-delay: 0s; }
+        .result-tile:nth-child(2) { transition-delay: 0.1s; }
+        .result-tile:nth-child(3) { transition-delay: 0.2s; }
+        .result-tile:nth-child(4) { transition-delay: 0.3s; }
+        .result-tile:nth-child(5) { transition-delay: 0.4s; }
+        .result-tile:nth-child(6) { transition-delay: 0.5s; }
+
+        .result-tile:hover {
+            border-color: var(--phantom-orange);
+            transform: scale(1.05);
+            z-index: 10;
+        }
+
+        .result-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--phantom-orange);
+            margin-bottom: 1rem;
+            line-height: 1;
+        }
+
+        .result-label {
+            font-size: 0.875rem;
+            color: var(--text-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* FOOTER */
+        .footer {
+            padding: 4rem 2rem;
+            background: rgba(0, 0, 0, 0.8);
+            border-top: 1px solid var(--phantom-cyan);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .footer-text {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-gray);
+            line-height: 1.8;
+        }
+
+        @media (max-width: 1024px) {
+            .title-section,
+            .diagonal-content,
+            .offset-grid,
+            .results-mosaic {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .section-number {
+                font-size: 5rem;
+            }
+
+            .logo-frame {
+                width: 350px;
+                height: 350px;
+            }
+        }
+        .lightbox { display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.95); align-items: center; justify-content: center; animation: fadeIn 0.3s ease; }
+        .lightbox.active { display: flex; }
+        .lightbox-content { max-width: 90%; max-height: 90%; object-fit: contain; animation: zoomIn 0.3s ease; }
+        .lightbox-close { position: absolute; top: 20px; right: 40px; color: white; font-size: 40px; font-weight: bold; cursor: pointer; transition: color 0.3s; z-index: 10000; }
+        .lightbox-close:hover { color: #ccc; }
+        .zoomable-image { cursor: zoom-in; transition: opacity 0.3s; }
+        .zoomable-image:hover { opacity: 0.9; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    </style>
+</head>
+<body>
+    <!-- OPENING ANIMATION -->
+    <div class="opening-screen" id="openingScreen">
+        <div class="logo-frame">
+            <div class="logo-corners">
+                <div class="corner tl"></div>
+                <div class="corner tr"></div>
+                <div class="corner bl"></div>
+                <div class="corner br"></div>
+            </div>
+            <img src="project10.png" alt="Phantom Logo" class="logo-image">
+            <div class="logo-frame-bottom"></div>
+            <div class="logo-frame-left"></div>
+            <div class="access-text">ACCESS GRANTED</div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content" id="mainContent">
+
+        <div class="content-grid">
+            <!-- SECTION 1: TITLE -->
+            <section class="section">
+                <div class="title-section">
+                    <div class="title-left" data-scroll-reveal>
+                        <div class="project-tag">CLASSIFIED OPERATION</div>
+                        <h1 class="main-title">PHANTOM<br>SHIPMENT<br>PROTOCOL</h1>
+                    </div>
+                    <div class="title-right" data-scroll-reveal>
+                        <div class="meta-grid" style="margin-top: 10rem;">
+                            <div class="meta-item">
+                                <div class="meta-label">Creator</div>
+                                <div class="meta-value">Denis Gwizdala</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">Mission Type</div>
+                                <div class="meta-value">Process Automation</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">Deployment</div>
+                                <div class="meta-value">EU Network-Wide</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">Status</div>
+                                <div class="meta-value">Operational</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DATA ANALYSIS IMPACT -->
+                    <div style="margin-top: 4rem; background: rgba(255, 107, 53, 0.05); border-left: 3px solid var(--phantom-orange); padding: 2rem 2.5rem;" data-scroll-reveal>
+                        <div style="font-family: 'Share Tech Mono', monospace; font-size: 0.75rem; color: var(--phantom-orange); text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 1.5rem;">DEEP DIVE ANALYSIS</div>
+                        <div style="font-size: 1.1rem; line-height: 1.8; color: var(--text-gray); margin-bottom: 1.5rem;">
+                            After ~1 year of data collection, comprehensive analysis revealed patterns across the <span style="color: var(--phantom-cyan); font-weight: 600;">EU last mile network</span>. Station-by-station contribution percentages identified systematic operational gaps generating phantom shipments.
+                        </div>
+                        <div style="font-size: 1.1rem; line-height: 1.8; color: var(--text-gray); margin-bottom: 1.5rem;">
+                            Analysis findings escalated to <span style="color: var(--phantom-cyan); font-weight: 600;">EU Process Team</span> enabled root cause identification. Team implemented <span style="color: var(--phantom-orange); font-weight: 600;">SOP changes</span> addressing underlying operational practices—eliminating the problem at its source and generating <span style="color: var(--text-white); font-weight: 600;">~£80K annual cost savings</span> from eliminated phantom-related operational inefficiencies.
+                        </div>
+                        <div style="font-size: 1.1rem; line-height: 1.8; color: var(--text-gray); margin-bottom: 1.5rem;">
+                            <span style="color: var(--phantom-orange); font-weight: 600;">OUTCOME (2025+):</span> Phantom generation reduced dramatically. Tool transitioned from handling ~35K annual removals to operating as guardrail for occasional outliers — proof that data-driven intervention solved the systematic failure. <span style="color: var(--text-white); font-weight: 600;">Combined impact: ~£99K annually (~£19K labor + ~£80K process improvement).</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+<!-- SECTION 2: PROBLEM -->
+            <section class="section diagonal-section">
+                <div class="diagonal-content">
+                    <div class="problem-block" data-scroll-reveal>
+                        <div class="section-number">01</div>
+                        <h2 class="section-heading">The Ghost<br>in the System</h2>
+                        <p class="description">Phantom shipments were accumulating in routing clusters across Europe—invalid entries that remained stuck in the system. These non-existent shipments generated unnecessary routes, inflated delivery time estimates, and wasted computational resources. Operations teams spent ~20 hours weekly removing these entries manually, but without proper data collection, identifying root causes was impossible—only addressing symptoms without resolving the underlying issue.</p>
+                        <div class="stats-mini">
+                            <div class="stat-mini">
+                                <div class="stat-mini-value">1,040 +/-</div>
+                                <div class="stat-mini-label">Hours Wasted Annually</div>
+                            </div>
+                            <div class="stat-mini">
+                                <div class="stat-mini-value">~20hrs</div>
+                                <div class="stat-mini-label">Weekly Manual Work</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- IMAGE CONTAINER -->
+                    <div style="position: relative; transform: translateX(100px); opacity: 0; transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.3s;" data-scroll-reveal>
+                        <!-- Corner brackets -->
+                        <div style="position: absolute; top: -10px; left: -10px; width: 30px; height: 30px; border-top: 2px solid var(--phantom-orange); border-left: 2px solid var(--phantom-orange); z-index: 1;"></div>
+                        <div style="position: absolute; top: -10px; right: -10px; width: 30px; height: 30px; border-top: 2px solid var(--phantom-orange); border-right: 2px solid var(--phantom-orange); z-index: 1;"></div>
+                        <div style="position: absolute; bottom: -10px; left: -10px; width: 30px; height: 30px; border-bottom: 2px solid var(--phantom-cyan); border-left: 2px solid var(--phantom-cyan); z-index: 1;"></div>
+                        <div style="position: absolute; bottom: -10px; right: -10px; width: 30px; height: 30px; border-bottom: 2px solid var(--phantom-cyan); border-right: 2px solid var(--phantom-cyan); z-index: 1;"></div>
+                        
+                        <div style="background: rgba(0, 0, 0, 0.8); border: 1px solid var(--phantom-orange); padding: 1rem; max-width: 400px;">
+                            <div style="aspect-ratio: 4/3; background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 107, 53, 0.3); display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                                <img src="your-image.png" alt="System Visualization" style="width: 100%; height: 100%; object-fit: cover;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- SECTION 2.5: BEFORE/AFTER PROCESS FLOW -->
+            <section class="section" style="background: linear-gradient(180deg, rgba(0, 0, 0, 0.95), rgba(255, 107, 53, 0.05), rgba(0, 0, 0, 0.95));">
+                <div style="max-width: 1600px; margin: 0 auto;">
+                    <div style="text-align: center; margin-bottom: 5rem;" data-scroll-reveal>
+                        <div style="font-family: 'Share Tech Mono', monospace; font-size: 0.75rem; color: var(--phantom-orange); text-transform: uppercase; letter-spacing: 0.3em; margin-bottom: 1rem;">TRANSFORMATION PROTOCOL</div>
+                        <h2 class="section-heading">Process Evolution</h2>
+                        <p class="description" style="max-width: 800px; margin: 1rem auto 0;">From manual inefficiency to autonomous cloud execution</p>
+                    </div>
+
+                    <!-- BEFORE/AFTER COMPARISON -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: stretch;" data-scroll-reveal>
+                        
+                        <!-- BEFORE: MANUAL PROCESS -->
+                        <div style="position: relative; display: flex; flex-direction: column;">
+                            <div style="position: absolute; top: -15px; left: -15px; width: 40px; height: 40px; border-top: 3px solid var(--phantom-orange); border-left: 3px solid var(--phantom-orange);"></div>
+                            <div style="position: absolute; top: -15px; right: -15px; width: 40px; height: 40px; border-top: 3px solid var(--phantom-orange); border-right: 3px solid var(--phantom-orange);"></div>
+                            <div style="position: absolute; bottom: -15px; left: -15px; width: 40px; height: 40px; border-bottom: 3px solid var(--phantom-orange); border-left: 3px solid var(--phantom-orange);"></div>
+                            <div style="position: absolute; bottom: -15px; right: -15px; width: 40px; height: 40px; border-bottom: 3px solid var(--phantom-orange); border-right: 3px solid var(--phantom-orange);"></div>
+                            
+                            <div style="background: rgba(0, 0, 0, 0.8); border: 2px solid var(--phantom-orange); padding: 2.5rem 2rem; flex: 1; display: flex; flex-direction: column;">
+                                <div style="text-align: center; margin-bottom: 2rem;">
+                                    <div style="font-family: 'Orbitron', sans-serif; font-size: 1.5rem; font-weight: 800; color: var(--phantom-orange); margin-bottom: 0.5rem;">BEFORE</div>
+                                    <div style="font-family: 'Share Tech Mono', monospace; font-size: 0.7rem; color: var(--text-gray); text-transform: uppercase; letter-spacing: 0.2em;">Legacy Manual Process</div>
+                                </div>
+
+                                <!-- Flow Steps -->
+                                <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 3rem;">
+                                    <!-- Step 1 -->
+                                    <div style="position: relative; padding-left: 3rem;">
+                                        <div style="position: absolute; left: 0; top: 0; width: 2rem; height: 2rem; background: var(--phantom-orange); display: flex; align-items: center; justify-content: center; font-family: 'Orbitron', sans-serif; font-size: 0.75rem; font-weight: 700;">01</div>
+                                        <div style="background: rgba(255, 107, 53, 0.1); padding: 1rem; border-left: 2px solid var(--phantom-orange);">
+                                            <div style="font-size: 0.9rem; font-weight: 600; margin-bottom: 0.3rem;">Email Arrives (Saturday)</div>
+                                            <div style="font-size: 0.8rem; color: var(--text-gray);">Stakeholder notification received</div>
+                                        </div>
+                                        <div style="text-align: center; color: var(--phantom-orange); font-size: 1.2rem; padding: 0.5rem 0;">↓</div>
+                                    </div>
+
+                                    <!-- Step 2 -->
+                                    <div style="position: relative; padding-left: 3rem;">
+                                        <div style="position: absolute; left: 0; top: 0; width: 2rem; height: 2rem; background: var(--phantom-orange); display: flex; align-items: center; justify-content: center; font-family: 'Orbitron', sans-serif; font-size: 0.75rem; font-weight: 700;">02</div>
+                                        <div style="background: rgba(255, 107, 53, 0.1); padding: 1rem; border-left: 2px solid var(--phantom-orange);">
+                                            <div style="font-size: 0.9rem; font-weight: 600; margin-bottom: 0.3rem;">Manual Excel Filtering</div>
+                                            <div style="font-size: 0.8rem; color: var(--text-gray);">Person opens email & filters one by one</div>
+                                        </div>
+                                        <div style="text-align: center; color: var(--phantom-orange); font-size: 1.2rem; padding: 0.5rem 0;">↓</div>
+                                    </div>
+
+                                    <!-- Step 3 -->
+                                    <div style="position: relative; padding-left: 3rem;">
+                                        <div style="position: absolute; left: 0; top: 0; width: 2rem; height: 2rem; background: var(--phantom-orange); display: flex; align-items: center; justify-content: center; font-family: 'Orbitron', sans-serif; font-size: 0.75rem; font-weight: 700;">03</div>
+                                        <div style="background: rgba(255, 107, 53, 0.1); padding: 1rem; border-left: 2px solid var(--phantom-orange);">
+                                            <div style="font-size: 0.9rem; font-weight: 600; margin-bottom: 0.3rem;">Open Cluster Transfer</div>
+                                            <div style="font-size: 0.8rem; color: var(--text-gray);">Navigate to system interface</div>
+                                        </div>
+                                        <div style="text-align: center; color: var(--phantom-orange); font-size: 1.2rem; padding: 0.5rem 0;">↓</div>
+                                    </div>
+
+                                    <!-- Step 4 -->
+                                    <div style="position: relative; padding-left: 3rem;">
+                                        <div style="position: absolute; left: 0; top: 0; width: 2rem; height: 2rem; background: var(--phantom-orange); display: flex; align-items: center; justify-content: center; font-family: 'Orbitron', sans-serif; font-size: 0.75rem; font-weight: 700;">04</div>
+                                        <div style="background: rgba(255, 107, 53, 0.1); padding: 1rem; border-left: 2px solid var(--phantom-orange);">
+                                            <div style="font-size: 0.9rem; font-weight: 600; margin-bottom: 0.3rem;">Copy & Transfer Parcels</div>
+                                            <div style="font-size: 0.8rem; color: var(--text-gray);">Station by station, manual transfer</div>
+                                        </div>
+                                        <div style="text-align: center; color: var(--phantom-orange); font-size: 1.2rem; padding: 0.5rem 0;">↓</div>
+                                    </div>
+
+                                    <!-- Step 5 -->
+                                    <div style="position: relative; padding-left: 3rem;">
+                                        <div style="position: absolute; left: 0; top: 0; width: 2rem; height: 2rem; background: var(--phantom-orange); display: flex; align-items: center; justify-content: center; font-family: 'Orbitron', sans-serif; font-size: 0.75rem; font-weight: 700;">05</div>
+                                        <div style="background: rgba(255, 107, 53, 0.1); padding: 1rem; border-left: 2px solid var(--phantom-orange);">
+                                            <div style="font-size: 0.9rem; font-weight: 600; margin-bottom: 0.3rem;">Manual Cluster Re-run</div>
+                                            <div style="font-size: 0.8rem; color: var(--text-gray);">Execute & verify completion</div>
+                                        </div>
+                                        <div style="text-align: center; color: var(--phantom-orange); font-size: 1.2rem; padding: 0.5rem 0;">↓</div>
+                                    </div>
+
+                                    <!-- Step 6 -->
+                                    <div style="position: relative; padding-left: 3rem;">
+                                        <div style="position: absolute; left: 0; top: 0; width: 2rem; height: 2rem; background: var(--phantom-orange); display: flex; align-items: center; justify-content: center; font-family: 'Orbitron', sans-serif; font-size: 0.75rem; font-weight: 700;">06</div>
+                                        <div style="background: rgba(255, 107, 53, 0.15); padding: 1rem; border-left: 2px solid var(--phantom-orange);">
+                                            <div style="font-size: 0.9rem; font-weight: 600; margin-bottom: 0.3rem;">Repeat for Next Station</div>
+                                            <div style="font-size: 0.8rem; color: var(--text-gray);">Loop until all stations complete</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Stats -->
+                                <div style="margin-top: auto; padding-top: 2rem; border-top: 1px solid var(--phantom-orange);">
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                        <div style="text-align: center;">
+                                            <div style="font-family: 'Orbitron', sans-serif; font-size: 2rem; font-weight: 800; color: var(--phantom-orange);">~20hrs</div>
+                                            <div style="font-size: 0.7rem; color: var(--text-gray); text-transform: uppercase;">Total Weekly</div>
+                                        </div>
+                                        <div style="text-align: center;">
+                                            <div style="font-family: 'Orbitron', sans-serif; font-size: 2rem; font-weight: 800; color: var(--phantom-orange);">2</div>
+                                            <div style="font-size: 0.7rem; color: var(--text-gray); text-transform: uppercase;">Operators Required</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- AFTER: AUTOMATED PROCESS -->
+                        <div style="position: relative; display: flex; flex-direction: column;">
+                            <div style="position: absolute; top: -15px; left: -15px; width: 40px; height: 40px; border-top: 3px solid var(--phantom-cyan); border-left: 3px solid var(--phantom-cyan);"></div>
+                            <div style="position: absolute; top: -15px; right: -15px; width: 40px; height: 40px; border-top: 3px solid var(--phantom-cyan); border-right: 3px solid var(--phantom-cyan);"></div>
+                            <div style="position: absolute; bottom: -15px; left: -15px; width: 40px; height: 40px; border-bottom: 3px solid var(--phantom-cyan); border-left: 3px solid var(--phantom-cyan);"></div>
+                            <div style="position: absolute; bottom: -15px; right: -15px; width: 40px; height: 40px; border-bottom: 3px solid var(--phantom-cyan); border-right: 3px solid var(--phantom-cyan);"></div>
+                            
+                            <div style="background: rgba(0, 0, 0, 0.8); border: 2px solid var(--phantom-cyan); padding: 2.5rem 2rem; flex: 1; display: flex; flex-direction: column;">
+                                <div style="text-align: center; margin-bottom: 2rem;">
+                                    <div style="font-family: 'Orbitron', sans-serif; font-size: 1.5rem; font-weight: 800; color: var(--phantom-cyan); margin-bottom: 0.5rem;">AFTER</div>
+                                    <div style="font-family: 'Share Tech Mono', monospace; font-size: 0.7rem; color: var(--text-gray); text-transform: uppercase; letter-spacing: 0.2em;">Fully Cloud-Automated Protocol</div>
+                                </div>
+
+                                <!-- Flow Steps -->
+                                <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 3rem;">
+                                    <!-- Step 1 -->
+                                    <div style="position: relative; padding-left: 3rem;">
+                                        <div style="position: absolute; left: 0; top: 0; width: 2rem; height: 2rem; background: var(--phantom-cyan); color: var(--bg-black); display: flex; align-items: center; justify-content: center; font-family: 'Orbitron', sans-serif; font-size: 0.75rem; font-weight: 700;">01</div>
+                                        <div style="background: rgba(0, 217, 255, 0.15); padding: 1.5rem; border-left: 2px solid var(--phantom-cyan); position: relative; overflow: hidden;">
+                                            <div style="position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--phantom-cyan), transparent); animation: pulse 2s ease infinite;"></div>
+                                            <div style="font-size: 0.9rem; font-weight: 600; margin-bottom: 0.3rem;">Cloud-Scheduled Execution</div>
+                                            <div style="font-size: 0.8rem; color: var(--text-gray); margin-bottom: 1rem;">Fully automated—zero operator intervention</div>
+                                            
+                                            <!-- Parallel Processing Indicator -->
+                                            <div style="background: rgba(0, 217, 255, 0.05); padding: 1rem; border: 1px solid rgba(0, 217, 255, 0.3); border-radius: 4px;">
+                                                <div style="font-family: 'Share Tech Mono', monospace; font-size: 0.75rem; color: var(--phantom-cyan); margin-bottom: 0.5rem;">⚡ AUTONOMOUS PROCESSING</div>
+                                                <div style="font-size: 0.75rem; color: var(--text-gray);">• Runs automatically on schedule</div>
+                                                <div style="font-size: 0.75rem; color: var(--text-gray);">• Extracts data from stakeholder emails</div>
+                                                <div style="font-size: 0.75rem; color: var(--text-gray);">• 10+ stations per minute</div>
+                                                <div style="font-size: 0.75rem; color: var(--text-gray);">• Real-time verification & logging</div>
+                                            </div>
+                                        </div>
+                                        <div style="text-align: center; color: var(--phantom-cyan); font-size: 1.2rem; padding: 0.5rem 0;">↓</div>
+                                    </div>
+
+                                    <!-- Step 2 -->
+                                    <div style="position: relative; padding-left: 3rem;">
+                                        <div style="position: absolute; left: 0; top: 0; width: 2rem; height: 2rem; background: var(--phantom-cyan); color: var(--bg-black); display: flex; align-items: center; justify-content: center; font-family: 'Orbitron', sans-serif; font-size: 0.75rem; font-weight: 700;">02</div>
+                                        <div style="background: rgba(0, 217, 255, 0.1); padding: 1rem; border-left: 2px solid var(--phantom-cyan);">
+                                            <div style="font-size: 0.9rem; font-weight: 600; margin-bottom: 0.3rem;">Auto-Generate Report</div>
+                                            <div style="font-size: 0.8rem; color: var(--text-gray);">Complete audit trail created</div>
+                                        </div>
+                                        <div style="text-align: center; color: var(--phantom-cyan); font-size: 1.2rem; padding: 0.5rem 0;">↓</div>
+                                    </div>
+
+                                    <!-- Step 3 -->
+                                    <div style="position: relative; padding-left: 3rem;">
+                                        <div style="position: absolute; left: 0; top: 0; width: 2rem; height: 2rem; background: var(--phantom-cyan); color: var(--bg-black); display: flex; align-items: center; justify-content: center; font-family: 'Orbitron', sans-serif; font-size: 0.75rem; font-weight: 700;">03</div>
+                                        <div style="background: rgba(0, 217, 255, 0.1); padding: 1rem; border-left: 2px solid var(--phantom-cyan);">
+                                            <div style="font-size: 0.9rem; font-weight: 600; margin-bottom: 0.3rem;">Auto-Email Stakeholders</div>
+                                            <div style="font-size: 0.8rem; color: var(--text-gray);">Results distributed automatically</div>
+                                        </div>
+                                        <div style="text-align: center; color: var(--phantom-cyan); font-size: 1.2rem; padding: 0.5rem 0;">↓</div>
+                                    </div>
+
+                                    <!-- Step 4 -->
+                                    <div style="position: relative; padding-left: 3rem;">
+                                        <div style="position: absolute; left: 0; top: 0; width: 2rem; height: 2rem; background: var(--phantom-cyan); color: var(--bg-black); display: flex; align-items: center; justify-content: center; font-family: 'Orbitron', sans-serif; font-size: 0.75rem; font-weight: 700;">04</div>
+                                        <div style="background: rgba(0, 217, 255, 0.1); padding: 1rem; border-left: 2px solid var(--phantom-cyan);">
+                                            <div style="font-size: 0.9rem; font-weight: 600; margin-bottom: 0.3rem;">Archive Analysis Logs</div>
+                                            <div style="font-size: 0.8rem; color: var(--text-gray);">Deep dive data stored for review</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Stats -->
+                                <div style="margin-top: auto; padding-top: 2rem; border-top: 1px solid var(--phantom-cyan);">
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                        <div style="text-align: center;">
+                                            <div style="font-family: 'Orbitron', sans-serif; font-size: 2rem; font-weight: 800; color: var(--phantom-cyan);">0min</div>
+                                            <div style="font-size: 0.7rem; color: var(--text-gray); text-transform: uppercase;">Operator Time Required</div>
+                                        </div>
+                                        <div style="text-align: center;">
+                                            <div style="font-family: 'Orbitron', sans-serif; font-size: 2rem; font-weight: 800; color: var(--phantom-cyan);">100%</div>
+                                            <div style="font-size: 0.7rem; color: var(--text-gray); text-transform: uppercase;">Cloud Automated</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Comparison Summary -->
+                    <div style="margin-top: 4rem; text-align: center; background: rgba(0, 217, 255, 0.05); border: 1px solid var(--phantom-cyan); padding: 2rem;" data-scroll-reveal>
+                        <div style="font-family: 'Share Tech Mono', monospace; font-size: 0.75rem; color: var(--phantom-cyan); text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 1rem;">EFFICIENCY GAIN</div>
+                        <div style="font-family: 'Orbitron', sans-serif; font-size: 3rem; font-weight: 900; background: linear-gradient(135deg, var(--phantom-cyan), var(--phantom-orange)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.5rem;">100% ELIMINATION</div>
+                        <div style="color: var(--text-gray); font-size: 1rem;">From 20 hours weekly manual work to fully cloud-automated execution</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 3: SOLUTION -->
+            <section class="section offset-section">
+                <div class="offset-grid">
+                    <div class="solution-header" data-scroll-reveal>
+                        <div class="section-number">02</div>
+                        <h2 class="section-heading">Dual-Purpose<br>Solution</h2>
+                        <p class="description">Cloud-scheduled Python solution designed with two objectives: automate phantom removal operations AND systematically collect granular data for root cause analysis—enabling both immediate relief and long-term problem solving.</p>
+                    </div>
+                    <div class="function-list" data-scroll-reveal>
+                        <div class="function-item">
+                            <div class="func-number">01</div>
+                            <div class="func-content">
+                                <h4>AUTOMATE</h4>
+                                <p>Remove phantom shipments via browser automation</p>
+                            </div>
+                        </div>
+                        <div class="function-item">
+                            <div class="func-number">02</div>
+                            <div class="func-content">
+                                <h4>COLLECT</h4>
+                                <p>Log every removal: station, timestamp, shipment ID, patterns</p>
+                            </div>
+                        </div>
+                        <div class="function-item">
+                            <div class="func-number">03</div>
+                            <div class="func-content">
+                                <h4>VERIFY</h4>
+                                <p>Confirm removal success, track exceptions</p>
+                            </div>
+                        </div>
+                        <div class="function-item">
+                            <div class="func-number">04</div>
+                            <div class="func-content">
+                                <h4>ARCHIVE</h4>
+                                <p>Store comprehensive data for future analysis</p>
+                            </div>
+                        </div>
+                        <div class="function-item">
+                            <div class="func-number">05</div>
+                            <div class="func-content">
+                                <h4>REPORT</h4>
+                                <p>Auto-email stakeholders with removal summaries</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 3.5: SYSTEM DEMONSTRATION -->
+            <section class="section" style="background: linear-gradient(90deg, transparent, rgba(255, 107, 53, 0.03), transparent);">
+                <div style="max-width: 1400px; margin: 0 auto;">
+                    <div style="text-align: center; margin-bottom: 5rem;" data-scroll-reveal>
+                        <div style="font-family: 'Share Tech Mono', monospace; font-size: 0.75rem; color: var(--phantom-cyan); text-transform: uppercase; letter-spacing: 0.3em; margin-bottom: 1rem;">SYSTEM INTERFACE</div>
+                        <h2 class="section-heading">Visual Protocol</h2>
+                        <p class="description" style="max-width: 700px; margin: 1rem auto 0; font-size: 0.9rem; color: var(--phantom-orange);">* Interface shown represents v1.0 with operator interaction. Current production system (v2.0) runs fully autonomous on cloud schedule.</p>
+                    </div>
+
+                    <!-- TWO COLUMN IMAGE SHOWCASE -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; max-width: 1200px; margin: 0 auto;" data-scroll-reveal>
+                        <!-- GUI SCREENSHOT -->
+                        <div style="transform: translateY(50px); opacity: 0; transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);" class="demo-item">
+                            <div style="position: relative;">
+                                <!-- Corner brackets -->
+                                <div style="position: absolute; top: -10px; left: -10px; width: 30px; height: 30px; border-top: 2px solid var(--phantom-cyan); border-left: 2px solid var(--phantom-cyan);"></div>
+                                <div style="position: absolute; top: -10px; right: -10px; width: 30px; height: 30px; border-top: 2px solid var(--phantom-cyan); border-right: 2px solid var(--phantom-cyan);"></div>
+                                <div style="position: absolute; bottom: -10px; left: -10px; width: 30px; height: 30px; border-bottom: 2px solid var(--phantom-orange); border-left: 2px solid var(--phantom-orange);"></div>
+                                <div style="position: absolute; bottom: -10px; right: -10px; width: 30px; height: 30px; border-bottom: 2px solid var(--phantom-orange); border-right: 2px solid var(--phantom-orange);"></div>
+                                
+                                <!-- Image container -->
+                                <div style="background: rgba(0, 0, 0, 0.8); border: 1px solid var(--phantom-cyan); padding: 1rem; position: relative; overflow: hidden;">
+                                    <div style="position: absolute; top: 0; left: 0; right: 0; background: rgba(0, 217, 255, 0.1); padding: 0.5rem 1rem; font-family: 'Share Tech Mono', monospace; font-size: 0.7rem; color: var(--phantom-cyan); text-transform: uppercase; letter-spacing: 0.2em; border-bottom: 1px solid var(--phantom-cyan);">
+                                        CONTROL INTERFACE
+                                    </div>
+                                    <div style="margin-top: 2.5rem; aspect-ratio: 16/10; background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(0, 217, 255, 0.3); display: flex; align-items: center; justify-content: center; overflow: hidden; min-height: 350px;">
+                                        <img src="project11.png" alt="System GUI" style="width: 100%; height: 100%; object-fit: cover;">
+                                    </div>
+                                    <p style="margin-top: 0.75rem; font-size: 0.75rem; color: var(--text-gray); text-align: center; font-style: italic; font-family: 'Share Tech Mono', monospace;">
+                                        <strong style="color: var(--phantom-cyan);">[NOTE]</strong> First version interface, no longer in active use. For demonstration purposes only.
+                                    </p>
+                                </div>
+
+                                <!-- Label -->
+                                <div style="margin-top: 1rem; font-family: 'Rajdhani', sans-serif; font-size: 0.9rem; color: var(--text-gray); text-align: center;">
+                                    <span style="color: var(--phantom-cyan);">◆</span> Automated Processing Dashboard
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- EMAIL OUTPUT -->
+                        <div style="transform: translateY(50px); opacity: 0; transition: all 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s;" class="demo-item">
+                            <div style="position: relative;">
+                                <!-- Corner brackets -->
+                                <div style="position: absolute; top: -10px; left: -10px; width: 30px; height: 30px; border-top: 2px solid var(--phantom-cyan); border-left: 2px solid var(--phantom-cyan);"></div>
+                                <div style="position: absolute; top: -10px; right: -10px; width: 30px; height: 30px; border-top: 2px solid var(--phantom-cyan); border-right: 2px solid var(--phantom-cyan);"></div>
+                                <div style="position: absolute; bottom: -10px; left: -10px; width: 30px; height: 30px; border-bottom: 2px solid var(--phantom-orange); border-left: 2px solid var(--phantom-orange);"></div>
+                                <div style="position: absolute; bottom: -10px; right: -10px; width: 30px; height: 30px; border-bottom: 2px solid var(--phantom-orange); border-right: 2px solid var(--phantom-orange);"></div>
+                                
+                                <!-- Image container -->
+                                <div style="background: rgba(0, 0, 0, 0.8); border: 1px solid var(--phantom-cyan); padding: 1rem; position: relative; overflow: hidden;">
+                                    <div style="position: absolute; top: 0; left: 0; right: 0; background: rgba(255, 107, 53, 0.1); padding: 0.5rem 1rem; font-family: 'Share Tech Mono', monospace; font-size: 0.7rem; color: var(--phantom-orange); text-transform: uppercase; letter-spacing: 0.2em; border-bottom: 1px solid var(--phantom-orange);">
+                                        OUTPUT TRANSMISSION
+                                    </div>
+                                    <div style="margin-top: 2.5rem; aspect-ratio: 16/10; background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 107, 53, 0.3); display: flex; align-items: center; justify-content: center; overflow: hidden; min-height: 350px;">
+                                        <img src="project12.png" alt="Email Report" style="width: 100%; height: 100%; object-fit: cover;">
+                                    </div>
+                                    <p style="margin-top: 0.75rem; font-size: 0.75rem; color: var(--text-gray); text-align: center; font-style: italic; font-family: 'Share Tech Mono', monospace;">
+                                        <strong style="color: var(--phantom-orange);">[NOTE]</strong> First version interface, no longer in active use. For demonstration purposes only.
+                                    </p>
+                                </div>
+
+                                <!-- Label -->
+                                <div style="margin-top: 1rem; font-family: 'Rajdhani', sans-serif; font-size: 0.9rem; color: var(--text-gray); text-align: center;">
+                                    <span style="color: var(--phantom-orange);">◆</span> Automated Stakeholder Report
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 4: DATA ANALYTICS -->
+            <section class="section" style="background: linear-gradient(180deg, rgba(0, 0, 0, 0.95), rgba(0, 217, 255, 0.05), rgba(0, 0, 0, 0.95));">
+                <div style="max-width: 2200px; margin: 0 auto; padding: 0 2rem; width: 100%;">
+                    <div style="text-align: center; margin-bottom: 4rem;" data-scroll-reveal>
+                        <div class="section-number" style="display: inline-block; margin: 0;">03</div>
+                        <h2 class="section-heading" style="margin-bottom: 1rem;">Data Collection Phase</h2>
+                        <p class="description" style="max-width: 700px; margin: 0 auto;">Year-long systematic tracking across EU network—35K+ removals logged with station-level granularity</p>
+                    </div>
+
+                    <!-- CHARTS SIDE BY SIDE -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;" data-scroll-reveal>
+                        <!-- DAILY REMOVALS CHART -->
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                                <h3 style="font-family: 'Orbitron', sans-serif; font-size: 1.25rem; color: var(--phantom-cyan);">DAILY ELIMINATION</h3>
+                                <div style="font-family: 'Share Tech Mono', monospace; font-size: 0.65rem; color: var(--phantom-orange); text-transform: uppercase; letter-spacing: 0.2em;">2024</div>
+                            </div>
+                            
+                            <div style="background: rgba(0, 0, 0, 0.5); border: 1px solid var(--phantom-cyan); padding: 1.5rem; position: relative;">
+                                <!-- Y-axis labels -->
+                                <div style="position: absolute; left: 1rem; top: 1.5rem; bottom: 1.5rem; width: 60px; display: flex; flex-direction: column; justify-content: space-between; font-family: 'Share Tech Mono', monospace; font-size: 0.75rem; color: var(--text-gray);">
+                                    <div>18K</div>
+                                    <div>13.5K</div>
+                                    <div>9K</div>
+                                    <div>4.5K</div>
+                                    <div>0</div>
+                                </div>
+                                
+                                <!-- Chart area -->
+                                <div style="margin-left: 80px; position: relative; height: 250px;">
+                                    <!-- Grid lines -->
+                                    <div style="position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                                        <div style="height: 1px; background: rgba(0, 217, 255, 0.1);"></div>
+                                        <div style="height: 1px; background: rgba(0, 217, 255, 0.1);"></div>
+                                        <div style="height: 1px; background: rgba(0, 217, 255, 0.1);"></div>
+                                        <div style="height: 1px; background: rgba(0, 217, 255, 0.1);"></div>
+                                        <div style="height: 1px; background: rgba(0, 217, 255, 0.1);"></div>
+                                    </div>
+                                    
+                                    <!-- Line chart -->
+                                    <svg style="width: 100%; height: 100%; position: absolute; top: 0; left: 0;" viewBox="0 0 1200 300" preserveAspectRatio="none">
+                                        <defs>
+                                            <linearGradient id="chartGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                                <stop offset="0%" style="stop-color:#ff6b35;stop-opacity:0.3" />
+                                                <stop offset="100%" style="stop-color:#ff6b35;stop-opacity:0" />
+                                            </linearGradient>
+                                        </defs>
+                                        <polyline fill="none" stroke="#ff6b35" stroke-width="2" points="0,280 100,260 200,240 300,265 400,150 500,260 600,255 700,245 800,120 900,210 1000,215 1100,275 1200,270" style="filter: drop-shadow(0 0 10px rgba(255, 107, 53, 0.5));"/>
+                                        <polyline fill="url(#chartGradient)" stroke="none" points="0,280 100,260 200,240 300,265 400,150 500,260 600,255 700,245 800,120 900,210 1000,215 1100,275 1200,270 1200,300 0,300"/>
+                                    </svg>
+                                </div>
+                                
+                                <!-- X-axis dates -->
+                                <div style="margin-left: 80px; margin-top: 1rem; display: flex; justify-content: space-between; font-family: 'Share Tech Mono', monospace; font-size: 0.6rem; color: var(--text-gray);">
+                                    <div>JAN</div>
+                                    <div>MAR</div>
+                                    <div>MAY</div>
+                                    <div>JUL</div>
+                                    <div>SEP</div>
+                                    <div>NOV</div>
+                                </div>
+                                
+                                <!-- Stats overlay -->
+                                <div style="position: absolute; top: 2rem; right: 2rem; background: rgba(255, 107, 53, 0.1); border: 1px solid var(--phantom-orange); padding: 1rem; min-width: 150px;">
+                                    <div style="font-family: 'Share Tech Mono', monospace; font-size: 0.65rem; color: var(--phantom-orange); margin-bottom: 0.5rem;">PEAK</div>
+                                    <div style="font-family: 'Orbitron', sans-serif; font-size: 1.5rem; color: var(--phantom-orange); line-height: 1;">18K</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CUMULATIVE CHART -->
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                                <h3 style="font-family: 'Orbitron', sans-serif; font-size: 1.25rem; color: var(--phantom-cyan);">TOTAL SHIPMENTS REMOVED</h3>
+                                <div style="font-family: 'Share Tech Mono', monospace; font-size: 0.65rem; color: var(--phantom-orange); text-transform: uppercase; letter-spacing: 0.2em;">2024</div>
+                            </div>
+                            
+                            <div style="background: rgba(0, 0, 0, 0.5); border: 1px solid var(--phantom-cyan); padding: 1.5rem; position: relative;">
+                                <!-- Y-axis labels -->
+                                <div style="position: absolute; left: 1rem; top: 1.5rem; bottom: 1.5rem; width: 60px; display: flex; flex-direction: column; justify-content: space-between; font-family: 'Share Tech Mono', monospace; font-size: 0.75rem; color: var(--text-gray);">
+                                    <div>35K</div>
+                                    <div>26K</div>
+                                    <div>17K</div>
+                                    <div>9K</div>
+                                    <div>0</div>
+                                </div>
+                                
+                                <!-- Chart area -->
+                                <div style="margin-left: 80px; position: relative; height: 250px;">
+                                    <!-- Grid lines -->
+                                    <div style="position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                                        <div style="height: 1px; background: rgba(0, 217, 255, 0.1);"></div>
+                                        <div style="height: 1px; background: rgba(0, 217, 255, 0.1);"></div>
+                                        <div style="height: 1px; background: rgba(0, 217, 255, 0.1);"></div>
+                                        <div style="height: 1px; background: rgba(0, 217, 255, 0.1);"></div>
+                                        <div style="height: 1px; background: rgba(0, 217, 255, 0.1);"></div>
+                                    </div>
+                                    
+                                    <!-- Area chart -->
+                                    <svg style="width: 100%; height: 100%; position: absolute; top: 0; left: 0;" viewBox="0 0 1200 300" preserveAspectRatio="none">
+                                        <defs>
+                                            <linearGradient id="cumulativeGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                                <stop offset="0%" style="stop-color:#00d9ff;stop-opacity:0.4" />
+                                                <stop offset="100%" style="stop-color:#00d9ff;stop-opacity:0.05" />
+                                            </linearGradient>
+                                        </defs>
+                                        <polyline fill="none" stroke="#00d9ff" stroke-width="3" points="0,280 100,265 200,252 300,242 400,220 500,210 600,195 700,175 800,150 900,120 1000,85 1100,50 1200,10" style="filter: drop-shadow(0 0 10px rgba(0, 217, 255, 0.7));"/>
+                                        <polyline fill="url(#cumulativeGradient)" stroke="none" points="0,280 100,265 200,252 300,242 400,220 500,210 600,195 700,175 800,150 900,120 1000,85 1100,50 1200,10 1200,300 0,300"/>
+                                    </svg>
+                                </div>
+                                
+                                <!-- X-axis dates -->
+                                <div style="margin-left: 80px; margin-top: 1rem; display: flex; justify-content: space-between; font-family: 'Share Tech Mono', monospace; font-size: 0.6rem; color: var(--text-gray);">
+                                    <div>JAN</div>
+                                    <div>MAR</div>
+                                    <div>MAY</div>
+                                    <div>JUL</div>
+                                    <div>SEP</div>
+                                    <div>NOV</div>
+                                </div>
+                                
+                                <!-- Stats overlay -->
+                                <div style="position: absolute; top: 2rem; right: 2rem; background: rgba(0, 217, 255, 0.1); border: 1px solid var(--phantom-cyan); padding: 1rem; min-width: 150px;">
+                                    <div style="font-family: 'Share Tech Mono', monospace; font-size: 0.65rem; color: var(--phantom-cyan); margin-bottom: 0.5rem;">TOTAL</div>
+                                    <div style="font-family: 'Orbitron', sans-serif; font-size: 1.5rem; color: var(--phantom-cyan); line-height: 1;">35K+</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 5: RESULTS -->
+            <section class="section results-section">
+                <div style="max-width: 2200px; margin: 0 auto; padding: 0 2rem;">
+                    <div style="text-align: center; margin-bottom: 4rem;" data-scroll-reveal>
+                        <div class="section-number" style="display: inline-block; margin: 0;">04</div>
+                        <h2 class="section-heading" style="margin-bottom: 0;">Complete Impact</h2>
+                    </div>
+                    <div class="results-mosaic">
+                    <div class="result-tile" data-scroll-reveal>
+                        <div class="result-value">1,040 +/-</div>
+                        <div class="result-label">Hours Saved<br>Annually</div>
+                    </div>
+                    <div class="result-tile" data-scroll-reveal>
+                        <div class="result-value">~£19K</div>
+                        <div class="result-label">Annual Labor<br>Cost Avoided</div>
+                    </div>
+                    <div class="result-tile" data-scroll-reveal>
+                        <div class="result-value">~£80K</div>
+                        <div class="result-label">Process Change<br>Savings</div>
+                    </div>
+                    <div class="result-tile" data-scroll-reveal>
+                        <div class="result-value">~£99K</div>
+                        <div class="result-label">Total Annual<br>Impact</div>
+                    </div>
+                    <div class="result-tile" data-scroll-reveal>
+                        <div class="result-value">~35K</div>
+                        <div class="result-label">Data Points<br>Collected</div>
+                    </div>
+                    <div class="result-tile" data-scroll-reveal>
+                        <div class="result-value">EU</div>
+                        <div class="result-label">Network-Wide<br>Analysis</div>
+                    </div>
+                    <div class="result-tile" data-scroll-reveal>
+                        <div class="result-value">SOP</div>
+                        <div class="result-label">Process Changes<br>Implemented</div>
+                    </div>
+                    <div class="result-tile" data-scroll-reveal>
+                        <div class="result-value">2025+</div>
+                        <div class="result-label">Root Cause<br>Eliminated</div>
+                    </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <p class="footer-text">
+                    DISCLAIMER: Projects represent real work completed during employment. Content reviewed to exclude confidential information and comply with NDAs. Metrics and processes generalized where necessary. Interfaces shown represent early versions no longer in active use. Demonstrates actual contributions, methodology, and measurable impact.
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Opening sequence
+        setTimeout(() => {
+            document.getElementById('openingScreen').classList.add('hide');
+            setTimeout(() => {
+                document.getElementById('mainContent').classList.add('visible');
+                document.getElementById('navBar').classList.add('visible');
+            }, 600);
+        }, 4000);
+
+        // Scroll reveal
+        const observerOptions = {
+            threshold: 0.2,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('[data-scroll-reveal]').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Also observe demo items
+        document.querySelectorAll('.demo-item').forEach(el => {
+            const demoObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.transform = 'translateY(0)';
+                        entry.target.style.opacity = '1';
+                    }
+                });
+            }, observerOptions);
+            demoObserver.observe(el);
+        });
+
+        // Skip intro on click
+        document.getElementById('openingScreen').addEventListener('click', () => {
+            document.getElementById('openingScreen').classList.add('hide');
+            setTimeout(() => {
+                document.getElementById('mainContent').classList.add('visible');
+                document.getElementById('navBar').classList.add('visible');
+            }, 600);
+        });
+
+        // Force EXIT button to stay fixed (failsafe) - lock positioning permanently
+        const navBar = document.getElementById('navBar');
+        if (navBar) {
+            // Lock all positioning properties
+            navBar.style.setProperty('position', 'fixed', 'important');
+            navBar.style.setProperty('top', '20px', 'important');
+            navBar.style.setProperty('left', '20px', 'important');
+            navBar.style.setProperty('z-index', '99999', 'important');
+
+            // Ensure visibility after intro
+            setTimeout(() => {
+                navBar.style.opacity = '1';
+            }, 100);
+        }
+    </script>
+    <div id="lightbox" class="lightbox"><span class="lightbox-close" id="lightbox-close">&times;</span><img class="lightbox-content" id="lightbox-img" src="" alt="Zoomed image"></div>
+    <script>(function() { const lb = document.getElementById('lightbox'), img = document.getElementById('lightbox-img'), cls = document.getElementById('lightbox-close'); document.querySelectorAll('img[src*=".png"], img[src*=".jpg"], img[src*=".jpeg"], .image-wrapper img').forEach(i => { i.classList.add('zoomable-image'); i.style.cursor = 'zoom-in'; i.addEventListener('click', function(e) { e.preventDefault(); lb.classList.add('active'); img.src = this.src; document.body.style.overflow = 'hidden'; }); }); function close() { lb.classList.remove('active'); document.body.style.overflow = ''; } cls.addEventListener('click', close); lb.addEventListener('click', e => { if (e.target === lb) close(); }); document.addEventListener('keydown', e => { if (e.key === 'Escape' && lb.classList.contains('active')) close(); }); })();</script>
+
+    <!-- EXIT BUTTON - Absolutely fixed at end of body -->
+    <nav class="nav-minimal" id="navBar" style="position: fixed; top: 20px; left: 20px; z-index: 99999;">
+        <a href="STRONA.html" class="nav-back">
+            <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+            </svg>
+            <span>EXIT</span>
+        </a>
+    </nav>
+</body>
+</html>

@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fill Rate Optimizer | Denis Gwizdala</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #0f0505;
+            --bg-card: #1a0808;
+            --bg-elevated: #220c0c;
+            --accent-primary: #ef4444;
+            --accent-secondary: #dc2626;
+            --accent-glow: rgba(239, 68, 68, 0.3);
+            --text-primary: #fef2f2;
+            --text-secondary: #fca5a5;
+            --text-muted: #f87171;
+            --text-dim: #ef4444;
+            --border: #3f1212;
+            --warning: #f59e0b;
+            --success: #10b981;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(15, 5, 5, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-back {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .nav-back:hover {
+            color: var(--accent-primary);
+            transform: translateX(-4px);
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--accent-primary);
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--accent-primary);
+            border-radius: 50%;
+            box-shadow: 0 0 12px var(--accent-glow);
+            animation: pulse-status 2s ease infinite;
+        }
+
+        @keyframes pulse-status {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Hero */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 8rem 2rem 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .grid-bg {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(var(--border) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 40px 40px;
+            opacity: 0.3;
+            mask-image: radial-gradient(ellipse at center, black 20%, transparent 80%);
+        }
+
+        .hero-glow {
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+            filter: blur(100px);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .system-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--accent-primary);
+            border-left: 3px solid var(--accent-primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 2rem;
+        }
+
+        .hero-title {
+            font-size: clamp(3rem, 8vw, 5.5rem);
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-title .highlight {
+            color: var(--accent-primary);
+            text-shadow: 0 0 30px var(--accent-glow);
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            max-width: 900px;
+            margin-bottom: 3rem;
+            line-height: 1.7;
+        }
+
+        /* System Metrics */
+        .system-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            max-width: 1000px;
+        }
+
+        .metric-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--accent-primary);
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--accent-primary);
+            transform: scaleX(0);
+            transition: transform 0.5s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-4px);
+            border-left-color: var(--accent-secondary);
+            box-shadow: 0 8px 24px rgba(239, 68, 68, 0.2);
+        }
+
+        .metric-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .metric-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            line-height: 1;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Section */
+        .section {
+            padding: 6rem 2rem;
+            position: relative;
+        }
+
+        .section-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            margin-bottom: 4rem;
+        }
+
+        .section-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .section-description {
+            font-size: 1.125rem;
+            color: var(--text-muted);
+            max-width: 700px;
+        }
+
+        /* Terminal Window */
+        .terminal-window {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 3rem;
+        }
+
+        .terminal-header {
+            background: var(--bg-card);
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .terminal-dot.red { background: var(--accent-primary); }
+        .terminal-dot.yellow { background: var(--warning); }
+        .terminal-dot.green { background: var(--success); }
+
+        .terminal-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-left: auto;
+        }
+
+        .terminal-content {
+            padding: 2rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            line-height: 1.8;
+        }
+
+        .terminal-line {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .terminal-prompt {
+            color: var(--accent-primary);
+            user-select: none;
+        }
+
+        .terminal-text {
+            color: var(--text-muted);
+        }
+
+        .terminal-highlight {
+            color: var(--accent-secondary);
+            font-weight: 600;
+        }
+
+        /* Evolution Timeline */
+        .evolution-grid {
+            display: grid;
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .evolution-phase {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--accent-primary);
+            padding: 2rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .evolution-phase:hover {
+            transform: translateX(8px);
+            box-shadow: 0 8px 24px rgba(239, 68, 68, 0.2);
+        }
+
+        .phase-badge {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            padding: 0.375rem 0.75rem;
+            border: 1px solid var(--accent-primary);
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--accent-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 700;
+        }
+
+        .phase-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--accent-primary);
+        }
+
+        .phase-period {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            color: var(--text-dim);
+            margin-bottom: 1rem;
+        }
+
+        .phase-desc {
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        /* Image Grid */
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+
+        .image-showcase-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-top: 3px solid var(--accent-primary);
+            padding: 1rem;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .image-showcase-container:hover {
+            border-top-width: 5px;
+            box-shadow: 0 8px 32px rgba(239, 68, 68, 0.2);
+        }
+
+        .image-showcase-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+            filter: brightness(0.95) contrast(1.05);
+            transition: transform 0.5s ease, filter 0.3s ease;
+        }
+
+        .image-showcase-container:hover img {
+            transform: scale(1.03);
+            filter: brightness(1) contrast(1.08);
+        }
+
+        .image-caption {
+            padding: 1rem 0.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .image-caption span {
+            color: var(--accent-primary);
+        }
+
+        /* Cost Savings Highlight */
+        .savings-banner {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(220, 38, 38, 0.05) 100%);
+            border: 2px solid var(--accent-primary);
+            border-radius: 8px;
+            padding: 3rem;
+            margin: 4rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .savings-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--accent-primary);
+            animation: scan 3s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .savings-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            color: var(--accent-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+
+        .savings-amount {
+            font-size: 4rem;
+            font-weight: 900;
+            color: var(--accent-primary);
+            line-height: 1;
+            margin-bottom: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .savings-desc {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* Results Grid */
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+
+        .result-box {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--accent-primary);
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .result-value {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            line-height: 1;
+            margin-bottom: 0.5rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .result-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Footer */
+        .footer {
+            padding: 3rem 2rem;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .footer-text {
+            font-size: 0.8125rem;
+            color: var(--text-dim);
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .image-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .system-metrics {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animations */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-up {
+            animation: slideInUp 0.8s ease forwards;
+            opacity: 0;
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+
+        /* Lightbox */
+        .lightbox { display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.95); align-items: center; justify-content: center; animation: fadeIn 0.3s ease; }
+        .lightbox.active { display: flex; }
+        .lightbox-content { max-width: 90%; max-height: 90%; object-fit: contain; animation: zoomIn 0.3s ease; }
+        .lightbox-close { position: absolute; top: 20px; right: 40px; color: white; font-size: 40px; font-weight: bold; cursor: pointer; transition: color 0.3s; z-index: 10000; }
+        .lightbox-close:hover { color: #ccc; }
+        .zoomable-image { cursor: zoom-in; transition: opacity 0.3s; }
+        .zoomable-image:hover { opacity: 0.9; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="STRONA.html" class="nav-back">
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+                <span>cd ..</span>
+            </a>
+            <div class="status-indicator">
+                <span class="status-dot"></span>
+                <span>OPTIMIZER ACTIVE</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="grid-bg"></div>
+        <div class="hero-glow"></div>
+        <div class="hero-content">
+            <div class="system-label fade-up">
+                <span>●</span> COST OPTIMIZATION ENGINE
+            </div>
+            <h1 class="hero-title fade-up delay-1">
+                Fill Rate<br><span class="highlight">Optimizer</span>
+            </h1>
+            <p class="hero-subtitle fade-up delay-2">
+                Mission-critical EU-wide pricing system—evolved from manual spreadsheets to Standard Operating Procedure adopted across entire EU Supply Chain by 2023 Q1. Now fully autonomous cloud execution, eliminating ~40 labor hours weekly and saving over ~£1M annually through real-time fill rate validation
+            </p>
+            <div class="system-metrics fade-up delay-3">
+                <div class="metric-card">
+                    <div class="metric-label">> annual_savings</div>
+                    <div class="metric-value">~£1M</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">> hours_saved</div>
+                    <div class="metric-value">~40/wk</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">> eu_adoption</div>
+                    <div class="metric-value">100%</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">> sop_status</div>
+                    <div class="metric-value">CORE</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem -->
+    <section class="section">
+        <div class="section-inner">
+            <div class="section-header">
+                <span class="section-tag">// THE CHALLENGE</span>
+                <h2 class="section-title">Manual Operations at EU Scale</h2>
+                <p class="section-description">
+                    EU network expansion created an unsustainable crisis—operators manually reviewed reports every 30 minutes, consuming 40 labor hours weekly across the region while blind price decisions wasted over £1M annually
+                </p>
+            </div>
+
+            <div class="terminal-window">
+                <div class="terminal-header">
+                    <span class="terminal-dot red"></span>
+                    <span class="terminal-dot yellow"></span>
+                    <span class="terminal-dot green"></span>
+                    <span class="terminal-title">cost_analysis.log</span>
+                </div>
+                <div class="terminal-content">
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">$</span>
+                        <span class="terminal-text">Analyzing EU-wide operational crisis...</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">></span>
+                        <span class="terminal-text">Manual labor: <span class="terminal-highlight">~40 hours per week across EU</span></span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">></span>
+                        <span class="terminal-text">Report frequency: <span class="terminal-highlight">Every ~30 minutes</span></span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">></span>
+                        <span class="terminal-text">Data latency: <span class="terminal-highlight">STALE - no live checks</span></span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">></span>
+                        <span class="terminal-text">Price decisions: <span class="terminal-highlight">BLIND - no real-time validation</span></span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">></span>
+                        <span class="terminal-text">Cycle awareness: <span class="terminal-highlight">NONE - morning prices applied all day</span></span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">></span>
+                        <span class="terminal-text">SOP compliance: <span class="terminal-highlight">VIOLATED - surging above threshold</span></span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">></span>
+                        <span class="terminal-text">Scalability: <span class="terminal-highlight">IMPOSSIBLE - unsustainable at EU scale</span></span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">!</span>
+                        <span class="terminal-text" style="color: var(--accent-primary);">CRITICAL: Operations depend on price optimization - manual process failing</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="savings-banner">
+                <div class="savings-title">// CRITICAL IMPACT - EU OPERATIONS</div>
+                <div class="savings-amount">~£1M</div>
+                <div class="savings-desc">
+                    Annual waste eliminated from blind price surges—plus ~40 hours weekly of manual labor completely removed. By 2023 Q1, this tool became Standard Operating Procedure across entire EU Supply Chain. Operations now rely on this system 24/7 for critical pricing decisions, validating fill rates in real-time before every surge to ensure SOP compliance.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Evolution -->
+    <section class="section" style="background: var(--bg-card);">
+        <div class="section-inner">
+            <div class="section-header">
+                <span class="section-tag">// SOLUTION EVOLUTION</span>
+                <h2 class="section-title">From Prototype to EU Standard Operating Procedure</h2>
+                <p class="section-description">
+                    Four-phase transformation achieving full EU adoption by 2023 Q1—becoming the core system all EU Supply Chain operations depend on daily
+                </p>
+            </div>
+
+            <div class="evolution-grid">
+                <div class="evolution-phase">
+                    <span class="phase-badge">PHASE 0</span>
+                    <h3 class="phase-title">Manual Process</h3>
+                    <div class="phase-period">Pre-2022</div>
+                    <p class="phase-desc">
+                        Operators manually reviewed reports every ~30 minutes, filtering thousands of rows to identify stations needing price increases. No live data validation—decisions made on stale information, causing massive overspend.
+                    </p>
+                </div>
+
+                <div class="evolution-phase">
+                    <span class="phase-badge">PHASE 1</span>
+                    <h3 class="phase-title">Dashboard Phase</h3>
+                    <div class="phase-period">2022 Q2</div>
+                    <p class="phase-desc">
+                        Built Python/Tkinter interface converting raw reports into organized UI with list boxes by delivery cycle. Highlighted only eligible stations for price increases. Reduced manual review time from ~40 hours/week to ~20 hours/week—proving the concept and gaining early adoption from EU operations teams.
+                    </p>
+                </div>
+
+                <div class="evolution-phase">
+                    <span class="phase-badge">PHASE 2</span>
+                    <h3 class="phase-title">Semi-Automation & SOP Integration</h3>
+                    <div class="phase-period">2023 Q1 - FULL EU ADOPTION</div>
+                    <p class="phase-desc">
+                        <strong style="color: var(--accent-primary);">CRITICAL MILESTONE:</strong> Integrated Selenium automation for live fill-rate validation—this breakthrough cut unnecessary surges by 50%+ and saved over £1M annually. System formally adopted as Standard Operating Procedure across entire EU Supply Chain. All EU stations now rely on this tool for daily price optimization. Added Slack webhooks for stakeholder notifications and real-time SOP compliance checks.
+                    </p>
+                </div>
+
+                <div class="evolution-phase">
+                    <span class="phase-badge">PHASE 3</span>
+                    <h3 class="phase-title">Full Cloud Automation</h3>
+                    <div class="phase-period">2024 Q2</div>
+                    <p class="phase-desc">
+                        Fully autonomous cloud-based system—the mission-critical tool that entire EU Supply Chain now depends on 24/7. Configurable SOP parameters (buffer thresholds, price caps), automated Selenium-based price adjustments, fail-safe contingency alerts, S3 cloud logging for business intelligence, and back-end API enabling stations to trigger requests directly. Zero human input required—runs on schedule with complete audit trail while eliminating all 40 hours/week of manual labor.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Screenshots -->
+    <section class="section">
+        <div class="section-inner">
+            <div class="section-header">
+                <span class="section-tag">// SYSTEM INTERFACE</span>
+                <h2 class="section-title">Tool Evolution (Pre-Cloud)</h2>
+                <p class="section-description">
+                    Historical GUI from manual/semi-automated phases—now fully cloud-based with no interface required
+                </p>
+            </div>
+
+            <div class="image-grid">
+                <div class="image-showcase-container">
+                    <img src="project4.png" alt="Dashboard Interface" loading="lazy">
+                    <div class="image-caption">
+                        <span>></span> dashboard
+                    </div>
+                    <p style="margin-top: 0.5rem; font-size: 0.8125rem; color: var(--text-tertiary); text-align: center; font-style: italic;">
+                        <strong>Note:</strong> First version interface, no longer in active use. For demonstration purposes only.
+                    </p>
+                </div>
+                <div class="image-showcase-container">
+                    <img src="project7.png" alt="Live Fill Rate Check" loading="lazy">
+                    <div class="image-caption">
+                        <span>></span> eu_live_fill_rate_dashboard
+                    </div>
+                    <p style="margin-top: 0.5rem; font-size: 0.8125rem; color: var(--text-tertiary); text-align: center; font-style: italic;">
+                        <strong>Note:</strong> First version interface, no longer in active use. For demonstration purposes only.
+                    </p>
+                </div>
+                <div class="image-showcase-container">
+                    <img src="project8.png" alt="Surge Configuration" loading="lazy">
+                    <div class="image-caption">
+                        <span>></span> surge_configuration
+                    </div>
+                    <p style="margin-top: 0.5rem; font-size: 0.8125rem; color: var(--text-tertiary); text-align: center; font-style: italic;">
+                        <strong>Note:</strong> First version interface, no longer in active use. For demonstration purposes only.
+                    </p>
+                </div>
+            </div>
+
+            <div class="section-header" style="margin-top: 4rem;">
+                <span class="section-tag">// AUTOMATED NOTIFICATIONS</span>
+                <h2 class="section-title">Stakeholder Alerts & Guardrails</h2>
+                <p class="section-description">
+                    Real-time Slack webhooks for successful surges and failure contingencies
+                </p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div class="image-showcase-container">
+                    <img src="project5.png" alt="Surge Success Notification" loading="lazy">
+                    <div class="image-caption">
+                        <span>></span> surge_success.webhook
+                    </div>
+                    <p style="margin-top: 0.5rem; font-size: 0.8125rem; color: var(--text-tertiary); text-align: center; font-style: italic;">
+                        <strong>Note:</strong> First version interface, no longer in active use. For demonstration purposes only.
+                    </p>
+                </div>
+                <div class="image-showcase-container">
+                    <img src="project6.png" alt="Attention Required Alert" loading="lazy">
+                    <div class="image-caption">
+                        <span>></span> attention_required.webhook
+                    </div>
+                    <p style="margin-top: 0.5rem; font-size: 0.8125rem; color: var(--text-tertiary); text-align: center; font-style: italic;">
+                        <strong>Note:</strong> First version interface, no longer in active use. For demonstration purposes only.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- The Million-Pound Fix -->
+    <section class="section" style="background: var(--bg-card);">
+        <div class="section-inner">
+            <div class="section-header">
+                <span class="section-tag">// ROOT CAUSE ANALYSIS</span>
+                <h2 class="section-title">The Million-Pound Problem</h2>
+            </div>
+
+            <div style="background: var(--bg-elevated); border: 1px solid var(--border); border-left: 4px solid var(--accent-primary); padding: 3rem; margin-bottom: 3rem;">
+                <h3 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem; color: var(--accent-primary);">What Was Actually Happening</h3>
+                
+                <div style="display: grid; gap: 2rem;">
+                    <div>
+                        <h4 style="font-family: 'JetBrains Mono', monospace; font-size: 1rem; color: var(--text-primary); margin-bottom: 0.75rem;">❌ PROBLEM 1: Blind Surging</h4>
+                        <p style="color: var(--text-muted); line-height: 1.7;">
+                            Reports arrived every 30 minutes showing blocks needing coverage. By the time operators reviewed them and raised prices, the data was already stale. We had no visibility into what was happening <strong style="color: var(--text-primary);">right now</strong>—no live fill rate checks before surging.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h4 style="font-family: 'JetBrains Mono', monospace; font-size: 1rem; color: var(--text-primary); margin-bottom: 0.75rem;">❌ PROBLEM 2: SOP Violations</h4>
+                        <p style="color: var(--text-muted); line-height: 1.7;">
+                            Standard Operating Procedures defined threshold fill rates—blocks above these should NOT be surged. But without live data, we were <strong style="color: var(--text-primary);">blindly raising prices on blocks that were already filling</strong>, wasting massive amounts of money.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h4 style="font-family: 'JetBrains Mono', monospace; font-size: 1rem; color: var(--text-primary); margin-bottom: 0.75rem;">❌ PROBLEM 3: All-Day Pricing</h4>
+                        <p style="color: var(--text-muted); line-height: 1.7;">
+                            Worst of all: when someone raised prices in the morning cycle, those elevated rates <strong style="color: var(--text-primary);">stayed applied for ALL cycles throughout the day</strong>—even evening blocks that didn't need surging. We were paying premium rates all day based on morning data.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: rgba(239, 68, 68, 0.1); border: 2px solid var(--accent-primary); padding: 3rem; border-radius: 8px;">
+                <h3 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem; color: var(--accent-primary);">✓ THE FIX</h3>
+                
+                <p style="color: var(--text-muted); line-height: 1.8; margin-bottom: 1.5rem;">
+                    I identified this systemic issue and built a solution that checks <strong style="color: var(--text-primary);">live fill rate data</strong> from the scheduling platform <strong style="color: var(--text-primary);">BEFORE</strong> every price adjustment. The tool now:
+                </p>
+
+                <ul style="list-style: none; display: grid; gap: 1rem;">
+                    <li style="display: flex; gap: 1rem; align-items: start;">
+                        <span style="color: var(--success); font-size: 1.25rem;">✓</span>
+                        <span style="color: var(--text-muted);">Validates fill rates in real-time against SOP thresholds—no blind surging</span>
+                    </li>
+                    <li style="display: flex; gap: 1rem; align-items: start;">
+                        <span style="color: var(--success); font-size: 1.25rem;">✓</span>
+                        <span style="color: var(--text-muted);">Applies cycle-specific pricing—morning rates don't carry to evening</span>
+                    </li>
+                    <li style="display: flex; gap: 1rem; align-items: start;">
+                        <span style="color: var(--success); font-size: 1.25rem;">✓</span>
+                        <span style="color: var(--text-muted);">Only surges when data confirms it's necessary and compliant</span>
+                    </li>
+                </ul>
+
+                <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border);">
+                    <p style="font-family: 'JetBrains Mono', monospace; font-size: 1.125rem; color: var(--accent-primary); font-weight: 700;">
+                        RESULT: Over ~50% reduction in surge requests → ~£1M annual savings
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Results -->
+    <section class="section">
+        <div class="section-inner">
+            <div class="section-header" style="text-align: center; max-width: 800px; margin: 0 auto 4rem;">
+                <span class="section-tag">// MEASURABLE IMPACT</span>
+                <h2 class="section-title">Transformation Results</h2>
+                <p class="section-description">
+                    Quantifiable improvements across cost efficiency, labor savings, and operational resilience
+                </p>
+            </div>
+
+            <div class="results-grid">
+                <div class="result-box">
+                    <div class="result-value">~£1M</div>
+                    <div class="result-label">Annual Savings</div>
+                </div>
+                <div class="result-box">
+                    <div class="result-value">~40hrs</div>
+                    <div class="result-label">Saved Per Week</div>
+                </div>
+                <div class="result-box">
+                    <div class="result-value">EU-Wide</div>
+                    <div class="result-label">SOP Adoption</div>
+                </div>
+                <div class="result-box">
+                    <div class="result-value">24/7</div>
+                    <div class="result-label">Critical Operations</div>
+                </div>
+            </div>
+
+            <div style="margin-top: 4rem; padding: 2.5rem; background: var(--bg-elevated); border: 1px solid var(--border); border-left: 3px solid var(--accent-primary);">
+                <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1.5rem;">Key Benefits</h3>
+                <ul style="list-style: none; display: grid; gap: 1rem;">
+                    <li style="display: flex; gap: 1rem; align-items: start;">
+                        <span style="color: var(--accent-primary); font-size: 1.25rem;">✓</span>
+                        <span style="color: var(--text-muted);"><strong style="color: var(--text-primary);">Mission-Critical EU Standard:</strong> Adopted as core SOP across entire EU Supply Chain by 2023 Q1—all operations now depend on this system 24/7 for price optimization</span>
+                    </li>
+                    <li style="display: flex; gap: 1rem; align-items: start;">
+                        <span style="color: var(--accent-primary); font-size: 1.25rem;">✓</span>
+                        <span style="color: var(--text-muted);"><strong style="color: var(--text-primary);">~40 Hours Weekly Eliminated:</strong> Completely removed manual report review burden (equivalent to ~1 FTE / ~£38,400 annual labor cost savings)</span>
+                    </li>
+                    <li style="display: flex; gap: 1rem; align-items: start;">
+                        <span style="color: var(--accent-primary); font-size: 1.25rem;">✓</span>
+                        <span style="color: var(--text-muted);"><strong style="color: var(--text-primary);">~£1M Annual Savings:</strong> ~45% reduction in EU offer spending through real-time fill rate validation—eliminating blind surges and SOP violations</span>
+                    </li>
+                    <li style="display: flex; gap: 1rem; align-items: start;">
+                        <span style="color: var(--accent-primary); font-size: 1.25rem;">✓</span>
+                        <span style="color: var(--text-muted);"><strong style="color: var(--text-primary);">EU-wide Scalability:</strong> Handles network-wide delivery block optimization without additional headcount—future-proofed for expansion</span>
+                    </li>
+                    <li style="display: flex; gap: 1rem; align-items: start;">
+                        <span style="color: var(--accent-primary); font-size: 1.25rem;">✓</span>
+                        <span style="color: var(--text-muted);"><strong style="color: var(--text-primary);">Operational Resilience:</strong> Maintained coverage during strikes, seasonal peaks, and large-scale events—proactive alerting prevented customer promise failures</span>
+                    </li>
+                    <li style="display: flex; gap: 1rem; align-items: start;">
+                        <span style="color: var(--accent-primary); font-size: 1.25rem;">✓</span>
+                        <span style="color: var(--text-muted);"><strong style="color: var(--text-primary);">Full Transparency:</strong> Automated Slack notifications with S3 cloud logging—complete audit trail for business intelligence and stakeholder visibility</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p class="footer-text mono">
+            <strong>DISCLAIMER:</strong> Portfolio content is for demonstration only. It showcases tools I personally developed and does not represent current systems, processes, or proprietary information at Amazon or any other company. GUI images shown are from historical phases and no longer in use. Figures and cost savings estimates are based on internal operational data analysis, historical offer spend patterns, and measured reductions in surge frequency—calculated using actual before/after metrics during the deployment period. All values have been approximated and adjusted for confidentiality purposes while maintaining proportional accuracy to demonstrate impact.
+        </p>
+    </footer>
+
+    <script>
+        // Fade up animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationPlayState = 'running';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-up').forEach(el => {
+            el.style.animationPlayState = 'paused';
+            observer.observe(el);
+        });
+    </script>
+    <div id="lightbox" class="lightbox"><span class="lightbox-close" id="lightbox-close">&times;</span><img class="lightbox-content" id="lightbox-img" src="" alt="Zoomed image"></div>
+    <script>(function() { const lb = document.getElementById('lightbox'), img = document.getElementById('lightbox-img'), cls = document.getElementById('lightbox-close'); document.querySelectorAll('img[src*=".png"], img[src*=".jpg"], img[src*=".jpeg"], .image-wrapper img').forEach(i => { i.classList.add('zoomable-image'); i.style.cursor = 'zoom-in'; i.addEventListener('click', function(e) { e.preventDefault(); lb.classList.add('active'); img.src = this.src; document.body.style.overflow = 'hidden'; }); }); function close() { lb.classList.remove('active'); document.body.style.overflow = ''; } cls.addEventListener('click', close); lb.addEventListener('click', e => { if (e.target === lb) close(); }); document.addEventListener('keydown', e => { if (e.key === 'Escape' && lb.classList.contains('active')) close(); }); })();</script>
+</body>
+</html>

@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Work Monitoring Tool | Task Queue Protection System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #0f0f0f;
+            --bg-darker: #0a0a0a;
+            --bg-elevated: #1a1a1a;
+            --amber-primary: #F59E0B;
+            --amber-light: #FCD34D;
+            --amber-dark: #D97706;
+            --red-alert: #EF4444;
+            --red-dark: #DC2626;
+            --green-success: #10B981;
+            --slate-100: #f1f5f9;
+            --slate-300: #cbd5e1;
+            --slate-500: #64748b;
+            --slate-700: #334155;
+            --slate-800: #1e293b;
+            --text-primary: #ffffff;
+            --text-secondary: #d1d5db;
+            --text-dim: #9ca3af;
+            --border: #2a2a2a;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .mono {
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        /* Section Divider with Animation */
+        .section-divider {
+            position: relative;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            margin: 4rem 0;
+        }
+
+        .section-divider::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 0%;
+            background: linear-gradient(180deg,
+                transparent 0%,
+                rgba(245, 158, 11, 0.3) 20%,
+                rgba(245, 158, 11, 0.6) 50%,
+                rgba(245, 158, 11, 0.3) 80%,
+                transparent 100%);
+            transition: height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .section-divider.visible::before {
+            height: 100%;
+        }
+
+        .section-divider-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(252, 211, 77, 0.2));
+            border: 2px solid rgba(245, 158, 11, 0.4);
+            backdrop-filter: blur(16px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+            transform: scale(0);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0.3s;
+        }
+
+        .section-divider.visible .section-divider-icon {
+            transform: scale(1);
+        }
+
+        .section-divider-icon::before {
+            content: '';
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--amber-primary), var(--amber-light));
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.5);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+        }
+
+        /* Scroll Progress Bar */
+        .scroll-progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--amber-primary), var(--amber-light));
+            z-index: 9999;
+            transition: width 0.1s ease-out;
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+        }
+
+        /* Fade-in animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .fade-in-left {
+            opacity: 0;
+            transform: translateX(-30px);
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .fade-in-left.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .fade-in-right {
+            opacity: 0;
+            transform: translateX(30px);
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .fade-in-right.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(15, 15, 15, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 2px solid var(--amber-primary);
+            transform: translateY(0);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav.nav-hidden {
+            transform: translateY(-100%);
+        }
+
+        .nav-inner {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 1.5rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-back {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .nav-back:hover {
+            color: var(--amber-primary);
+            transform: translateX(-4px);
+        }
+
+        .nav-status {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.625rem 1.25rem;
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid var(--amber-primary);
+            border-radius: 6px;
+            font-size: 0.8125rem;
+            font-weight: 700;
+            color: var(--amber-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .status-pulse {
+            width: 8px;
+            height: 8px;
+            background: var(--amber-primary);
+            border-radius: 50%;
+            animation: pulse-amber 2s ease-in-out infinite;
+            box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
+        }
+
+        @keyframes pulse-amber {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
+            }
+            50% {
+                box-shadow: 0 0 0 10px rgba(245, 158, 11, 0);
+            }
+        }
+
+        /* Container */
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 8rem 3rem 4rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            margin-bottom: 6rem;
+            position: relative;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.625rem 1.25rem;
+            background: rgba(245, 158, 11, 0.1);
+            border: 2px solid var(--amber-primary);
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: var(--amber-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 2rem;
+            animation: glow-pulse 3s ease-in-out infinite;
+        }
+
+        .alert-icon {
+            width: 8px;
+            height: 8px;
+            background: var(--amber-primary);
+            border-radius: 50%;
+            animation: alert-blink 1.5s ease-in-out infinite;
+            box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
+        }
+
+        @keyframes alert-blink {
+            0%, 100% {
+                opacity: 1;
+                box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
+            }
+            50% {
+                opacity: 0.3;
+                box-shadow: 0 0 0 8px rgba(245, 158, 11, 0);
+            }
+        }
+
+        @keyframes glow-pulse {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 30px rgba(245, 158, 11, 0.6);
+            }
+        }
+
+        .hero-title {
+            font-size: clamp(3rem, 6vw, 5.5rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--amber-light) 0%, var(--amber-primary) 50%, var(--red-alert) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+            max-width: 800px;
+            margin: 0 auto 3rem;
+        }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .hero-stat {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .hero-stat:hover {
+            border-color: var(--amber-primary);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(245, 158, 11, 0.2);
+        }
+
+        .hero-stat-value {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--amber-primary);
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero-stat-label {
+            font-size: 0.875rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+        }
+
+        /* Section Heading */
+        .section {
+            margin-bottom: 6rem;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-label {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.875rem;
+            color: var(--amber-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .section-label::before,
+        .section-label::after {
+            content: '';
+            width: 40px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--amber-primary), transparent);
+            animation: pulse-line 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse-line {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .section-title {
+            font-size: clamp(2.5rem, 4vw, 3.5rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .section-description {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Problem Grid */
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .problem-card {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.05) 100%);
+            border: 2px solid var(--red-dark);
+            border-radius: 16px;
+            padding: 2.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .problem-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--red-alert), var(--red-dark));
+        }
+
+        .problem-number {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.875rem;
+            color: var(--red-alert);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .problem-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .problem-text {
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* Solution Features */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 3rem;
+            margin-bottom: 4rem;
+        }
+
+        .feature-card {
+            background: var(--bg-elevated);
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            padding: 3rem;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--amber-primary), var(--amber-light));
+            transition: width 0.4s ease;
+        }
+
+        .feature-card:hover::before {
+            width: 100%;
+        }
+
+        .feature-card:hover {
+            border-color: var(--amber-primary);
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(245, 158, 11, 0.3);
+        }
+
+        .feature-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .feature-description {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .feature-list li {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-secondary);
+            font-size: 0.9375rem;
+        }
+
+        .feature-list li::before {
+            content: '→';
+            color: var(--amber-primary);
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+
+        /* Timeline Section */
+        .timeline {
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(180deg, var(--amber-primary), var(--red-alert));
+            transform: translateX(-50%);
+        }
+
+        .timeline-item {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            margin-bottom: 4rem;
+            position: relative;
+        }
+
+        .timeline-marker {
+            position: absolute;
+            left: 50%;
+            top: 2rem;
+            transform: translateX(-50%);
+            width: 24px;
+            height: 24px;
+            background: var(--amber-primary);
+            border: 4px solid var(--bg-dark);
+            border-radius: 50%;
+            z-index: 10;
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.8);
+        }
+
+        .timeline-content {
+            background: var(--bg-elevated);
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            padding: 2.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-content:hover {
+            border-color: var(--amber-primary);
+            box-shadow: 0 8px 30px rgba(245, 158, 11, 0.2);
+        }
+
+        .timeline-item:nth-child(odd) .timeline-content:first-child {
+            grid-column: 1;
+        }
+
+        .timeline-item:nth-child(even) .timeline-content:first-child {
+            grid-column: 2;
+        }
+
+        .timeline-date {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.875rem;
+            color: var(--amber-primary);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+        }
+
+        .timeline-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .timeline-text {
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .timeline-stat {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.75rem 1.5rem;
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid var(--amber-primary);
+            border-radius: 8px;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--amber-primary);
+        }
+
+        /* Image Showcase */
+        .image-showcase {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+            margin-bottom: 4rem;
+        }
+
+        /* Before After Grid */
+        .before-after-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .webhook-notification {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .showcase-item {
+            background: var(--bg-elevated);
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .showcase-item:hover {
+            border-color: var(--amber-primary);
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(245, 158, 11, 0.3);
+        }
+
+        .showcase-header {
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(217, 119, 6, 0.05));
+            border-bottom: 2px solid var(--border);
+        }
+
+        .showcase-label {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--amber-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .showcase-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .showcase-image {
+            width: 100%;
+            aspect-ratio: 16/10;
+            background: var(--bg-darker);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .showcase-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .showcase-footer {
+            padding: 1.5rem 2rem;
+            background: var(--bg-darker);
+            border-top: 1px solid var(--border);
+        }
+
+        .showcase-description {
+            font-size: 0.9375rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Results Grid */
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .result-card {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));
+            border: 2px solid var(--green-success);
+            border-radius: 16px;
+            padding: 2.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .result-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--green-success);
+        }
+
+        .result-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 12px 40px rgba(16, 185, 129, 0.3);
+        }
+
+        .result-value {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: var(--green-success);
+            line-height: 1;
+            margin-bottom: 1rem;
+        }
+
+        .result-label {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--bg-darker);
+            border-top: 2px solid var(--amber-primary);
+            padding: 3rem 0;
+            margin-top: 6rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 3rem;
+            text-align: center;
+        }
+
+        .footer-text {
+            font-size: 0.875rem;
+            color: var(--text-dim);
+            line-height: 1.8;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .features-grid,
+            .image-showcase,
+            .before-after-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .timeline::before {
+                left: 2rem;
+            }
+
+            .timeline-item {
+                grid-template-columns: 1fr;
+                padding-left: 5rem;
+            }
+
+            .timeline-marker {
+                left: 2rem;
+            }
+
+            .timeline-item:nth-child(even) .timeline-content:first-child {
+                grid-column: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-inner {
+                padding: 1rem 1.5rem;
+            }
+
+            .container {
+                padding: 6rem 1.5rem 2rem;
+            }
+
+            .hero-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+        .lightbox { display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.95); align-items: center; justify-content: center; animation: fadeIn 0.3s ease; }
+        .lightbox.active { display: flex; }
+        .lightbox-content { max-width: 90%; max-height: 90%; object-fit: contain; animation: zoomIn 0.3s ease; }
+        .lightbox-close { position: absolute; top: 20px; right: 40px; color: white; font-size: 40px; font-weight: bold; cursor: pointer; transition: color 0.3s; z-index: 10000; }
+        .lightbox-close:hover { color: #ccc; }
+        .zoomable-image { cursor: zoom-in; transition: opacity 0.3s; }
+        .zoomable-image:hover { opacity: 0.9; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    </style>
+</head>
+<body>
+    <!-- Scroll Progress Bar -->
+    <div class="scroll-progress-bar"></div>
+
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="STRONA.html" class="nav-back">
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+                <span>Back</span>
+            </a>
+            <div class="nav-status">
+                <div class="status-pulse"></div>
+                <span>ACTIVE PROTECTION</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Hero -->
+        <section class="hero fade-in">
+            <div class="hero-badge">
+                <div class="alert-icon"></div>
+                <span>Work Monitoring System</span>
+            </div>
+            <h1 class="hero-title">Work Monitoring Tool</h1>
+            <p class="hero-subtitle">Comprehensive Tampermonkey script preventing SLA breaches and tracking scheduler availability through intelligent alerts, real-time monitoring, and automated management notifications across 400+ station task queues</p>
+
+            <div class="hero-stats fade-in">
+                <div class="hero-stat">
+                    <div class="hero-stat-value">~40%</div>
+                    <div class="hero-stat-label">Time on Task Reduced</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-value">~12%</div>
+                    <div class="hero-stat-label">Initial SLA Miss Reduction</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-value">400+</div>
+                    <div class="hero-stat-label">Stations Protected</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-value">1 Min</div>
+                    <div class="hero-stat-label">SLA Acceptance Window</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section Divider -->
+        <div class="section-divider">
+            <div class="section-divider-icon"></div>
+        </div>
+
+        <!-- Problem Section -->
+        <section class="section fade-in">
+            <div class="section-header">
+                <div class="section-label">THE CHALLENGE</div>
+                <h2 class="section-title">Performance at Risk</h2>
+                <p class="section-description">Management identified systematic SLA breaches affecting operational metrics across the EU network</p>
+            </div>
+
+            <div class="problem-grid">
+                <div class="problem-card">
+                    <div class="problem-number">ISSUE 01</div>
+                    <h3 class="problem-title">Strict 1-Minute SLA</h3>
+                    <p class="problem-text">Schedulers log into the queue platform at shift start. When tasks land in the queue, they must be accepted within 1 minute maximum to meet SLA. Manual monitoring proved unreliable during high-volume periods when multiple tasks arrived simultaneously.</p>
+                </div>
+
+                <div class="problem-card">
+                    <div class="problem-number">ISSUE 02</div>
+                    <h3 class="problem-title">Multitasking Blindspots</h3>
+                    <p class="problem-text">Schedulers juggling multiple concurrent tasks require constant tab switching, station communication, and focus-intensive work. During these activities, new queue tasks went unnoticed—missing the 1-minute acceptance window or leaving tasks open too long, creating invisible SLA breaches.</p>
+                </div>
+
+                <div class="problem-card">
+                    <div class="problem-number">ISSUE 03</div>
+                    <h3 class="problem-title">No Early Warning System</h3>
+                    <p class="problem-text">Schedulers had no real-time alerts when approaching SLA deadlines. By the time management identified issues through post-shift metrics, performance was already impacted. No mechanism existed to flag at-risk tasks during active work.</p>
+                </div>
+
+                <div class="problem-card">
+                    <div class="problem-number">ISSUE 04</div>
+                    <h3 class="problem-title">Scale & Visibility</h3>
+                    <p class="problem-text">With 400+ stations and multiple schedulers working simultaneously, leadership could see unaccepted tasks—but couldn't identify which tasks were open for too long. When dozens of tasks flood the queue, it's impossible to distinguish whether a scheduler is dwelling on a task due to a real issue, actively working it, or if it's been missed entirely.</p>
+                </div>
+
+                <div class="problem-card">
+                    <div class="problem-number">ISSUE 05</div>
+                    <h3 class="problem-title">Untracked Offline Activity</h3>
+                    <p class="problem-text">When schedulers went offline, management had no visibility into why or for how long. No notification system existed—leadership had to manually scan who was offline and reach out individually to verify if it was a break, meeting, or other reason. This created gaps in capacity planning and made it impossible to distinguish between legitimate breaks and unexplained absences.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section Divider -->
+        <div class="section-divider">
+            <div class="section-divider-icon"></div>
+        </div>
+
+        <!-- Solution Section -->
+        <section class="section fade-in">
+            <div class="section-header">
+                <div class="section-label">THE SOLUTION</div>
+                <h2 class="section-title">Guardian Protocol</h2>
+                <p class="section-description">Browser-based protection layer with dual notification system—immediate scheduler alerts and management escalation pathways</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3 class="feature-title">Real-Time Monitoring</h3>
+                    <p class="feature-description">Tampermonkey script continuously tracks task acceptance and completion times directly in the queue platform browser interface. Eliminates manual queue checking, reducing time on task by ~40%.</p>
+                    <ul class="feature-list">
+                        <li>Monitors 1-minute acceptance SLA automatically</li>
+                        <li>Tracks open task duration without manual checks</li>
+                        <li>Multi-level alert escalation</li>
+                        <li>Saves ~650h annually across network</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3 class="feature-title">Intelligent Alerts & Auto-Focus</h3>
+                    <p class="feature-description">Multi-layer notification system with automatic tab switching ensures schedulers never miss tasks, even when working in other applications. Schedulers can focus on actual work instead of constantly monitoring the queue.</p>
+                    <ul class="feature-list">
+                        <li>Instant notification + sound alert when task arrives</li>
+                        <li>Auto-switches to queue tab when approaching 1-min SLA</li>
+                        <li>Eliminates need for manual queue monitoring</li>
+                        <li>Audio warnings for extended open tasks</li>
+                        <li>Frees schedulers to focus on task execution</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3 class="feature-title">Management Dashboard</h3>
+                    <p class="feature-description">After initial success, implemented auto-reporting to dedicated room for leadership visibility and rapid intervention.</p>
+                    <ul class="feature-list">
+                        <li>Automatic reports to management room</li>
+                        <li>Unaccepted task alerts</li>
+                        <li>Overdue task notifications</li>
+                        <li>Real-time station-level insights</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3 class="feature-title">Offline Tracking & Notifications</h3>
+                    <p class="feature-description">Mandatory offline reason tracking with automatic management notifications. When schedulers go unavailable, they must enter a reason—eliminating manual verification and providing real-time visibility into team capacity.</p>
+                    <ul class="feature-list">
+                        <li>Required reason input when going offline</li>
+                        <li>Auto-notification to management room</li>
+                        <li>Eliminates manual verification calls</li>
+                        <li>Real-time capacity planning insights</li>
+                        <li>Audit trail of all offline periods</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3 class="feature-title">Mandatory Deployment</h3>
+                    <p class="feature-description">Adopted as mandatory installation before work sessions—transformed from individual tool to organizational standard.</p>
+                    <ul class="feature-list">
+                        <li>Easy Tampermonkey installation</li>
+                        <li>Automatic updates</li>
+                        <li>Required pre-shift setup</li>
+                        <li>Consistent protection across all users</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section Divider -->
+        <div class="section-divider">
+            <div class="section-divider-icon"></div>
+        </div>
+
+        <!-- Image Showcase -->
+        <section class="section fade-in">
+            <div class="section-header">
+                <div class="section-label">SYSTEM INTERFACE</div>
+                <h2 class="section-title">Protection in Action</h2>
+                <p class="section-description">Complete workflow visualization—from scheduler alerts to management oversight</p>
+            </div>
+
+            <div class="image-showcase">
+                <div class="showcase-item">
+                    <div class="showcase-header">
+                        <div class="showcase-label">WORKFLOW DEMO</div>
+                        <h3 class="showcase-title">Task Monitoring in Action</h3>
+                    </div>
+                    <div class="showcase-image" style="aspect-ratio: 16/9;">
+                        <img src="strona19.gif" alt="Work Monitoring Workflow" style="width: 100%; height: 100%; object-fit: contain;" class="zoomable-image">
+                    </div>
+                    <div class="showcase-footer">
+                        <p class="showcase-description">Live demonstration of the monitoring system tracking task queues, triggering alerts as deadlines approach, and automatically escalating notifications to ensure timely task acceptance.</p>
+                        <p style="margin-top: 0.75rem; font-size: 0.8125rem; color: var(--text-tertiary); font-style: italic; text-align: center;">
+                            <strong>Note:</strong> First version interface, no longer in active use. For demonstration purposes only.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="showcase-item">
+                    <div class="showcase-header">
+                        <div class="showcase-label">MANAGEMENT VIEW</div>
+                        <h3 class="showcase-title">Task Webhook Integration</h3>
+                    </div>
+                    <div class="showcase-image" style="aspect-ratio: 16/9;">
+                        <img src="project19.png" alt="Management Webhook System" style="width: 100%; height: 100%; object-fit: contain;">
+                    </div>
+                    <div class="showcase-footer">
+                        <p class="showcase-description">Auto-reporting system sends real-time updates to dedicated management room via webhook, highlighting at-risk tasks across 400+ stations for immediate intervention and resource allocation.</p>
+                        <p style="margin-top: 0.75rem; font-size: 0.8125rem; color: var(--text-tertiary); font-style: italic; text-align: center;">
+                            <strong>Note:</strong> First version interface, no longer in active use. For demonstration purposes only.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section Divider -->
+        <div class="section-divider">
+            <div class="section-divider-icon"></div>
+        </div>
+
+        <!-- Offline Tracking Showcase -->
+        <section class="section fade-in">
+            <div class="section-header">
+                <div class="section-label">OFFLINE TRACKING EVOLUTION</div>
+                <h2 class="section-title">Before & After Implementation</h2>
+                <p class="section-description">Transforming offline activity from invisible gaps to tracked, notified events</p>
+            </div>
+
+            <div class="before-after-grid">
+                <div class="showcase-item">
+                    <div class="showcase-header">
+                        <div class="showcase-label">BEFORE - NO TRACKING</div>
+                        <h3 class="showcase-title">Silent Offline Events</h3>
+                    </div>
+                    <div class="showcase-image" style="aspect-ratio: 16/9;">
+                        <img src="project21.gif" alt="Before: No offline tracking" style="width: 100%; height: 100%; object-fit: contain;" class="zoomable-image">
+                    </div>
+                    <div class="showcase-footer">
+                        <p class="showcase-description">Original behavior: schedulers could toggle offline with no reason required. Management had zero visibility—requiring manual verification calls to understand team capacity and break patterns.</p>
+                        <p style="margin-top: 0.75rem; font-size: 0.8125rem; color: var(--text-tertiary); font-style: italic; text-align: center;">
+                            <strong>Note:</strong> First version interface, no longer in active use. For demonstration purposes only.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="showcase-item">
+                    <div class="showcase-header">
+                        <div class="showcase-label">AFTER - MANDATORY REASON</div>
+                        <h3 class="showcase-title">Required Offline Justification</h3>
+                    </div>
+                    <div class="showcase-image" style="aspect-ratio: 16/9;">
+                        <img src="project20.gif" alt="After: Modal requiring reason" style="width: 100%; height: 100%; object-fit: contain;" class="zoomable-image">
+                    </div>
+                    <div class="showcase-footer">
+                        <p class="showcase-description">Enhanced system: mandatory modal appears when going offline, requiring schedulers to document the reason. Creates accountability and provides data for capacity planning without management intervention.</p>
+                        <p style="margin-top: 0.75rem; font-size: 0.8125rem; color: var(--text-tertiary); font-style: italic; text-align: center;">
+                            <strong>Note:</strong> First version interface, no longer in active use. For demonstration purposes only.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="webhook-notification">
+                <div class="showcase-item">
+                    <div class="showcase-header">
+                        <div class="showcase-label">MANAGEMENT NOTIFICATION</div>
+                        <h3 class="showcase-title">Automated Offline Alerts</h3>
+                    </div>
+                    <div class="showcase-image" style="aspect-ratio: 16/9;">
+                        <img src="project20.png" alt="Offline webhook notification" style="width: 100%; height: 100%; object-fit: contain;" class="zoomable-image">
+                    </div>
+                    <div class="showcase-footer">
+                        <p class="showcase-description">Real-time webhook notifications sent to management room when schedulers go offline, including user name, reason, and timestamp. Eliminates manual status checks and provides instant visibility into team availability.</p>
+                        <p style="margin-top: 0.75rem; font-size: 0.8125rem; color: var(--text-tertiary); font-style: italic; text-align: center;">
+                            <strong>Note:</strong> First version interface, no longer in active use. For demonstration purposes only.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section Divider -->
+        <div class="section-divider">
+            <div class="section-divider-icon"></div>
+        </div>
+
+        <!-- Timeline -->
+        <section class="section fade-in">
+            <div class="section-header">
+                <div class="section-label">DEVELOPMENT JOURNEY</div>
+                <h2 class="section-title">Evolution & Impact</h2>
+            </div>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-date">2025 Q1 // PROBLEM IDENTIFIED</div>
+                        <h3 class="timeline-title">Management Escalation</h3>
+                        <p class="timeline-text">Leadership outlined systematic SLA breach patterns affecting team performance metrics. Proactively volunteered to develop browser-based solution requiring zero infrastructure changes.</p>
+                    </div>
+                    <div class="timeline-marker"></div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-date">MONTH 1 // INITIAL DEVELOPMENT</div>
+                        <h3 class="timeline-title">Script Design & Deployment</h3>
+                        <p class="timeline-text">Engineered Tampermonkey script with real-time task monitoring and multi-level alert system. Tested across queue platform and deployed to scheduler team.</p>
+                        <div class="timeline-stat">~1 Month Build Time</div>
+                    </div>
+                    <div class="timeline-marker"></div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-date">LAUNCH MONTH // INITIAL RESULTS</div>
+                        <h3 class="timeline-title">Immediate Impact</h3>
+                        <p class="timeline-text">First month post-launch demonstrated measurable reduction in SLA misses. Script adopted as standard framework—required installation before shift start.</p>
+                        <div class="timeline-stat">~12% SLA Miss Reduction</div>
+                    </div>
+                    <div class="timeline-marker"></div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-date">PHASE 1 // MANAGEMENT REPORTING</div>
+                        <h3 class="timeline-title">Management Reporting Layer</h3>
+                        <p class="timeline-text">Enhanced script with auto-reporting to dedicated management room. Real-time visibility enabled rapid intervention across 400+ stations, replacing manual queue searches.</p>
+                    </div>
+                    <div class="timeline-marker"></div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-date">PHASE 2 // OFFLINE TRACKING</div>
+                        <h3 class="timeline-title">Mandatory Offline Notifications</h3>
+                        <p class="timeline-text">Added mandatory reason modal when schedulers go offline, with automatic webhook notifications to management. Eliminated manual verification calls and provided real-time capacity visibility—transforming invisible offline periods into tracked, justified events.</p>
+                    </div>
+                    <div class="timeline-marker"></div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-date">SUSTAINED SUCCESS</div>
+                        <h3 class="timeline-title">Long-Term Performance Gains</h3>
+                        <p class="timeline-text">Ongoing deployment showed continued SLA improvement, significant reduction in time-on-task metrics, and complete visibility into team availability. Work monitoring tool became critical operational standard across the network.</p>
+                        <div class="timeline-stat">~40% Time on Task Reduction</div>
+                    </div>
+                    <div class="timeline-marker"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section Divider -->
+        <div class="section-divider">
+            <div class="section-divider-icon"></div>
+        </div>
+
+        <!-- Technologies Used -->
+        <section class="section fade-in">
+            <div class="section-header">
+                <div class="section-label">TECHNICAL STACK</div>
+                <h2 class="section-title">Technologies Used</h2>
+            </div>
+
+            <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; max-width: 900px; margin: 0 auto;">
+                <span style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(245, 158, 11, 0.05)); border: 1px solid rgba(245, 158, 11, 0.3); color: var(--text-primary); padding: 0.625rem 1.25rem; border-radius: 50px; font-weight: 600; font-size: 0.9375rem; letter-spacing: 0.02em;">Browser API</span>
+                <span style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(245, 158, 11, 0.05)); border: 1px solid rgba(245, 158, 11, 0.3); color: var(--text-primary); padding: 0.625rem 1.25rem; border-radius: 50px; font-weight: 600; font-size: 0.9375rem; letter-spacing: 0.02em;">JavaScript</span>
+                <span style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(245, 158, 11, 0.05)); border: 1px solid rgba(245, 158, 11, 0.3); color: var(--text-primary); padding: 0.625rem 1.25rem; border-radius: 50px; font-weight: 600; font-size: 0.9375rem; letter-spacing: 0.02em;">Tampermonkey</span>
+                <span style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(245, 158, 11, 0.05)); border: 1px solid rgba(245, 158, 11, 0.3); color: var(--text-primary); padding: 0.625rem 1.25rem; border-radius: 50px; font-weight: 600; font-size: 0.9375rem; letter-spacing: 0.02em;">Webhook</span>
+                <span style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(245, 158, 11, 0.05)); border: 1px solid rgba(245, 158, 11, 0.3); color: var(--text-primary); padding: 0.625rem 1.25rem; border-radius: 50px; font-weight: 600; font-size: 0.9375rem; letter-spacing: 0.02em;">Database</span>
+            </div>
+        </section>
+
+        <!-- Section Divider -->
+        <div class="section-divider">
+            <div class="section-divider-icon"></div>
+        </div>
+
+        <!-- Results -->
+        <section class="section fade-in">
+            <div class="section-header">
+                <div class="section-label">MEASURABLE OUTCOMES</div>
+                <h2 class="section-title">Performance Transformation</h2>
+            </div>
+
+            <div class="results-grid">
+                <div class="result-card">
+                    <div class="result-value">~12%</div>
+                    <div class="result-label">Initial SLA Miss Reduction</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-value">~40%</div>
+                    <div class="result-label">Time on Task Reduced</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-value">400+</div>
+                    <div class="result-label">Stations Protected</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-value">1 Min</div>
+                    <div class="result-label">SLA Window Guarded</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-value">2025</div>
+                    <div class="result-label">Year Deployed</div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p class="footer-text">
+                DISCLAIMER: Projects represent real work completed during employment. Content reviewed to exclude confidential information and comply with NDAs. Metrics and processes generalized where necessary. Interfaces shown represent early versions no longer in active use. Demonstrates actual contributions, methodology, and measurable impact.
+            </p>
+        </div>
+    </footer>
+
+    <div id="lightbox" class="lightbox"><span class="lightbox-close" id="lightbox-close">&times;</span><img class="lightbox-content" id="lightbox-img" src="" alt="Zoomed image"></div>
+    <script>(function() { const lb = document.getElementById('lightbox'), img = document.getElementById('lightbox-img'), cls = document.getElementById('lightbox-close'); document.querySelectorAll('img[src*=".png"], img[src*=".jpg"], img[src*=".jpeg"], img[src*=".gif"], .image-wrapper img').forEach(i => { i.classList.add('zoomable-image'); i.style.cursor = 'zoom-in'; i.addEventListener('click', function(e) { e.preventDefault(); lb.classList.add('active'); img.src = this.src; document.body.style.overflow = 'hidden'; }); }); function close() { lb.classList.remove('active'); document.body.style.overflow = ''; } cls.addEventListener('click', close); lb.addEventListener('click', e => { if (e.target === lb) close(); }); document.addEventListener('keydown', e => { if (e.key === 'Escape' && lb.classList.contains('active')) close(); }); })();</script>
+
+    <script>
+        // Scroll Progress Bar
+        const progressBar = document.querySelector('.scroll-progress-bar');
+
+        function updateScrollProgress() {
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight;
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const scrollPercent = (scrollTop / (documentHeight - windowHeight)) * 100;
+            progressBar.style.width = scrollPercent + '%';
+        }
+
+        window.addEventListener('scroll', updateScrollProgress);
+
+        // Auto-hiding Navigation
+        const nav = document.querySelector('.nav');
+        let lastScrollTop = 0;
+        let scrollThreshold = 100;
+
+        window.addEventListener('scroll', function() {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+            if (scrollTop > scrollThreshold) {
+                if (scrollTop > lastScrollTop) {
+                    // Scrolling down
+                    nav.classList.add('nav-hidden');
+                } else {
+                    // Scrolling up
+                    nav.classList.remove('nav-hidden');
+                }
+            } else {
+                // At top of page, always show nav
+                nav.classList.remove('nav-hidden');
+            }
+
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+        });
+
+        // Intersection Observer for Fade-in Animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all fade-in elements
+        document.querySelectorAll('.fade-in, .fade-in-left, .fade-in-right, .section-divider').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>

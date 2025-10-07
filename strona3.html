@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EU Yard Configuration Updater | Denis Gwizdala</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #0a0f0d;
+            --bg-card: #0f1713;
+            --bg-elevated: #141d19;
+            --accent-primary: #10b981;
+            --accent-secondary: #34d399;
+            --accent-glow: rgba(16, 185, 129, 0.3);
+            --text-primary: #f0fdf4;
+            --text-secondary: #86efac;
+            --text-muted: #6ee7b7;
+            --text-dim: #4ade80;
+            --border: #1f2d27;
+            --warning: #fbbf24;
+            --error: #ef4444;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(10, 15, 13, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-back {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .nav-back:hover {
+            color: var(--accent-primary);
+            transform: translateX(-4px);
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--accent-primary);
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--accent-primary);
+            border-radius: 50%;
+            box-shadow: 0 0 12px var(--accent-glow);
+            animation: pulse-status 2s ease infinite;
+        }
+
+        @keyframes pulse-status {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Hero - System Monitor Style */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 8rem 2rem 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .grid-bg {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(var(--border) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 40px 40px;
+            opacity: 0.3;
+            mask-image: radial-gradient(ellipse at center, black 20%, transparent 80%);
+        }
+
+        .hero-glow {
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+            filter: blur(100px);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .system-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--accent-primary);
+            border-left: 3px solid var(--accent-primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 2rem;
+        }
+
+        .hero-title {
+            font-size: clamp(3rem, 8vw, 5.5rem);
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-title .highlight {
+            color: var(--accent-primary);
+            text-shadow: 0 0 30px var(--accent-glow);
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            max-width: 800px;
+            margin-bottom: 3rem;
+            line-height: 1.7;
+        }
+
+        /* System Metrics Grid */
+        .system-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            max-width: 1000px;
+        }
+
+        .metric-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--accent-primary);
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--accent-primary);
+            transform: scaleX(0);
+            transition: transform 0.5s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-4px);
+            border-left-color: var(--accent-secondary);
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.2);
+        }
+
+        .metric-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .metric-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            line-height: 1;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Section Containers */
+        .section {
+            padding: 6rem 2rem;
+            position: relative;
+        }
+
+        .section-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            margin-bottom: 4rem;
+        }
+
+        .section-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .section-description {
+            font-size: 1.125rem;
+            color: var(--text-muted);
+            max-width: 700px;
+        }
+
+        /* Terminal-style Problem Section */
+        .terminal-window {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 3rem;
+        }
+
+        .terminal-header {
+            background: var(--bg-card);
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .terminal-dot.red { background: var(--error); }
+        .terminal-dot.yellow { background: var(--warning); }
+        .terminal-dot.green { background: var(--accent-primary); }
+
+        .terminal-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-left: auto;
+        }
+
+        .terminal-content {
+            padding: 2rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            line-height: 1.8;
+        }
+
+        .terminal-line {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .terminal-prompt {
+            color: var(--accent-primary);
+            user-select: none;
+        }
+
+        .terminal-text {
+            color: var(--text-muted);
+        }
+
+        .terminal-highlight {
+            color: var(--accent-secondary);
+            font-weight: 600;
+        }
+
+        /* Data Flow Visualization */
+        .flow-container {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 2rem;
+            align-items: center;
+            margin: 3rem 0;
+        }
+
+        .flow-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 2rem;
+            position: relative;
+        }
+
+        .flow-box.old {
+            border-left: 3px solid var(--warning);
+        }
+
+        .flow-box.new {
+            border-left: 3px solid var(--accent-primary);
+        }
+
+        .flow-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .flow-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            padding: 0.25rem 0.5rem;
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid var(--warning);
+            color: var(--warning);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .flow-box.new .flow-badge {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        .flow-steps {
+            list-style: none;
+            display: grid;
+            gap: 1rem;
+        }
+
+        .flow-step {
+            padding: 1rem;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-left: 2px solid var(--accent-primary);
+            transition: all 0.3s ease;
+        }
+
+        .flow-step:hover {
+            transform: translateX(8px);
+            border-left-width: 4px;
+        }
+
+        .step-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: var(--accent-secondary);
+        }
+
+        .step-desc {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .flow-arrow {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .arrow-line {
+            width: 2px;
+            height: 60px;
+            background: linear-gradient(180deg, var(--warning), var(--accent-primary));
+        }
+
+        .arrow-head {
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 12px solid var(--accent-primary);
+        }
+
+        /* Feature Grid - Technical Cards */
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .tech-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 2rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .tech-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--accent-primary);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.5s ease;
+        }
+
+        .tech-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .tech-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(16, 185, 129, 0.2);
+        }
+
+        .tech-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--accent-primary);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .tech-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--accent-primary);
+            display: grid;
+            place-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .tech-icon svg {
+            width: 24px;
+            height: 24px;
+            color: var(--accent-primary);
+        }
+
+        .tech-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        .tech-desc {
+            font-size: 0.9375rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        /* Stats Comparison */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .comparison-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 2.5rem;
+            position: relative;
+        }
+
+        .comparison-card.before {
+            border-top: 3px solid var(--warning);
+        }
+
+        .comparison-card.after {
+            border-top: 3px solid var(--accent-primary);
+        }
+
+        .comparison-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            padding: 0.375rem 0.75rem;
+            border: 1px solid;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 700;
+        }
+
+        .comparison-card.before .comparison-badge {
+            border-color: var(--warning);
+            color: var(--warning);
+            background: rgba(251, 191, 36, 0.1);
+        }
+
+        .comparison-card.after .comparison-badge {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .comparison-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .stat-row:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            color: var(--text-dim);
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Results Section */
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+
+        .result-box {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--accent-primary);
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .result-value {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            line-height: 1;
+            margin-bottom: 0.5rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .result-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Footer */
+        .footer {
+            padding: 3rem 2rem;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .footer-text {
+            font-size: 0.8125rem;
+            color: var(--text-dim);
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Image showcase hover */
+        .image-showcase-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-top: 3px solid var(--accent-primary);
+            padding: 1rem;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .image-showcase-container:hover {
+            border-top-width: 5px;
+            box-shadow: 0 8px 32px rgba(16, 185, 129, 0.2);
+        }
+
+        .image-showcase-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+            filter: brightness(0.95) contrast(1.05);
+            transition: transform 0.5s ease, filter 0.3s ease;
+        }
+
+        .image-showcase-container:hover img {
+            transform: scale(1.03);
+            filter: brightness(1) contrast(1.08);
+        }
+
+        .image-caption {
+            padding: 1rem 0.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .image-caption span {
+            color: var(--accent-primary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .flow-container {
+                grid-template-columns: 1fr;
+            }
+
+            .flow-arrow {
+                transform: rotate(90deg);
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .system-metrics {
+                grid-template-columns: 1fr;
+            }
+
+            .image-showcase-grid {
+                grid-template-columns: 1fr !important;
+            }
+        }
+
+        /* Animations */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-up {
+            animation: slideInUp 0.8s ease forwards;
+            opacity: 0;
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+
+        /* Lightbox Styles */
+        .lightbox {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox-content {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            animation: zoomIn 0.3s ease;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s;
+            z-index: 10000;
+        }
+
+        .lightbox-close:hover {
+            color: #ccc;
+        }
+
+        .zoomable-image {
+            cursor: zoom-in;
+            transition: opacity 0.3s;
+        }
+
+        .zoomable-image:hover {
+            opacity: 0.9;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes zoomIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="STRONA.html" class="nav-back">
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+                <span>cd ..</span>
+            </a>
+            <div class="status-indicator">
+                <span class="status-dot"></span>
+                <span>SYSTEM ACTIVE</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="grid-bg"></div>
+        <div class="hero-glow"></div>
+        <div class="hero-content">
+            <div class="system-label fade-up">
+                <span>●</span> AUTOMATION PIPELINE
+            </div>
+            <h1 class="hero-title fade-up delay-1">
+                EU Yard Configuration<br><span class="highlight">Updater</span>
+            </h1>
+            <p class="hero-subtitle fade-up delay-2">
+                Fully automated weekly configuration updates across 400+ EU stations running on cloud schedule with zero human input—eliminating 8 hours of manual work entirely
+            </p>
+            <div class="system-metrics fade-up delay-3">
+                <div class="metric-card">
+                    <div class="metric-label">> time_saved</div>
+                    <div class="metric-value">~96%</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">> stations</div>
+                    <div class="metric-value">400+</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">> hours/year</div>
+                    <div class="metric-value">~416</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">> team_required</div>
+                    <div class="metric-value">0</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem -->
+    <section class="section">
+        <div class="section-inner">
+            <div class="section-header">
+                <span class="section-tag">// THE CHALLENGE</span>
+                <h2 class="section-title">Manual Configuration at Scale</h2>
+                <p class="section-description">
+                    Every Sunday evening, 400+ EU stations required manual configuration updates across yard capacity, wave templates, and delivery schedules—consuming 8 labor hours from a 4-person team with no automation.
+                </p>
+            </div>
+
+            <!-- Image Showcase -->
+            <div class="image-showcase-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 3rem;">
+                <div class="image-showcase-container">
+                    <img src="project2.png" alt="Configuration Updater Interface" loading="lazy">
+                    <div class="image-caption">
+                        <span>></span> system_interface.ui
+                    </div>
+                    <p style="margin-top: 0.5rem; font-size: 0.8125rem; color: var(--text-tertiary); text-align: center; font-style: italic;">
+                        <strong>Note:</strong> First version interface, no longer in active use. For demonstration purposes only.
+                    </p>
+                </div>
+                <div class="image-showcase-container">
+                    <img src="project3.png" alt="Webhook Notification" loading="lazy">
+                    <div class="image-caption">
+                        <span>></span> webhook_notification.alert
+                    </div>
+                    <p style="margin-top: 0.5rem; font-size: 0.8125rem; color: var(--text-tertiary); text-align: center; font-style: italic;">
+                        <strong>Note:</strong> First version interface, no longer in active use. For demonstration purposes only.
+                    </p>
+                </div>
+            </div>
+
+            <div class="terminal-window">
+                <div class="terminal-header">
+                    <span class="terminal-dot red"></span>
+                    <span class="terminal-dot yellow"></span>
+                    <span class="terminal-dot green"></span>
+                    <span class="terminal-title">system_analysis.log</span>
+                </div>
+                <div class="terminal-content">
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">$</span>
+                        <span class="terminal-text">Analyzing current state...</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">></span>
+                        <span class="terminal-text">Weekly effort: <span class="terminal-highlight">~8 labor hours</span></span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">></span>
+                        <span class="terminal-text">Team size: <span class="terminal-highlight">4 people</span></span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">></span>
+                        <span class="terminal-text">Stations covered: <span class="terminal-highlight">400+</span></span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">></span>
+                        <span class="terminal-text">Error risk: <span class="terminal-highlight">HIGH</span></span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">></span>
+                        <span class="terminal-text">Audit trail: <span class="terminal-highlight">NONE</span></span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">></span>
+                        <span class="terminal-text">Automation: <span class="terminal-highlight">MANUAL</span></span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">!</span>
+                        <span class="terminal-text" style="color: var(--warning);">No scheduled execution - requires manual Sunday intervention</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flow-container">
+                <div class="flow-box old">
+                    <h3 class="flow-title">
+                        <span class="flow-badge">Manual</span>
+                        Old Process
+                    </h3>
+                    <ul class="flow-steps">
+                        <li class="flow-step">
+                            <div class="step-title">Load Excel Change Log</div>
+                            <div class="step-desc">Manual parsing of analyst updates</div>
+                        </li>
+                        <li class="flow-step">
+                            <div class="step-title">Update Each Station</div>
+                            <div class="step-desc">4 people × 2 hours manual entry</div>
+                        </li>
+                        <li class="flow-step">
+                            <div class="step-title">Verify Deployment</div>
+                            <div class="step-desc">No systematic validation</div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="flow-arrow">
+                    <div class="arrow-line"></div>
+                    <div class="arrow-head"></div>
+                </div>
+
+                <div class="flow-box new">
+                    <h3 class="flow-title">
+                        <span class="flow-badge">Automated</span>
+                        New Process
+                    </h3>
+                    <ul class="flow-steps">
+                        <li class="flow-step">
+                            <div class="step-title">Auto-Ingest Changes</div>
+                            <div class="step-desc">System reads Excel in seconds</div>
+                        </li>
+                        <li class="flow-step">
+                            <div class="step-title">Cloud-Scheduled Execution</div>
+                            <div class="step-desc">Runs automatically every Sunday—zero human input required</div>
+                        </li>
+                        <li class="flow-step">
+                            <div class="step-title">End-to-End Validation</div>
+                            <div class="step-desc">Pipeline watch + audit trail</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solution -->
+    <section class="section" style="background: var(--bg-card);">
+        <div class="section-inner">
+            <div class="section-header">
+                <span class="section-tag">// THE SOLUTION</span>
+                <h2 class="section-title">Automated Configuration Pipeline</h2>
+                <p class="section-description">
+                    Python-based automation with Selenium WebDriver, SSO integration, and webhook notifications for complete configuration lifecycle management
+                </p>
+            </div>
+
+            <div class="tech-grid">
+                <div class="tech-card">
+                    <span class="tech-number">[01]</span>
+                    <div class="tech-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                    </div>
+                    <h3 class="tech-title">Data Ingestion</h3>
+                    <p class="tech-desc">
+                        Reads analyst Excel change logs, groups by station, and validates input format automatically
+                    </p>
+                </div>
+
+                <div class="tech-card">
+                    <span class="tech-number">[02]</span>
+                    <div class="tech-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                        </svg>
+                    </div>
+                    <h3 class="tech-title">Secure Authentication</h3>
+                    <p class="tech-desc">
+                        SSO/VPN integration with session management for secure platform access
+                    </p>
+                </div>
+
+                <div class="tech-card">
+                    <span class="tech-number">[03]</span>
+                    <div class="tech-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                        </svg>
+                    </div>
+                    <h3 class="tech-title">Safe Rewrites</h3>
+                    <p class="tech-desc">
+                        Updates only required fields, commits with clear notes, merges to production
+                    </p>
+                </div>
+
+                <div class="tech-card">
+                    <span class="tech-number">[04]</span>
+                    <div class="tech-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <h3 class="tech-title">Pipeline Verification</h3>
+                    <p class="tech-desc">
+                        Watches deployment pipeline, confirms production promotion, validates commit logs
+                    </p>
+                </div>
+
+                <div class="tech-card">
+                    <span class="tech-number">[05]</span>
+                    <div class="tech-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                        </svg>
+                    </div>
+                    <h3 class="tech-title">Stakeholder Alerts</h3>
+                    <p class="tech-desc">
+                        Sends color-coded Excel summary and Slack webhooks with audit results
+                    </p>
+                </div>
+
+                <div class="tech-card">
+                    <span class="tech-number">[06]</span>
+                    <div class="tech-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                        </svg>
+                    </div>
+                    <h3 class="tech-title">Progress Monitoring</h3>
+                    <p class="tech-desc">
+                        Real-time progress bar and live logging for complete process transparency
+                    </p>
+                </div>
+            </div>
+
+            <div style="margin-top: 4rem; padding: 2rem; background: var(--bg-elevated); border: 1px solid var(--border); border-left: 3px solid var(--accent-primary);">
+                <h3 style="font-family: 'JetBrains Mono', monospace; font-size: 0.875rem; color: var(--accent-primary); margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.1em;">Tech Stack</h3>
+                <div style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
+                    <span class="mono" style="padding: 0.5rem 1rem; background: rgba(16, 185, 129, 0.1); border: 1px solid var(--accent-primary); font-size: 0.8125rem; color: var(--accent-secondary);">Python 3.10+</span>
+                    <span class="mono" style="padding: 0.5rem 1rem; background: rgba(16, 185, 129, 0.1); border: 1px solid var(--accent-primary); font-size: 0.8125rem; color: var(--accent-secondary);">Selenium WebDriver</span>
+                    <span class="mono" style="padding: 0.5rem 1rem; background: rgba(16, 185, 129, 0.1); border: 1px solid var(--accent-primary); font-size: 0.8125rem; color: var(--accent-secondary);">Slack API</span>
+                    <span class="mono" style="padding: 0.5rem 1rem; background: rgba(16, 185, 129, 0.1); border: 1px solid var(--accent-primary); font-size: 0.8125rem; color: var(--accent-secondary);">SSO Integration</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Comparison -->
+    <section class="section">
+        <div class="section-inner">
+            <div class="section-header">
+                <span class="section-tag">// IMPACT ANALYSIS</span>
+                <h2 class="section-title">Before vs After</h2>
+                <p class="section-description">
+                    Transforming manual configuration management into an automated, reliable system
+                </p>
+            </div>
+
+            <div class="comparison-grid">
+                <div class="comparison-card before">
+                    <span class="comparison-badge">Manual</span>
+                    <h3 class="comparison-title">Old Workflow</h3>
+                    <div class="stat-row">
+                        <span class="stat-label">time_per_week</span>
+                        <span class="stat-value" style="color: var(--warning);">~8hrs</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">team_size</span>
+                        <span class="stat-value" style="color: var(--warning);">4</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">error_rate</span>
+                        <span class="stat-value" style="color: var(--warning);">HIGH</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">scalability</span>
+                        <span class="stat-value" style="color: var(--warning);">LOW</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">audit_trail</span>
+                        <span class="stat-value" style="color: var(--warning);">NONE</span>
+                    </div>
+                </div>
+
+                <div class="comparison-card after">
+                    <span class="comparison-badge">Automated</span>
+                    <h3 class="comparison-title">New Workflow</h3>
+                    <div class="stat-row">
+                        <span class="stat-label">time_per_week</span>
+                        <span class="stat-value" style="color: var(--accent-primary);">~20min</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">team_size</span>
+                        <span class="stat-value" style="color: var(--accent-primary);">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">error_rate</span>
+                        <span class="stat-value" style="color: var(--accent-primary);">ZERO</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">scalability</span>
+                        <span class="stat-value" style="color: var(--accent-primary);">400+</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">audit_trail</span>
+                        <span class="stat-value" style="color: var(--accent-primary);">FULL</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Results -->
+    <section class="section" style="background: var(--bg-card);">
+        <div class="section-inner">
+            <div class="section-header" style="text-align: center; max-width: 800px; margin: 0 auto 4rem;">
+                <span class="section-tag">// MEASURABLE IMPACT</span>
+                <h2 class="section-title">Results</h2>
+                <p class="section-description">
+                    Quantifiable improvements across efficiency, reliability, and operational capacity
+                </p>
+            </div>
+
+            <div class="results-grid">
+                <div class="result-box">
+                    <div class="result-value">100%</div>
+                    <div class="result-label">Fully Automated</div>
+                </div>
+                <div class="result-box">
+                    <div class="result-value">0</div>
+                    <div class="result-label">Team Required</div>
+                </div>
+                <div class="result-box">
+                    <div class="result-value">400+</div>
+                    <div class="result-label">Stations Managed</div>
+                </div>
+                <div class="result-box">
+                    <div class="result-value">~416</div>
+                    <div class="result-label">Hours Saved/Year</div>
+                </div>
+            </div>
+
+            <div style="margin-top: 4rem; padding: 2.5rem; background: var(--bg-elevated); border: 1px solid var(--border); border-left: 3px solid var(--accent-primary);">
+                <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1.5rem;">Key Benefits</h3>
+                <ul style="list-style: none; display: grid; gap: 1rem;">
+                    <li style="display: flex; gap: 1rem; align-items: start;">
+                        <span style="color: var(--accent-primary); font-size: 1.25rem;">✓</span>
+                        <span style="color: var(--text-muted);"><strong style="color: var(--text-primary);">Full Automation:</strong> Cloud-scheduled execution every Sunday—zero human input or supervision required</span>
+                    </li>
+                    <li style="display: flex; gap: 1rem; align-items: start;">
+                        <span style="color: var(--accent-primary); font-size: 1.25rem;">✓</span>
+                        <span style="color: var(--text-muted);"><strong style="color: var(--text-primary);">EU-wide Scalability:</strong> Single script handles 400+ stations in parallel with no additional resources</span>
+                    </li>
+                    <li style="display: flex; gap: 1rem; align-items: start;">
+                        <span style="color: var(--accent-primary); font-size: 1.25rem;">✓</span>
+                        <span style="color: var(--text-muted);"><strong style="color: var(--text-primary);">Reliability:</strong> Automated checks eliminate oversight risk and human error</span>
+                    </li>
+                    <li style="display: flex; gap: 1rem; align-items: start;">
+                        <span style="color: var(--accent-primary); font-size: 1.25rem;">✓</span>
+                        <span style="color: var(--text-muted);"><strong style="color: var(--text-primary);">Transparency:</strong> Real-time notifications and complete audit trail for stakeholders</span>
+                    </li>
+                    <li style="display: flex; gap: 1rem; align-items: start;">
+                        <span style="color: var(--accent-primary); font-size: 1.25rem;">✓</span>
+                        <span style="color: var(--text-muted);"><strong style="color: var(--text-primary);">Resource Reallocation:</strong> Freed team capacity for high-value strategic work</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p class="footer-text mono">
+            <strong>DISCLAIMER:</strong> Portfolio content is for demonstration only. It showcases tools I personally developed and does not represent current systems, processes, or proprietary information at Amazon or any other company.
+        </p>
+    </footer>
+
+    <script>
+        // Fade up animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationPlayState = 'running';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-up').forEach(el => {
+            el.style.animationPlayState = 'paused';
+            observer.observe(el);
+        });
+    </script>
+
+    <!-- Lightbox -->
+    <div id="lightbox" class="lightbox">
+        <span class="lightbox-close" id="lightbox-close">&times;</span>
+        <img class="lightbox-content" id="lightbox-img" src="" alt="Zoomed image">
+    </div>
+
+    <script>
+    // Lightbox functionality
+    (function() {
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const lightboxClose = document.getElementById('lightbox-close');
+
+        // Make all images zoomable
+        const images = document.querySelectorAll('img[src*=".png"], img[src*=".jpg"], img[src*=".jpeg"], .image-wrapper img');
+
+        images.forEach(img => {
+            img.classList.add('zoomable-image');
+            img.style.cursor = 'zoom-in';
+
+            img.addEventListener('click', function(e) {
+                e.preventDefault();
+                lightbox.classList.add('active');
+                lightboxImg.src = this.src;
+                document.body.style.overflow = 'hidden';
+            });
+        });
+
+        // Close lightbox
+        function closeLightbox() {
+            lightbox.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        lightboxClose.addEventListener('click', closeLightbox);
+
+        lightbox.addEventListener('click', function(e) {
+            if (e.target === lightbox) {
+                closeLightbox();
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+                closeLightbox();
+            }
+        });
+    })();
+    </script>
+</body>
+</html>

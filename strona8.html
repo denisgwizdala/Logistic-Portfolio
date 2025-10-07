@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shift Deck | Denis Gwizdala</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #FAFAFA;
+            --surface: #FFFFFF;
+            --primary: #1E40AF;
+            --primary-light: #3B82F6;
+            --text: #111827;
+            --text-light: #6B7280;
+            --border: #E5E7EB;
+            --accent: #DBEAFE;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        /* Asymmetric Header */
+        header {
+            position: relative;
+            min-height: 85vh;
+            padding: 6rem 2rem 4rem;
+            background: linear-gradient(135deg, #EFF6FF 0%, #FFFFFF 100%);
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(30, 64, 175, 0.03) 0%, transparent 100%);
+            clip-path: polygon(30% 0, 100% 0, 100% 100%, 0% 100%);
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 1.5rem 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover {
+            color: var(--primary);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.5rem 1.25rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--primary);
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: clamp(3rem, 8vw, 5rem);
+            font-weight: 900;
+            letter-spacing: -0.03em;
+            line-height: 1;
+            margin-bottom: 1.5rem;
+            color: var(--text);
+        }
+
+        .subtitle {
+            font-size: clamp(1.125rem, 2vw, 1.5rem);
+            color: var(--text-light);
+            max-width: 700px;
+            margin-bottom: 3rem;
+            font-weight: 300;
+        }
+
+        .header-meta {
+            display: flex;
+            gap: 3rem;
+            flex-wrap: wrap;
+            margin-bottom: 3rem;
+        }
+
+        .meta-item strong {
+            display: block;
+            font-size: 1.75rem;
+            color: var(--primary);
+            font-family: 'JetBrains Mono', monospace;
+            margin-bottom: 0.25rem;
+        }
+
+        .meta-item span {
+            font-size: 0.875rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Split Screen Section */
+        .split-screen {
+            display: grid;
+            grid-template-columns: 45% 55%;
+            min-height: 80vh;
+            background: var(--surface);
+        }
+
+        .split-left {
+            padding: 5rem 3rem 5rem 5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-right: 1px solid var(--border);
+        }
+
+        .split-right {
+            padding: 5rem 5rem 5rem 3rem;
+            background: var(--bg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .split-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .split-text {
+            font-size: 1.125rem;
+            color: var(--text-light);
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+
+        .problem-list {
+            list-style: none;
+            margin: 2rem 0;
+        }
+
+        .problem-list li {
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 1rem;
+            color: var(--text-light);
+        }
+
+        .problem-list li:first-child {
+            border-top: 1px solid var(--border);
+        }
+
+        /* Full Width Image Section */
+        .full-image {
+            position: relative;
+            padding: 0;
+            background: var(--surface);
+        }
+
+        .image-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .image-label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .image-wrapper {
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+        }
+
+        .image-wrapper img {
+            width: 100%;
+            display: block;
+        }
+
+        /* Offset Grid */
+        .offset-grid {
+            max-width: 1400px;
+            margin: 6rem auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: start;
+        }
+
+        .offset-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2.5rem;
+            transform: translateY(0);
+            transition: transform 0.3s;
+        }
+
+        .offset-card:nth-child(even) {
+            margin-top: 3rem;
+        }
+
+        .offset-card:hover {
+            transform: translateY(-8px);
+        }
+
+        .card-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--accent);
+            line-height: 1;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .card-text {
+            color: var(--text-light);
+            line-height: 1.7;
+        }
+
+        /* Code Section - Full Width Dark */
+        .code-section {
+            background: #1F2937;
+            color: #F9FAFB;
+            padding: 5rem 2rem;
+            margin: 4rem 0;
+        }
+
+        .code-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .code-header {
+            margin-bottom: 2rem;
+        }
+
+        .code-header h2 {
+            font-size: 2rem;
+            color: #F9FAFB;
+            margin-bottom: 0.5rem;
+        }
+
+        .code-header p {
+            color: #9CA3AF;
+            font-size: 1.125rem;
+        }
+
+        .code-box {
+            background: #111827;
+            border-radius: 8px;
+            padding: 2rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            line-height: 1.8;
+            overflow-x: auto;
+            border: 1px solid #374151;
+        }
+
+        .code-box .comment { color: #6B7280; }
+        .code-box .keyword { color: #60A5FA; }
+        .code-box .string { color: #34D399; }
+        .code-box .function { color: #A78BFA; }
+
+        /* Horizontal Feature Strip */
+        .feature-strip {
+            background: var(--primary);
+            color: white;
+            padding: 4rem 2rem;
+            margin: 4rem 0;
+        }
+
+        .feature-strip-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3rem;
+            text-align: center;
+        }
+
+        .feature-strip h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+            font-weight: 700;
+        }
+
+        .feature-strip p {
+            opacity: 0.9;
+            font-size: 0.9375rem;
+            line-height: 1.6;
+        }
+
+        /* Download CTA - Centered */
+        .download-cta {
+            max-width: 800px;
+            margin: 6rem auto;
+            padding: 0 2rem;
+            text-align: center;
+        }
+
+        .download-cta h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 800;
+        }
+
+        .download-cta p {
+            color: var(--text-light);
+            font-size: 1.125rem;
+            margin-bottom: 2rem;
+        }
+
+        .download-btn {
+            display: inline-block;
+            padding: 1.125rem 3rem;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 6px;
+            font-size: 1.125rem;
+            transition: all 0.3s;
+        }
+
+        .download-btn:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+        }
+
+        .download-note {
+            margin-top: 1.5rem;
+            font-size: 0.875rem;
+            color: var(--text-light);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--bg);
+            padding: 3rem 2rem;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            color: var(--text-light);
+            font-size: 0.875rem;
+            line-height: 1.8;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .split-screen {
+                grid-template-columns: 1fr;
+            }
+
+            .split-left,
+            .split-right {
+                padding: 3rem 2rem;
+            }
+
+            .split-right {
+                border-right: none;
+                border-top: 1px solid var(--border);
+            }
+
+            .offset-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .offset-card:nth-child(even) {
+                margin-top: 0;
+            }
+
+            .feature-strip-inner {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+
+        /* Lightbox Styles */
+        .lightbox {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox-content {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            animation: zoomIn 0.3s ease;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s;
+            z-index: 10000;
+        }
+
+        .lightbox-close:hover {
+            color: #ccc;
+        }
+
+        .zoomable-image {
+            cursor: zoom-in;
+            transition: opacity 0.3s;
+        }
+
+        .zoomable-image:hover {
+            opacity: 0.9;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes zoomIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <a href="STRONA.html" class="nav-link">← Portfolio</a>
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--text-light);">DESKTOP APP</span>
+    </nav>
+
+    <!-- Asymmetric Header -->
+    <header>
+<div class="header-content">
+    <div class="badge">Workflow Tool</div>
+    <h1>Shift Deck</h1>
+    <p class="subtitle">
+        Desktop launcher built from ~6 years of logistics operations experience. Centralizes web apps, local programs, and text snippets in a single window—eliminating bookmark hunting and standardizing shift start-up across teams.
+    </p>
+    <div class="header-meta">
+        <div class="meta-item">
+            <strong>~6 Years</strong>
+            <span>Logistics Operations</span>
+        </div>
+        <div class="meta-item">
+            <strong>Python</strong>
+            <span>Tkinter Desktop</span>
+        </div>
+        <div class="meta-item">
+            <strong>JSON</strong>
+            <span>Portable Config</span>
+        </div>
+        <div class="meta-item">
+            <strong>Zero Install</strong>
+            <span>Admin Rights</span>
+        </div>
+    </div>
+</div>
+    </header>
+
+    <!-- Split Screen Problem/Solution -->
+    <div class="split-screen">
+        <div class="split-left">
+            <h2 class="split-title">Every shift started the same way</h2>
+            <p class="split-text">
+                Team members wasted ~5-10 minutes hunting through browser bookmarks, searching desktop folders for applications, and digging through personal notes for frequently-used text snippets. This pattern repeated across every shift, every team, every day.
+            </p>
+            <!-- Replace the <ul class="problem-list"> section with this: -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 2rem 0;">
+                <div style="background: linear-gradient(135deg, #FEF2F2 0%, #FFFFFF 100%); padding: 1.25rem; border-radius: 8px; border-left: 3px solid #EF4444;">
+                    <div style="font-weight: 600; margin-bottom: 0.5rem; color: var(--text);">Scattered Bookmarks</div>
+                    <div style="font-size: 0.875rem; color: var(--text-light);">Multiple folders and browsers</div>
+                </div>
+                
+                <div style="background: linear-gradient(135deg, #FEF2F2 0%, #FFFFFF 100%); padding: 1.25rem; border-radius: 8px; border-left: 3px solid #EF4444;">
+                    <div style="font-weight: 600; margin-bottom: 0.5rem; color: var(--text);">Inconsistent Shortcuts</div>
+                    <div style="font-size: 0.875rem; color: var(--text-light);">Different locations per workstation</div>
+                </div>
+                
+                <div style="background: linear-gradient(135deg, #FEF2F2 0%, #FFFFFF 100%); padding: 1.25rem; border-radius: 8px; border-left: 3px solid #EF4444;">
+                    <div style="font-weight: 600; margin-bottom: 0.5rem; color: var(--text);">Personal Note Files</div>
+                    <div style="font-size: 0.875rem; color: var(--text-light);">Critical snippets in individual files</div>
+                </div>
+                
+                <div style="background: linear-gradient(135deg, #FEF2F2 0%, #FFFFFF 100%); padding: 1.25rem; border-radius: 8px; border-left: 3px solid #EF4444;">
+                    <div style="font-weight: 600; margin-bottom: 0.5rem; color: var(--text);">Zero Standards</div>
+                    <div style="font-size: 0.875rem; color: var(--text-light);">No consistency between members</div>
+                </div>
+                
+                <div style="background: linear-gradient(135deg, #FEF2F2 0%, #FFFFFF 100%); padding: 1.25rem; border-radius: 8px; border-left: 3px solid #EF4444;">
+                    <div style="font-weight: 600; margin-bottom: 0.5rem; color: var(--text);">Manual Onboarding</div>
+                    <div style="font-size: 0.875rem; color: var(--text-light);">New hires shown everything manually</div>
+                </div>
+                
+                <div style="background: linear-gradient(135deg, #FEF2F2 0%, #FFFFFF 100%); padding: 1.25rem; border-radius: 8px; border-left: 3px solid #EF4444;">
+                    <div style="font-weight: 600; margin-bottom: 0.5rem; color: var(--text);">Setup Variance</div>
+                    <div style="font-size: 0.875rem; color: var(--text-light);">Inefficiency and confusion</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="split-right">
+            <h2 class="split-title">One file, instant standardization</h2>
+            <p class="split-text">
+                Shift Deck centralizes everything in a single executable and JSON config. Teams share one configuration file via network drive or USB. Start the program, access all shortcuts immediately. Zero installation, zero IT dependency.
+            </p>
+        </div>
+    </div>
+
+    <!-- Full Width Image - View Mode -->
+    <div class="full-image">
+        <div class="image-container">
+            <div class="image-label">View Mode Interface (Interactive Demo)</div>
+            <div class="image-wrapper" style="background: #f0f0f0; padding: 0; position: relative;">
+                <!-- Windows Title Bar -->
+                <div style="background: #e6e6e6; border-bottom: 1px solid #c8c8c8; padding: 4px 8px; display: flex; justify-content: space-between; align-items: center; height: 28px;">
+                    <span style="font-family: 'Segoe UI', sans-serif; font-size: 9pt; font-weight: bold; color: #000;">ShiftDeck</span>
+                    <div style="display: flex; gap: 0;">
+                        <div style="width: 32px; height: 20px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-family: 'Segoe UI', sans-serif; font-size: 9pt;" onmouseover="this.style.background='#dcdcdc'" onmouseout="this.style.background='transparent'">—</div>
+                        <div style="width: 32px; height: 20px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-family: 'Segoe UI', sans-serif; font-size: 9pt;" onmouseover="this.style.background='#dcdcdc'" onmouseout="this.style.background='transparent'">⬜</div>
+                        <div style="width: 32px; height: 20px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-family: 'Segoe UI', sans-serif; font-size: 9pt;" onmouseover="this.style.background='#e81123'; this.style.color='white'" onmouseout="this.style.background='transparent'; this.style.color='#000'">✕</div>
+                    </div>
+                </div>
+
+                <!-- Interactive ShiftDeck Mockup -->
+                <div style="font-family: 'Segoe UI', sans-serif; background: #f7f9fc; min-height: 300px;">
+                    <!-- Tabs -->
+                    <div style="background: #f7f9fc; padding: 1px 0 0 0; display: flex; gap: 0;">
+                        <button class="mock-tab active" data-team="day-shift" style="font-family: 'Segoe UI', sans-serif; font-size: 8pt; font-weight: bold; background: white; color: black; border: 1px solid #ccc; border-bottom: none; padding: 2px 8px; cursor: pointer; border-radius: 0;">Day Shift</button>
+                        <button class="mock-tab" data-team="night-shift" style="font-family: 'Segoe UI', sans-serif; font-size: 8pt; font-weight: bold; background: #e0e0e0; color: black; border: 1px solid #ccc; padding: 2px 8px; cursor: pointer; border-radius: 0;">Night Shift</button>
+                        <button class="mock-tab" data-team="weekend" style="font-family: 'Segoe UI', sans-serif; font-size: 8pt; font-weight: bold; background: #e0e0e0; color: black; border: 1px solid #ccc; padding: 2px 8px; cursor: pointer; border-radius: 0;">Weekend</button>
+                    </div>
+
+                    <!-- Content Area -->
+                    <div style="background: #f7f9fc; padding: 6px;">
+                        <!-- Day Shift Content -->
+                        <div class="mock-content active" data-content="day-shift" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2px;">
+                            <button class="mock-btn" data-type="url" style="font-family: Arial, sans-serif; font-size: 11pt; font-weight: bold; background: #0066cc; color: white; border: 1px solid #999; padding: 4px 8px; cursor: pointer; text-align: left; min-width: 88px;">Email Portal</button>
+                            <button class="mock-btn" data-type="url" style="font-family: Arial, sans-serif; font-size: 11pt; font-weight: bold; background: #28a745; color: white; border: 1px solid #999; padding: 4px 8px; cursor: pointer; text-align: left; min-width: 88px;">Warehouse DB</button>
+                            <button class="mock-btn" data-type="program" style="font-family: Arial, sans-serif; font-size: 11pt; font-weight: bold; background: #dc3545; color: white; border: 1px solid #999; padding: 4px 8px; cursor: pointer; text-align: left; min-width: 88px;">Excel Tool</button>
+                            <button class="mock-btn" data-type="snippet" style="font-family: Arial, sans-serif; font-size: 11pt; font-weight: bold; background: #ffc107; color: white; border: 1px solid #999; padding: 4px 8px; cursor: pointer; text-align: left; min-width: 88px;">Quick Reply</button>
+                        </div>
+
+                        <!-- Night Shift Content -->
+                        <div class="mock-content" data-content="night-shift" style="display: none; grid-template-columns: 1fr 1fr; gap: 2px;">
+                            <button class="mock-btn" data-type="url" style="font-family: Arial, sans-serif; font-size: 11pt; font-weight: bold; background: #6610f2; color: white; border: 1px solid #999; padding: 4px 8px; cursor: pointer; text-align: left; min-width: 88px;">Night Logs</button>
+                            <button class="mock-btn" data-type="snippet" style="font-family: Arial, sans-serif; font-size: 11pt; font-weight: bold; background: #20c997; color: white; border: 1px solid #999; padding: 4px 8px; cursor: pointer; text-align: left; min-width: 88px;">Handoff Note</button>
+                            <button class="mock-btn" data-type="program" style="font-family: Arial, sans-serif; font-size: 11pt; font-weight: bold; background: #fd7e14; color: white; border: 1px solid #999; padding: 4px 8px; cursor: pointer; text-align: left; min-width: 88px;">Inventory App</button>
+                        </div>
+
+                        <!-- Weekend Content -->
+                        <div class="mock-content" data-content="weekend" style="display: none; grid-template-columns: 1fr; gap: 2px;">
+                            <button class="mock-btn" data-type="url" style="font-family: Arial, sans-serif; font-size: 11pt; font-weight: bold; background: #17a2b8; color: white; border: 1px solid #999; padding: 4px 8px; cursor: pointer; text-align: left; min-width: 88px;">Weekend Report</button>
+                        </div>
+                    </div>
+
+                    <!-- Footer -->
+                    <div style="text-align: center; padding: 3px; background: #f7f9fc;">
+                        <span style="font-family: 'Segoe UI', sans-serif; font-size: 9pt; font-weight: bold; color: #ff9f1a; cursor: pointer;" class="mock-version" onclick="showConfigMode()">v1.2</span>
+                    </div>
+                </div>
+
+                <!-- Toast notification (hidden by default) -->
+                <div id="mock-toast" style="display: none; position: absolute; background: #333; color: white; padding: 6px 12px; border-radius: 4px; font-family: 'Segoe UI', sans-serif; font-size: 9pt; bottom: 40px; left: 50%; transform: translateX(-50%); z-index: 1000;">
+                    Copied to clipboard
+                </div>
+            </div>
+            <p style="text-align: center; margin-top: 1rem; color: var(--text-light); font-size: 0.9375rem;">
+                <strong>Try it!</strong> Click tabs to switch teams, buttons to see actions, and <strong>v1.2</strong> to open config mode
+            </p>
+        </div>
+    </div>
+
+    <script>
+    // Mode switching functions
+    function showConfigMode() {
+        const configSection = document.querySelector('.full-image:nth-of-type(2)');
+        // Scroll to config section
+        configSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function showViewMode() {
+        const viewSection = document.querySelector('.full-image:nth-of-type(1)');
+        // Scroll to view section
+        viewSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // Interactive mockup functionality
+    (function() {
+        const tabs = document.querySelectorAll('.mock-tab');
+        const contents = document.querySelectorAll('.mock-content');
+        const buttons = document.querySelectorAll('.mock-btn');
+        const toast = document.getElementById('mock-toast');
+
+        // Tab switching
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const team = tab.dataset.team;
+
+                // Update tab styles
+                tabs.forEach(t => {
+                    t.style.background = t === tab ? 'white' : '#e0e0e0';
+                    t.classList.toggle('active', t === tab);
+                });
+
+                // Update content visibility
+                contents.forEach(content => {
+                    const isActive = content.dataset.content === team;
+                    content.style.display = isActive ? 'grid' : 'none';
+                    content.classList.toggle('active', isActive);
+                });
+            });
+        });
+
+        // Button interactions
+        buttons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const type = btn.dataset.type;
+                const text = btn.textContent;
+
+                if (type === 'snippet') {
+                    // Show toast for snippets
+                    toast.textContent = `Copied "${text}" to clipboard`;
+                    toast.style.display = 'block';
+                    setTimeout(() => {
+                        toast.style.display = 'none';
+                    }, 1200);
+                } else if (type === 'url') {
+                    // Visual feedback for URLs
+                    const originalBg = btn.style.background;
+                    btn.style.opacity = '0.7';
+                    setTimeout(() => {
+                        btn.style.opacity = '1';
+                    }, 200);
+                } else if (type === 'program') {
+                    // Visual feedback for programs
+                    const originalBg = btn.style.background;
+                    btn.style.opacity = '0.7';
+                    setTimeout(() => {
+                        btn.style.opacity = '1';
+                    }, 200);
+                }
+            });
+
+            // Hover effects
+            btn.addEventListener('mouseenter', () => {
+                btn.style.filter = 'brightness(1.1)';
+            });
+
+            btn.addEventListener('mouseleave', () => {
+                btn.style.filter = 'brightness(1)';
+            });
+        });
+
+        // Version label blink effect
+        const versionLabel = document.querySelector('.mock-version');
+        let blinkOn = true;
+        setInterval(() => {
+            blinkOn = !blinkOn;
+            versionLabel.style.color = blinkOn ? '#ffb347' : '#ff9f1a';
+        }, 800);
+    })();
+    </script>
+
+    <!-- Full Width Image - Config Mode -->
+    <div class="full-image" style="background: var(--bg);">
+        <div class="image-container">
+            <div class="image-label">Configuration Mode Interface (Interactive Demo)</div>
+            <div class="image-wrapper" style="background: #f0f0f0; padding: 0; position: relative;">
+                <!-- Windows Title Bar -->
+                <div style="background: #e6e6e6; border-bottom: 1px solid #c8c8c8; padding: 4px 8px; display: flex; justify-content: space-between; align-items: center; height: 28px;">
+                    <span style="font-family: 'Segoe UI', sans-serif; font-size: 9pt; font-weight: bold; color: #000;">ShiftDeck – Configuration</span>
+                    <div style="display: flex; gap: 0;">
+                        <div style="width: 32px; height: 20px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-family: 'Segoe UI', sans-serif; font-size: 9pt;" onmouseover="this.style.background='#dcdcdc'" onmouseout="this.style.background='transparent'">—</div>
+                        <div style="width: 32px; height: 20px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-family: 'Segoe UI', sans-serif; font-size: 9pt;" onmouseover="this.style.background='#dcdcdc'" onmouseout="this.style.background='transparent'">⬜</div>
+                        <div style="width: 32px; height: 20px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-family: 'Segoe UI', sans-serif; font-size: 9pt;" onmouseover="this.style.background='#e81123'; this.style.color='white'" onmouseout="this.style.background='transparent'; this.style.color='#000'">✕</div>
+                    </div>
+                </div>
+
+                <!-- Config Mode Content -->
+                <div style="font-family: 'Segoe UI', sans-serif; background: #f0f0f0; padding: 15px;">
+                    <!-- Teams Section -->
+                    <div style="margin-bottom: 15px;">
+                        <div style="font-family: Arial, sans-serif; font-size: 12pt; font-weight: bold; margin-bottom: 5px;">Teams/Shifts</div>
+                        <div style="display: flex; gap: 15px;">
+                            <div style="flex: 1; background: white; border: 1px solid #999; min-height: 120px; padding: 4px; font-family: Arial, sans-serif; font-size: 10pt;">
+                                <div style="padding: 4px; background: #e0e0e0; cursor: pointer;">Day Shift</div>
+                                <div style="padding: 4px;">Night Shift</div>
+                                <div style="padding: 4px;">Weekend</div>
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <input type="text" placeholder="Team name..." style="font-family: Arial, sans-serif; font-size: 10pt; padding: 4px; width: 140px;">
+                                <button style="font-family: Arial, sans-serif; font-size: 9pt; padding: 2px 8px; width: 140px; cursor: pointer;">Add Team</button>
+                                <button style="font-family: Arial, sans-serif; font-size: 9pt; padding: 2px 8px; width: 140px; cursor: pointer;">Rename Team</button>
+                                <button style="font-family: Arial, sans-serif; font-size: 9pt; padding: 2px 8px; width: 140px; cursor: pointer;">Remove Team</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="height: 2px; background: #d0d0d0; margin: 10px 0;"></div>
+
+                    <!-- Shortcuts Section -->
+                    <div style="margin-bottom: 15px;">
+                        <div style="font-family: Arial, sans-serif; font-size: 12pt; font-weight: bold; margin-bottom: 5px;">Shortcuts</div>
+                        <div style="display: flex; gap: 15px;">
+                            <div style="flex: 1; background: white; border: 1px solid #999; min-height: 160px; padding: 4px; font-family: Arial, sans-serif; font-size: 10pt;">
+                                <div style="padding: 4px; background: #e0e0e0; cursor: pointer;">Email Portal</div>
+                                <div style="padding: 4px;">Warehouse DB</div>
+                                <div style="padding: 4px;">Excel Tool</div>
+                                <div style="padding: 4px;">Quick Reply</div>
+                            </div>
+                            <div style="display: grid; grid-template-columns: auto 1fr; gap: 8px; align-items: center;">
+                                <label style="font-family: Arial, sans-serif; font-size: 10pt;">Name:</label>
+                                <input type="text" value="Email Portal" style="font-family: Arial, sans-serif; font-size: 10pt; padding: 2px 4px; width: 180px;">
+
+                                <label style="font-family: Arial, sans-serif; font-size: 10pt;">Type:</label>
+                                <div style="display: flex; gap: 10px;">
+                                    <label style="font-family: Arial, sans-serif; font-size: 10pt;"><input type="radio" name="mock-type" checked> URL</label>
+                                    <label style="font-family: Arial, sans-serif; font-size: 10pt;"><input type="radio" name="mock-type"> Program</label>
+                                    <label style="font-family: Arial, sans-serif; font-size: 10pt;"><input type="radio" name="mock-type"> Snippet</label>
+                                </div>
+
+                                <label style="font-family: Arial, sans-serif; font-size: 10pt;">URL:</label>
+                                <div style="display: flex; gap: 5px;">
+                                    <input type="text" value="https://mail.company.com" style="font-family: Arial, sans-serif; font-size: 10pt; padding: 2px 4px; width: 180px;">
+                                    <button style="font-family: Arial, sans-serif; font-size: 9pt; padding: 2px 8px; opacity: 0.5; cursor: not-allowed;" disabled>Browse...</button>
+                                </div>
+
+                                <label style="font-family: Arial, sans-serif; font-size: 10pt;">Color:</label>
+                                <div style="display: flex; gap: 8px; align-items: center;">
+                                    <div style="width: 48px; height: 20px; background: #0066cc; border: 1px solid #999;"></div>
+                                    <button style="font-family: Arial, sans-serif; font-size: 9pt; padding: 2px 8px; cursor: pointer;">Choose</button>
+                                </div>
+
+                                <div></div>
+                                <div style="display: flex; gap: 5px; align-items: center;">
+                                    <span style="font-family: Arial, sans-serif; font-size: 9pt; margin-right: 5px;">Presets:</span>
+                                    <div style="width: 24px; height: 16px; background: #dc3545; border: 1px solid #999; cursor: pointer;"></div>
+                                    <div style="width: 24px; height: 16px; background: #0066cc; border: 1px solid #999; cursor: pointer;"></div>
+                                    <div style="width: 24px; height: 16px; background: #28a745; border: 1px solid #999; cursor: pointer;"></div>
+                                    <div style="width: 24px; height: 16px; background: #ffc107; border: 1px solid #999; cursor: pointer;"></div>
+                                    <div style="width: 24px; height: 16px; background: #6610f2; border: 1px solid #999; cursor: pointer;"></div>
+                                </div>
+
+                                <div></div>
+                                <div style="display: flex; gap: 4px; margin-top: 6px;">
+                                    <button style="font-family: Arial, sans-serif; font-size: 9pt; padding: 2px 12px; cursor: pointer;">Add</button>
+                                    <button style="font-family: Arial, sans-serif; font-size: 9pt; padding: 2px 12px; cursor: pointer;">Update</button>
+                                    <button style="font-family: Arial, sans-serif; font-size: 9pt; padding: 2px 12px; cursor: pointer;">Remove</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="height: 2px; background: #d0d0d0; margin: 10px 0;"></div>
+
+                    <!-- Bottom buttons -->
+                    <div style="display: flex; justify-content: center; gap: 10px; margin-top: 10px;">
+                        <button style="font-family: Arial, sans-serif; font-size: 10pt; padding: 4px 16px; cursor: pointer;">Save & Exit</button>
+                        <button onclick="showViewMode()" style="font-family: Arial, sans-serif; font-size: 10pt; padding: 4px 16px; cursor: pointer; background: #007bff; color: white; border: 1px solid #0056b3;">View App</button>
+                    </div>
+                </div>
+            </div>
+            <p style="text-align: center; margin-top: 1rem; color: var(--text-light); font-size: 0.9375rem;">
+                Intuitive UI for adding teams, choosing colors, and managing shortcuts—click <strong>View App</strong> to return
+            </p>
+        </div>
+    </div>
+
+    <!-- Offset Grid Features -->
+    <div class="offset-grid">
+        <div class="offset-card">
+            <div class="card-number">01</div>
+            <h3 class="card-title">Three Shortcut Types</h3>
+            <p class="card-text">URLs open in default browser. Local programs launch directly. Snippets copy to clipboard with visual confirmation. All handled by unified activation logic.</p>
+        </div>
+
+        <div class="offset-card">
+            <div class="card-number">02</div>
+            <h3 class="card-title">Team Organization</h3>
+            <p class="card-text">Create tabs for different teams or shifts. Each group maintains independent shortcuts and color schemes. Quick switching between contexts during handoffs.</p>
+        </div>
+
+        <div class="offset-card">
+            <div class="card-number">03</div>
+            <h3 class="card-title">Self-Service Management</h3>
+            <p class="card-text">Built-in configuration UI eliminates technical barriers. Team members add, modify, or remove shortcuts without developer support or JSON knowledge.</p>
+        </div>
+
+        <div class="offset-card">
+            <div class="card-number">04</div>
+            <h3 class="card-title">Visual Feedback</h3>
+            <p class="card-text">Toast notifications confirm snippet copies. Error dialogs explain failures. Users always know what happened without disrupting workflow or losing context.</p>
+        </div>
+
+        <div class="offset-card">
+            <div class="card-number">05</div>
+            <h3 class="card-title">Portable Architecture</h3>
+            <p class="card-text">Single executable plus JSON config. Works from any folder including USB drives. Share configurations by copying one file. No installation footprint.</p>
+        </div>
+
+    </div>
+
+    <!-- Code Section -->
+    <div class="code-section">
+        <div class="code-container">
+            <div class="code-header">
+                <h2>Type-Specific Activation</h2>
+                <p>Single function handles URLs, programs, and clipboard operations with appropriate OS-specific commands</p>
+            </div>
+            <div class="code-box">
+<pre><span class="keyword">def</span> <span class="function">activate_shortcut</span>(self, sc: dict, btn_widget: tk.Widget):
+    <span class="comment">"""Open URL/program or copy snippet with visual feedback"""</span>
+    url = sc.get(<span class="string">"url"</span>, <span class="string">""</span>)
+    kind = sc.get(<span class="string">"type"</span>) or (<span class="string">"url"</span> <span class="keyword">if</span> is_url(url) <span class="keyword">else</span> <span class="string">"program"</span>)
+    
+    <span class="keyword">try</span>:
+        <span class="keyword">if</span> kind == <span class="string">"snippet"</span>:
+            snippet = (sc.get(<span class="string">"snippet"</span>, <span class="string">""</span>) or <span class="string">""</span>).strip()
+            <span class="keyword">if not</span> snippet:
+                self._toast(self.content_frame, <span class="string">"No snippet set"</span>, btn_widget)
+                <span class="keyword">return</span>
+            
+            self.root.clipboard_clear()
+            self.root.clipboard_append(snippet)
+            self.root.update()
+            self._toast(self.content_frame, <span class="string">"Copied to clipboard"</span>, btn_widget)
+            <span class="keyword">return</span>
+        
+        <span class="keyword">if</span> is_url(url):
+            webbrowser.open(url)
+            <span class="keyword">return</span>
+        
+        <span class="keyword">if not</span> url or <span class="keyword">not</span> os.path.exists(url):
+            messagebox.showerror(<span class="string">"Error"</span>, <span class="string">f"Path not found: {url or '(empty)'}"</span>)
+            <span class="keyword">return</span>
+        
+        <span class="comment"># Platform-specific program launching</span>
+        <span class="keyword">if</span> os.name == <span class="string">"nt"</span>:
+            os.startfile(url)  <span class="comment"># Windows</span>
+        <span class="keyword">else</span>:
+            opener = <span class="string">"open"</span> <span class="keyword">if</span> sys.platform == <span class="string">"darwin"</span> <span class="keyword">else</span> <span class="string">"xdg-open"</span>
+            subprocess.call([opener, url])
+    
+    <span class="keyword">except</span> Exception as e:
+        messagebox.showerror(<span class="string">"Error"</span>, <span class="string">f"Could not open:\n{e}"</span>)</pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feature Strip -->
+    <div class="feature-strip">
+        <div class="feature-strip-inner">
+            <div>
+                <h3>~5-10 Minutes Saved</h3>
+                <p>Per shift start-up by eliminating bookmark hunting, program searching, and snippet retrieval from scattered sources</p>
+            </div>
+            <div>
+                <h3>100% Standardized</h3>
+                <p>Consistent setup process across all team members. New hires productive immediately with shared configurations</p>
+            </div>
+            <div>
+                <h3>Self-Managed</h3>
+                <p>Teams modify shortcuts independently through configuration UI without technical support or developer intervention</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Download CTA -->
+    <div class="download-cta">
+        <h2>Download Shift Deck</h2>
+        <p>Ready-to-use Windows executable with example configuration</p>
+        <a href="https://github.com/denisgwizdala/SHIFT-DECK" target="_blank" class="download-btn">Download ShiftDeck.exe</a>
+        <p class="download-note">
+            Open source on GitHub • No installation required • Free to use
+        </p>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>
+            <strong>Personal Project:</strong> Open source desktop tool built with Python and Tkinter during personal time outside of work hours. Portable JSON configuration requires no installation or administrative privileges.
+            <br><strong>Free to use:</strong> Available for personal and team productivity use. This is my creation and freely available.
+        </p>
+    </footer>
+
+    <!-- Lightbox -->
+    <div id="lightbox" class="lightbox">
+        <span class="lightbox-close" id="lightbox-close">&times;</span>
+        <img class="lightbox-content" id="lightbox-img" src="" alt="Zoomed image">
+    </div>
+
+    <script>
+    // Lightbox functionality
+    (function() {
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const lightboxClose = document.getElementById('lightbox-close');
+
+        // Make all images with specific classes zoomable
+        const images = document.querySelectorAll('.image-wrapper img, img[src*=".png"], img[src*=".jpg"], img[src*=".jpeg"]');
+
+        images.forEach(img => {
+            img.classList.add('zoomable-image');
+            img.style.cursor = 'zoom-in';
+
+            img.addEventListener('click', function(e) {
+                e.preventDefault();
+                lightbox.classList.add('active');
+                lightboxImg.src = this.src;
+                document.body.style.overflow = 'hidden'; // Prevent scrolling
+            });
+        });
+
+        // Close lightbox
+        function closeLightbox() {
+            lightbox.classList.remove('active');
+            document.body.style.overflow = ''; // Restore scrolling
+        }
+
+        lightboxClose.addEventListener('click', closeLightbox);
+
+        // Close when clicking outside the image
+        lightbox.addEventListener('click', function(e) {
+            if (e.target === lightbox) {
+                closeLightbox();
+            }
+        });
+
+        // Close with ESC key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+                closeLightbox();
+            }
+        });
+    })();
+    </script>
+</body>
+</html>
