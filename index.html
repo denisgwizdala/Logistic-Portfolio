@@ -5581,6 +5581,7 @@
                         // Check if this dot overlaps with any previous metric's same point
                         for (let i = 0; i < metricIndex; i++) {
                             const otherPoint = metricsPoints[i].points[index];
+                            // Only apply offset if they're truly overlapping
                             if (Math.abs(point.y - otherPoint.y) < 15) {
                                 yOffset += 10; // Same 10px offset as lines
                             }
@@ -5595,7 +5596,9 @@
                             dotLeftPx += 60;
                         }
                         dotContainer.style.left = dotLeftPx + 'px';
-                        dotContainer.style.top = (padding.top + point.y + yOffset - 4) + 'px'; // Apply offset + center dot
+                        // Position dot vertically to match line exactly
+                        dotContainer.style.top = (padding.top + point.y + yOffset) + 'px';
+                        dotContainer.style.marginTop = '-4px'; // Center 8px dot on line
                         dotContainer.style.transform = 'translateX(-50%)'; // Only center horizontally
                         dotContainer.style.zIndex = `${20 + metricIndex * 10 + index}`; // Better z-index stacking
                         dotContainer.style.cursor = 'pointer';
@@ -5662,8 +5665,11 @@
                             const yearLabel = document.createElement('div');
                             yearLabel.textContent = point.year;
                             yearLabel.style.position = 'absolute';
-                            // Position year label - keep at normal position (don't move with dots)
-                            const yearLeftPx = (point.x / 100) * canvas.width;
+                            // Position year label - move 2020 to align with moved dots
+                            let yearLeftPx = (point.x / 100) * canvas.width;
+                            if (point.x === 0 || index === 0) {
+                                yearLeftPx += 60; // Match the dot offset for 2020
+                            }
                             yearLabel.style.left = yearLeftPx + 'px';
                             yearLabel.style.bottom = '15px';
                             yearLabel.style.transform = 'translateX(-50%)';
