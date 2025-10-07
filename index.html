@@ -5597,7 +5597,12 @@
                         }
                         dotContainer.style.left = dotLeftPx + 'px';
                         // Position dot vertically to match line exactly
-                        dotContainer.style.top = (padding.top + point.y + yOffset) + 'px';
+                        let dotTopPx = padding.top + point.y + yOffset;
+                        // Move ALL 2020 dots (index 0) higher by 15px
+                        if (index === 0) {
+                            dotTopPx -= 15;
+                        }
+                        dotContainer.style.top = dotTopPx + 'px';
                         dotContainer.style.marginTop = '-4px'; // Center 8px dot on line
                         dotContainer.style.transform = 'translateX(-50%)'; // Only center horizontally
                         dotContainer.style.zIndex = `${20 + metricIndex * 10 + index}`; // Better z-index stacking
