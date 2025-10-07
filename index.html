@@ -5589,7 +5589,11 @@
                         const dotContainer = document.createElement('div');
                         dotContainer.style.position = 'absolute';
                         // Position dot: use full canvas width (0% = left edge, 100% = right edge)
-                        const dotLeftPx = (point.x / 100) * canvas.width;
+                        let dotLeftPx = (point.x / 100) * canvas.width;
+                        // MANUAL FIX: Move 2020 dots (x=0) further left by 40px to align with line
+                        if (point.x === 0 || index === 0) {
+                            dotLeftPx -= 40;
+                        }
                         dotContainer.style.left = dotLeftPx + 'px';
                         dotContainer.style.top = (padding.top + point.y + yOffset - 4) + 'px'; // Apply offset + center dot
                         dotContainer.style.transform = 'translateX(-50%)'; // Only center horizontally
@@ -5659,7 +5663,11 @@
                             yearLabel.textContent = point.year;
                             yearLabel.style.position = 'absolute';
                             // Position year label matching dots (full width)
-                            const yearLeftPx = (point.x / 100) * canvas.width;
+                            let yearLeftPx = (point.x / 100) * canvas.width;
+                            // Move 2020 label left to match dot position
+                            if (point.x === 0 || index === 0) {
+                                yearLeftPx -= 40;
+                            }
                             yearLabel.style.left = yearLeftPx + 'px';
                             yearLabel.style.bottom = '15px';
                             yearLabel.style.transform = 'translateX(-50%)';
