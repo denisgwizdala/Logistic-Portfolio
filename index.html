@@ -5575,18 +5575,6 @@
                         };
 
                         points.forEach((point, index) => {
-                        // Apply same offset logic as lines
-                        let yOffset = 0;
-
-                        // Check if this dot overlaps with any previous metric's same point
-                        for (let i = 0; i < metricIndex; i++) {
-                            const otherPoint = metricsPoints[i].points[index];
-                            // Only apply offset if they're truly overlapping
-                            if (Math.abs(point.y - otherPoint.y) < 15) {
-                                yOffset += 10; // Same 10px offset as lines
-                            }
-                        }
-
                         const dotContainer = document.createElement('div');
                         dotContainer.style.position = 'absolute';
                         // Position dot: use full canvas width (0% = left edge, 100% = right edge)
@@ -5596,8 +5584,8 @@
                             dotLeftPx += 60;
                         }
                         dotContainer.style.left = dotLeftPx + 'px';
-                        // Position dot vertically to match line exactly
-                        let dotTopPx = padding.top + point.y + yOffset;
+                        // Position dot vertically - NO vertical offset, same value = same height
+                        let dotTopPx = padding.top + point.y;
                         // Move ALL 2020 dots (index 0) higher by 15px
                         if (index === 0) {
                             dotTopPx -= 15;
@@ -5691,21 +5679,12 @@
                     setTimeout(() => {
                         const canvasWidth = canvas.width;
 
-                        // Convert all metrics' points to pixel coordinates with overlap detection
+                        // Convert all metrics' points to pixel coordinates - NO vertical offset
                         const allPixelLines = metricsPoints.map(({ points, color }, lineIndex) => ({
                             pixelPoints: points.map((p, pointIndex) => {
                                 // Draw across full canvas width (0% = left edge, 100% = right edge)
                                 const x = (p.x / 100) * canvasWidth;
-                                let y = p.y;
-
-                                // Check if this point overlaps with any previous line's same point
-                                for (let i = 0; i < lineIndex; i++) {
-                                    const otherY = metricsPoints[i].points[pointIndex].y;
-                                    // If within 15px, offset this line down by 10px per overlapping line
-                                    if (Math.abs(y - otherY) < 15) {
-                                        y += 10;
-                                    }
-                                }
+                                const y = p.y; // Same value = same height, no offsets
 
                                 return { x, y };
                             }),
