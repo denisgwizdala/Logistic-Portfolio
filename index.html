@@ -5588,9 +5588,12 @@
 
                         const dotContainer = document.createElement('div');
                         dotContainer.style.position = 'absolute';
-                        // Position dot: start at left margin + percentage of content width
-                        const dotContentWidth = wrapper.offsetWidth - padding.left - padding.right;
-                        const dotLeftPx = padding.left + (point.x / 100) * dotContentWidth;
+                        // Position dot matching canvas coordinate system
+                        // Canvas starts at padding.left and has width = contentWidth
+                        // Canvas draws at x = (point.x/100) * canvasWidth
+                        // So dot should be at: padding.left + (point.x/100) * canvasWidth
+                        const canvasWidthForDot = canvas.width;
+                        const dotLeftPx = padding.left + (point.x / 100) * canvasWidthForDot;
                         dotContainer.style.left = dotLeftPx + 'px';
                         dotContainer.style.top = (padding.top + point.y + yOffset - 4) + 'px'; // Apply offset + center dot
                         dotContainer.style.transform = 'translateX(-50%)'; // Only center horizontally
@@ -5659,9 +5662,8 @@
                             const yearLabel = document.createElement('div');
                             yearLabel.textContent = point.year;
                             yearLabel.style.position = 'absolute';
-                            // Position year label same as dots
-                            const yearContentWidth = wrapper.offsetWidth - padding.left - padding.right;
-                            const yearLeftPx = padding.left + (point.x / 100) * yearContentWidth;
+                            // Position year label matching canvas/dots
+                            const yearLeftPx = padding.left + (point.x / 100) * canvas.width;
                             yearLabel.style.left = yearLeftPx + 'px';
                             yearLabel.style.bottom = '15px';
                             yearLabel.style.transform = 'translateX(-50%)';
