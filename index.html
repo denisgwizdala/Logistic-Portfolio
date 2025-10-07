@@ -5524,6 +5524,9 @@
                     wrapper.style.paddingTop = padding.top + 'px';
                     wrapper.style.paddingBottom = padding.bottom + 'px';
 
+                    // Add wrapper to DOM first to get correct dimensions
+                    container.appendChild(wrapper);
+
                     // Normalize each metric independently to its own min/max range
                     const metricsPoints = allMetricData.map(({ metric, data, color }) => {
                         // Find min/max for THIS metric only
@@ -5541,10 +5544,11 @@
                         });
                         return { metric, points, color };
                     });
-                    
-                    // Canvas for smooth line drawing
+
+                    // Canvas for smooth line drawing - now wrapper is in DOM
                     const canvas = document.createElement('canvas');
-                    canvas.width = wrapper.offsetWidth || 1000;
+                    const wrapperWidth = wrapper.offsetWidth || container.offsetWidth || 1000;
+                    canvas.width = wrapperWidth;
                     canvas.height = chartHeight;
                     canvas.style.position = 'absolute';
                     canvas.style.top = padding.top + 'px';
@@ -5705,8 +5709,6 @@
 
                         drawLines();
                     }, 400);
-                    
-                    container.appendChild(wrapper);
                 }
                 // Chart Checkbox Toggle Handler (Max 2 selections)
                 function initChartControls() {
