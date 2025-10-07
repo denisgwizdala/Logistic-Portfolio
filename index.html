@@ -5696,13 +5696,14 @@
 
                             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-                            // Draw each metric line
-                            allPixelLines.forEach(({ pixelPoints, color }) => {
+                            // Draw each metric line with transparency to show overlaps
+                            allPixelLines.forEach(({ pixelPoints, color }, lineIndex) => {
+                                ctx.globalAlpha = 0.85; // Make lines semi-transparent to show overlaps
                                 ctx.strokeStyle = color;
                                 ctx.lineWidth = 3;
                                 ctx.lineCap = 'round';
-                                ctx.shadowBlur = 6;
-                                ctx.shadowColor = color + '60';
+                                ctx.shadowBlur = 8;
+                                ctx.shadowColor = color + '40';
 
                                 ctx.beginPath();
                                 ctx.moveTo(pixelPoints[0].x, pixelPoints[0].y);
@@ -5719,6 +5720,7 @@
                                 }
 
                                 ctx.stroke();
+                                ctx.globalAlpha = 1.0; // Reset alpha for next line
                             });
 
                             if (currentSegment < allPixelLines[0].pixelPoints.length - 2 || progress < 1) {
