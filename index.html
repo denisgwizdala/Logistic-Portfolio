@@ -4303,7 +4303,7 @@
                 </div>
 
                 <div class="projects-grid">
-                    <div class="project-card" data-link="Strona2.html">
+                    <div class="project-card" data-link="eu-offset-validator.html">
                         <div class="project-header">
                             <h3 class="project-title">EU Offset Validator</h3>
                         </div>
@@ -4324,7 +4324,7 @@
                             <span class="tag">Automation</span>
                         </div>
                     </div>
-                <div class="project-card" data-link="Strona3.html">
+                <div class="project-card" data-link="yard-updater.html">
                     <div class="project-header">
                         <h3 class="project-title">EU Yard Configuration Updater</h3>
                     </div>
@@ -5576,6 +5576,8 @@
                         dotContainer.style.transform = 'translate(-50%, -50%)';
                         dotContainer.style.zIndex = '10';
                         dotContainer.style.cursor = 'pointer';
+                        dotContainer.style.padding = '8px'; // Larger hit area for overlapping dots
+                        dotContainer.style.margin = '-8px'; // Compensate for padding
 
                         // Add click handler to open modal
                         dotContainer.addEventListener('click', () => {
@@ -5608,8 +5610,9 @@
                         valueLabel.style.pointerEvents = 'none';
                         dotContainer.appendChild(valueLabel);
 
-                        // Hover effects
+                        // Hover effects - bring to front when hovering
                         dotContainer.addEventListener('mouseenter', () => {
+                            dotContainer.style.zIndex = '100'; // Bring to front
                             dot.style.width = '12px';
                             dot.style.height = '12px';
                             dot.style.boxShadow = `0 0 16px ${color}`;
@@ -5617,6 +5620,7 @@
                         });
 
                         dotContainer.addEventListener('mouseleave', () => {
+                            dotContainer.style.zIndex = '10'; // Return to normal
                             dot.style.width = '8px';
                             dot.style.height = '8px';
                             dot.style.boxShadow = `0 0 8px ${color}80`;
