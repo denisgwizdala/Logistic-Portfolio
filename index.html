@@ -5573,24 +5573,21 @@
                         };
 
                         points.forEach((point, index) => {
-                        // Check for nearby dots at same x position (within 5px on y-axis)
-                        let xOffset = 0;
-                        const nearbyDots = dotPositions.filter(pos =>
-                            Math.abs(pos.x - point.x) < 0.1 && Math.abs(pos.y - point.y) < 10
-                        );
+                        // Apply same offset logic as lines
+                        let yOffset = 0;
 
-                        // If dots are overlapping, offset horizontally
-                        if (nearbyDots.length > 0) {
-                            xOffset = nearbyDots.length * 3; // Offset by 3% for each overlapping dot
+                        // Check if this dot overlaps with any previous metric's same point
+                        for (let i = 0; i < metricIndex; i++) {
+                            const otherPoint = metricsPoints[i].points[index];
+                            if (Math.abs(point.y - otherPoint.y) < 15) {
+                                yOffset += 10; // Same 10px offset as lines
+                            }
                         }
-
-                        // Store this dot's position
-                        dotPositions.push({ x: point.x, y: point.y });
 
                         const dotContainer = document.createElement('div');
                         dotContainer.style.position = 'absolute';
-                        dotContainer.style.left = `calc(${point.x}% + ${xOffset}px)`;
-                        dotContainer.style.top = (padding.top + point.y - 4) + 'px'; // Center dot on line (dot is 8px, so -4px)
+                        dotContainer.style.left = point.x + '%';
+                        dotContainer.style.top = (padding.top + point.y + yOffset - 4) + 'px'; // Apply offset + center dot
                         dotContainer.style.transform = 'translateX(-50%)'; // Only center horizontally
                         dotContainer.style.zIndex = `${20 + metricIndex * 10 + index}`; // Better z-index stacking
                         dotContainer.style.cursor = 'pointer';
@@ -5673,12 +5670,23 @@
                     setTimeout(() => {
                         const canvasWidth = canvas.width;
 
-                        // Convert all metrics' points to pixel coordinates
-                        const allPixelLines = metricsPoints.map(({ points, color }) => ({
-                            pixelPoints: points.map(p => ({
-                                x: (p.x / 100) * canvasWidth,
-                                y: p.y
-                            })),
+                        // Convert all metrics' points to pixel coordinates with overlap detection
+                        const allPixelLines = metricsPoints.map(({ points, color }, lineIndex) => ({
+                            pixelPoints: points.map((p, pointIndex) => {
+                                const x = (p.x / 100) * canvasWidth;
+                                let y = p.y;
+
+                                // Check if this point overlaps with any previous line's same point
+                                for (let i = 0; i < lineIndex; i++) {
+                                    const otherY = metricsPoints[i].points[pointIndex].y;
+                                    // If within 15px, offset this line down by 10px per overlapping line
+                                    if (Math.abs(y - otherY) < 15) {
+                                        y += 10;
+                                    }
+                                }
+
+                                return { x, y };
+                            }),
                             color
                         }));
 
@@ -5696,14 +5704,14 @@
 
                             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-                            // Draw each metric line with transparency to show overlaps
+                            // Draw each metric line - now offset to prevent overlaps
                             allPixelLines.forEach(({ pixelPoints, color }, lineIndex) => {
-                                ctx.globalAlpha = 0.85; // Make lines semi-transparent to show overlaps
+                                ctx.globalAlpha = 1.0; // Full opacity since lines are offset
                                 ctx.strokeStyle = color;
                                 ctx.lineWidth = 3;
                                 ctx.lineCap = 'round';
-                                ctx.shadowBlur = 8;
-                                ctx.shadowColor = color + '40';
+                                ctx.shadowBlur = 6;
+                                ctx.shadowColor = color + '60';
 
                                 ctx.beginPath();
                                 ctx.moveTo(pixelPoints[0].x, pixelPoints[0].y);
@@ -5720,7 +5728,6 @@
                                 }
 
                                 ctx.stroke();
-                                ctx.globalAlpha = 1.0; // Reset alpha for next line
                             });
 
                             if (currentSegment < allPixelLines[0].pixelPoints.length - 2 || progress < 1) {
