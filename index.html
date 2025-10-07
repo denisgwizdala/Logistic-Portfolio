@@ -2240,7 +2240,7 @@
 
         @media (max-width: 768px) {
             .container {
-                padding: 0 30px;
+                padding: 0 1.25rem;
             }
 
             body::before,
@@ -2253,12 +2253,32 @@
             }
 
             .hero {
-                padding: 6rem 0 4rem;
+                padding: 4rem 0 3rem;
+            }
+
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-content p {
+                font-size: 1.125rem;
             }
 
             .hero-stats {
                 grid-template-columns: 1fr 1fr;
-                gap: 1.5rem;
+                gap: 1rem;
+            }
+
+            .hero-stat {
+                padding: 1.25rem;
+            }
+
+            .hero-stat-value {
+                font-size: 2rem;
+            }
+
+            .hero-stat-label {
+                font-size: 0.75rem;
             }
 
             .projects-grid {
@@ -2266,25 +2286,163 @@
             }
 
             .section-title {
-                font-size: 2.5rem;
+                font-size: 2rem;
+            }
+
+            .section-subtitle {
+                font-size: 1rem;
             }
 
             .introduction,
             .projects-section {
-                padding: 6rem 0;
+                padding: 4rem 0;
+            }
+
+            .intro-card {
+                padding: 2rem !important;
+                gap: 2rem !important;
+            }
+
+            .intro-image-wrapper {
+                width: 120px;
+                height: 120px;
+            }
+
+            .intro-name {
+                font-size: 1.75rem;
+            }
+
+            .intro-role {
+                font-size: 1rem;
+            }
+
+            .intro-cta-group {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .intro-cta {
+                width: 100%;
+                justify-content: center;
+                padding: 0.875rem 1.5rem;
+                font-size: 0.875rem;
+            }
+
+            .intro-section-title {
+                font-size: 1.25rem;
+            }
+
+            .education-item,
+            .experience-item {
+                padding: 1.25rem;
+            }
+
+            .project-card {
+                padding: 1.75rem;
             }
 
             .disclaimer {
-                padding: 5rem 0;
+                padding: 3rem 0;
             }
 
             .disclaimer-content {
-                padding: 2rem;
+                padding: 1.5rem;
             }
 
-            .disclaimer-title,
+            .disclaimer-title {
+                font-size: 1.75rem;
+            }
+
             .disclaimer-text {
-                padding-left: 1rem;
+                font-size: 0.875rem;
+            }
+
+            .chart-metric-toggles {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.75rem;
+            }
+
+            .chart-metric-toggle label {
+                font-size: 0.75rem;
+                padding: 0.625rem 0.875rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 1rem;
+            }
+
+            .hero {
+                padding: 3rem 0 2rem;
+            }
+
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+
+            .hero-content p {
+                font-size: 1rem;
+            }
+
+            .hero-stats {
+                grid-template-columns: 1fr;
+                gap: 0.875rem;
+            }
+
+            .hero-stat {
+                padding: 1rem;
+            }
+
+            .section-title {
+                font-size: 1.75rem;
+            }
+
+            .intro-card {
+                padding: 1.5rem !important;
+                gap: 1.5rem !important;
+            }
+
+            .intro-image-wrapper {
+                width: 100px;
+                height: 100px;
+            }
+
+            .intro-name {
+                font-size: 1.5rem;
+            }
+
+            .intro-role {
+                font-size: 0.875rem;
+            }
+
+            .intro-cta {
+                padding: 0.75rem 1.25rem;
+                font-size: 0.8125rem;
+            }
+
+            .intro-section-title {
+                font-size: 1.125rem;
+            }
+
+            .chart-metric-toggles {
+                grid-template-columns: 1fr;
+            }
+
+            .compact-stats {
+                gap: 0.75rem;
+            }
+
+            .stat-card {
+                padding: 1.25rem;
+            }
+
+            .stat-value {
+                font-size: 1.75rem;
+            }
+
+            .project-card {
+                padding: 1.5rem;
             }
         }
 
