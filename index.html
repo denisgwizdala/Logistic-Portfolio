@@ -5588,8 +5588,10 @@
 
                         const dotContainer = document.createElement('div');
                         dotContainer.style.position = 'absolute';
-                        // Position dot: canvas is now full width, so just use point.x percentage
-                        const dotLeftPx = (point.x / 100) * canvas.width;
+                        // Position dot with same logic as canvas drawing
+                        // Canvas width is full, but we need to account for visual chart area with padding
+                        const chartAreaWidth = canvas.width - padding.left - padding.right;
+                        const dotLeftPx = padding.left + (point.x / 100) * chartAreaWidth;
                         dotContainer.style.left = dotLeftPx + 'px';
                         dotContainer.style.top = (padding.top + point.y + yOffset - 4) + 'px'; // Apply offset + center dot
                         dotContainer.style.transform = 'translateX(-50%)'; // Only center horizontally
@@ -5658,8 +5660,9 @@
                             const yearLabel = document.createElement('div');
                             yearLabel.textContent = point.year;
                             yearLabel.style.position = 'absolute';
-                            // Position year label matching canvas/dots (full width canvas)
-                            const yearLeftPx = (point.x / 100) * canvas.width;
+                            // Position year label matching dots
+                            const chartAreaWidth = canvas.width - padding.left - padding.right;
+                            const yearLeftPx = padding.left + (point.x / 100) * chartAreaWidth;
                             yearLabel.style.left = yearLeftPx + 'px';
                             yearLabel.style.bottom = '15px';
                             yearLabel.style.transform = 'translateX(-50%)';
@@ -5679,7 +5682,9 @@
                         // Convert all metrics' points to pixel coordinates with overlap detection
                         const allPixelLines = metricsPoints.map(({ points, color }, lineIndex) => ({
                             pixelPoints: points.map((p, pointIndex) => {
-                                const x = (p.x / 100) * canvasWidth;
+                                // Draw within chart area (padding.left to canvas.width - padding.right)
+                                const chartAreaWidth = canvasWidth - padding.left - padding.right;
+                                const x = padding.left + (p.x / 100) * chartAreaWidth;
                                 let y = p.y;
 
                                 // Check if this point overlaps with any previous line's same point
