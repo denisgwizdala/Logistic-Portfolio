@@ -5560,8 +5560,11 @@
 
                     const ctx = canvas.getContext('2d');
 
+                    // Track dot positions to detect overlaps
+                    const dotPositions = [];
+
                     // Add dots and labels for each metric
-                    metricsPoints.forEach(({ metric, points, color }) => {
+                    metricsPoints.forEach(({ metric, points, color }, metricIndex) => {
                         const metricLabels = {
                             hours: 'Hours Saved',
                             cost: '£ Saved',
@@ -5570,15 +5573,29 @@
                         };
 
                         points.forEach((point, index) => {
+                        // Check for nearby dots at same x position (within 5px on y-axis)
+                        let xOffset = 0;
+                        const nearbyDots = dotPositions.filter(pos =>
+                            Math.abs(pos.x - point.x) < 0.1 && Math.abs(pos.y - point.y) < 10
+                        );
+
+                        // If dots are overlapping, offset horizontally
+                        if (nearbyDots.length > 0) {
+                            xOffset = nearbyDots.length * 3; // Offset by 3% for each overlapping dot
+                        }
+
+                        // Store this dot's position
+                        dotPositions.push({ x: point.x, y: point.y });
+
                         const dotContainer = document.createElement('div');
                         dotContainer.style.position = 'absolute';
-                        dotContainer.style.left = point.x + '%';
-                        dotContainer.style.top = (padding.top + point.y) + 'px';
-                        dotContainer.style.transform = 'translate(-50%, -50%)';
-                        dotContainer.style.zIndex = '10';
+                        dotContainer.style.left = `calc(${point.x}% + ${xOffset}px)`;
+                        dotContainer.style.top = (padding.top + point.y - 4) + 'px'; // Center dot on line (dot is 8px, so -4px)
+                        dotContainer.style.transform = 'translateX(-50%)'; // Only center horizontally
+                        dotContainer.style.zIndex = `${20 + metricIndex * 10 + index}`; // Better z-index stacking
                         dotContainer.style.cursor = 'pointer';
-                        dotContainer.style.padding = '8px'; // Larger hit area for overlapping dots
-                        dotContainer.style.margin = '-8px'; // Compensate for padding
+                        dotContainer.style.padding = '12px'; // Larger hit area for overlapping dots
+                        dotContainer.style.margin = '-12px'; // Compensate for padding
 
                         // Add click handler to open modal
                         dotContainer.addEventListener('click', () => {
@@ -5613,17 +5630,19 @@
 
                         // Hover effects - bring to front when hovering
                         dotContainer.addEventListener('mouseenter', () => {
-                            dotContainer.style.zIndex = '100'; // Bring to front
-                            dot.style.width = '12px';
-                            dot.style.height = '12px';
-                            dot.style.boxShadow = `0 0 16px ${color}`;
+                            dotContainer.style.zIndex = '1000'; // Bring to very front on hover
+                            dot.style.width = '14px';
+                            dot.style.height = '14px';
+                            dot.style.transform = 'translate(-3px, -3px)'; // Center the larger dot
+                            dot.style.boxShadow = `0 0 20px ${color}`;
                             valueLabel.style.opacity = '1';
                         });
 
                         dotContainer.addEventListener('mouseleave', () => {
-                            dotContainer.style.zIndex = '10'; // Return to normal
+                            dotContainer.style.zIndex = `${20 + metricIndex * 10 + index}`; // Return to proper z-index
                             dot.style.width = '8px';
                             dot.style.height = '8px';
+                            dot.style.transform = 'translate(0, 0)';
                             dot.style.boxShadow = `0 0 8px ${color}80`;
                             valueLabel.style.opacity = '0';
                         });
