@@ -5548,14 +5548,14 @@
 
                     // Canvas for smooth line drawing - now wrapper is in DOM
                     const canvas = document.createElement('canvas');
-                    // Calculate drawable area width (leave margins on left/right)
-                    const contentWidth = wrapper.offsetWidth - padding.left - padding.right;
+                    // Use full wrapper width for canvas (no padding restrictions)
+                    const contentWidth = wrapper.offsetWidth;
                     canvas.width = contentWidth;
                     canvas.height = chartHeight;
                     canvas.style.position = 'absolute';
                     canvas.style.top = padding.top + 'px';
-                    canvas.style.left = padding.left + 'px';
-                    canvas.style.width = contentWidth + 'px';
+                    canvas.style.left = '0';
+                    canvas.style.width = '100%';
                     canvas.style.height = chartHeight + 'px';
                     canvas.style.pointerEvents = 'none';
                     wrapper.appendChild(canvas);
@@ -5588,12 +5588,8 @@
 
                         const dotContainer = document.createElement('div');
                         dotContainer.style.position = 'absolute';
-                        // Position dot matching canvas coordinate system
-                        // Canvas starts at padding.left and has width = contentWidth
-                        // Canvas draws at x = (point.x/100) * canvasWidth
-                        // So dot should be at: padding.left + (point.x/100) * canvasWidth
-                        const canvasWidthForDot = canvas.width;
-                        const dotLeftPx = padding.left + (point.x / 100) * canvasWidthForDot;
+                        // Position dot: canvas is now full width, so just use point.x percentage
+                        const dotLeftPx = (point.x / 100) * canvas.width;
                         dotContainer.style.left = dotLeftPx + 'px';
                         dotContainer.style.top = (padding.top + point.y + yOffset - 4) + 'px'; // Apply offset + center dot
                         dotContainer.style.transform = 'translateX(-50%)'; // Only center horizontally
@@ -5662,8 +5658,8 @@
                             const yearLabel = document.createElement('div');
                             yearLabel.textContent = point.year;
                             yearLabel.style.position = 'absolute';
-                            // Position year label matching canvas/dots
-                            const yearLeftPx = padding.left + (point.x / 100) * canvas.width;
+                            // Position year label matching canvas/dots (full width canvas)
+                            const yearLeftPx = (point.x / 100) * canvas.width;
                             yearLabel.style.left = yearLeftPx + 'px';
                             yearLabel.style.bottom = '15px';
                             yearLabel.style.transform = 'translateX(-50%)';
