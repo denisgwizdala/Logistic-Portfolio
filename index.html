@@ -39,6 +39,9 @@
             line-height: 1.6;
             overflow-x: hidden;
             position: relative;
+            /* Mobile performance optimizations */
+            -webkit-overflow-scrolling: touch;
+            -webkit-tap-highlight-color: transparent;
         }
 /* === SCROLL STORYTELLING FEATURES === */
 
@@ -2366,6 +2369,37 @@
                 font-size: 0.75rem;
                 padding: 0.625rem 0.875rem;
             }
+
+            /* MOBILE: Hide complex animated chart - too laggy */
+            .advanced-chart {
+                display: none;
+            }
+
+            /* MOBILE: Show simplified compact stats instead */
+            .compact-stats {
+                display: grid !important;
+            }
+
+            /* MOBILE: Disable parallax effects for performance */
+            .parallax-bg,
+            .parallax-layer,
+            .parallax-layer-1,
+            .parallax-layer-2,
+            .parallax-layer-3 {
+                display: none !important;
+            }
+
+            /* MOBILE: Disable scroll progress bar */
+            .scroll-progress-bar {
+                display: none !important;
+            }
+
+            /* MOBILE: Simplify animations for better performance */
+            .hero,
+            .intro-card,
+            .project-card {
+                animation: none !important;
+            }
         }
 
         @media (max-width: 480px) {
@@ -2431,6 +2465,7 @@
 
             .compact-stats {
                 gap: 0.75rem;
+                display: grid !important;
             }
 
             .stat-card {
@@ -2443,6 +2478,25 @@
 
             .project-card {
                 padding: 1.5rem;
+            }
+
+            /* MOBILE: Hide animated chart on phones too */
+            .advanced-chart {
+                display: none;
+            }
+
+            /* MOBILE: Disable parallax and heavy effects */
+            .parallax-bg,
+            .parallax-layer,
+            .scroll-progress-bar {
+                display: none !important;
+            }
+
+            /* MOBILE: Simplify animations */
+            .hero,
+            .intro-card,
+            .project-card {
+                animation: none !important;
             }
         }
 
@@ -5382,9 +5436,11 @@
         }
 
         // Throttle scroll events using requestAnimationFrame for better performance
+        // MOBILE: Disable heavy scroll animations on mobile devices for performance
+        const isMobile = window.innerWidth <= 768;
         let scrollTicking = false;
         window.addEventListener('scroll', () => {
-            if (!scrollTicking) {
+            if (!scrollTicking && !isMobile) {
                 window.requestAnimationFrame(() => {
                     updateScrollProgressBar();
                     updateParallax();
