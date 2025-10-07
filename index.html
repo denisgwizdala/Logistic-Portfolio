@@ -5550,14 +5550,15 @@
 
                     // Canvas for smooth line drawing - now wrapper is in DOM
                     const canvas = document.createElement('canvas');
-                    const wrapperWidth = wrapper.clientWidth; // clientWidth excludes padding
-                    canvas.width = wrapperWidth;
+                    // Calculate content width (clientWidth includes padding, so subtract it)
+                    const contentWidth = wrapper.clientWidth - padding.left - padding.right;
+                    canvas.width = contentWidth;
                     canvas.height = chartHeight;
                     canvas.style.position = 'absolute';
                     canvas.style.top = padding.top + 'px';
                     canvas.style.left = padding.left + 'px';
                     canvas.style.right = padding.right + 'px';
-                    canvas.style.width = `calc(100% - ${padding.left + padding.right}px)`;
+                    canvas.style.width = contentWidth + 'px';
                     canvas.style.height = chartHeight + 'px';
                     canvas.style.pointerEvents = 'none';
                     wrapper.appendChild(canvas);
@@ -5592,8 +5593,8 @@
                         dotContainer.style.position = 'absolute';
                         // Position dot accounting for wrapper padding
                         // Calculate absolute position: padding.left + percentage of content area width
-                        const contentWidth = wrapper.clientWidth; // Width excluding padding
-                        const dotLeftPx = padding.left + (point.x / 100) * contentWidth;
+                        const dotContentWidth = wrapper.clientWidth - padding.left - padding.right;
+                        const dotLeftPx = padding.left + (point.x / 100) * dotContentWidth;
                         dotContainer.style.left = dotLeftPx + 'px';
                         dotContainer.style.top = (padding.top + point.y + yOffset - 4) + 'px'; // Apply offset + center dot
                         dotContainer.style.transform = 'translateX(-50%)'; // Only center horizontally
@@ -5663,8 +5664,8 @@
                             yearLabel.textContent = point.year;
                             yearLabel.style.position = 'absolute';
                             // Position year label same as dots - accounting for padding
-                            const contentWidth = wrapper.clientWidth;
-                            const yearLeftPx = padding.left + (point.x / 100) * contentWidth;
+                            const yearContentWidth = wrapper.clientWidth - padding.left - padding.right;
+                            const yearLeftPx = padding.left + (point.x / 100) * yearContentWidth;
                             yearLabel.style.left = yearLeftPx + 'px';
                             yearLabel.style.bottom = '15px';
                             yearLabel.style.transform = 'translateX(-50%)';
