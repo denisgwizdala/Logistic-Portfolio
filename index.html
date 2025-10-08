@@ -5992,12 +5992,46 @@
                             dotLeftPx += 60;
                         }
                         dotContainer.style.left = dotLeftPx + 'px';
-                        // Position dot vertically - NO vertical offset, same value = same height
+
+                        // Position dot vertically with metric-specific offsets
                         let dotTopPx = padding.top + point.y;
-                        // Move ALL 2020 dots (index 0) higher by 15px
-                        if (index === 0) {
-                            dotTopPx -= 15;
-                        }
+
+                        // Custom vertical adjustments per metric and year
+                        const yearOffsets = {
+                            hours: {
+                                '2020': -3,  // slightly lower
+                                '2021': 3,   // slightly higher
+                                '2023': 3,   // slightly higher
+                                '2024': 3,   // slightly higher
+                                '2025': 3    // slightly higher
+                            },
+                            cost: {
+                                '2020': -3,  // slightly lower
+                                '2021': 3,   // higher
+                                '2022': 3,   // higher
+                                '2023': 3,   // higher
+                                '2025': 3    // higher
+                            },
+                            efficiency: {
+                                '2020': 3,   // higher
+                                '2022': 2,   // higher slightly
+                                '2023': 3,   // higher
+                                '2024': 3,   // higher
+                                '2025': 3    // higher
+                            },
+                            errors: {
+                                '2020': -3,  // lower
+                                '2021': 3,   // higher
+                                '2022': 3,   // higher
+                                '2023': 3,   // higher
+                                '2024': 2,   // higher slightly
+                                '2025': 3    // higher
+                            }
+                        };
+
+                        const offset = yearOffsets[metric]?.[point.year] || 0;
+                        dotTopPx += offset;
+
                         dotContainer.style.top = dotTopPx + 'px';
                         dotContainer.style.marginTop = '-4px'; // Center 8px dot on line
                         dotContainer.style.transform = 'translateX(-50%)'; // Only center horizontally
@@ -6087,16 +6121,39 @@
                     setTimeout(() => {
                         const canvasWidth = canvas.width;
 
-                        // Convert all metrics' points to pixel coordinates - NO vertical offset
-                        const allPixelLines = metricsPoints.map(({ points, color }, lineIndex) => ({
+                        // Convert all metrics' points to pixel coordinates
+                        const allPixelLines = metricsPoints.map(({ metric, points, color }, lineIndex) => ({
                             pixelPoints: points.map((p, pointIndex) => {
                                 // Draw across full canvas width (0% = left edge, 100% = right edge)
-                                const x = (p.x / 100) * canvasWidth;
-                                const y = p.y; // Same value = same height, no offsets
+                                let x = (p.x / 100) * canvasWidth;
+                                // MANUAL FIX: Move 2020 line start (x=0) RIGHT by 60px to align with dots
+                                if (p.x === 0 || pointIndex === 0) {
+                                    x += 60;
+                                }
+
+                                // Apply same vertical offsets as dots for alignment
+                                const yearOffsets = {
+                                    hours: {
+                                        '2020': -3, '2021': 3, '2023': 3, '2024': 3, '2025': 3
+                                    },
+                                    cost: {
+                                        '2020': -3, '2021': 3, '2022': 3, '2023': 3, '2025': 3
+                                    },
+                                    efficiency: {
+                                        '2020': 3, '2022': 2, '2023': 3, '2024': 3, '2025': 3
+                                    },
+                                    errors: {
+                                        '2020': -3, '2021': 3, '2022': 3, '2023': 3, '2024': 2, '2025': 3
+                                    }
+                                };
+
+                                const offset = yearOffsets[metric]?.[p.year] || 0;
+                                const y = p.y + offset;
 
                                 return { x, y };
                             }),
-                            color
+                            color,
+                            metric
                         }));
 
                         let currentSegment = 0;
