@@ -3979,7 +3979,7 @@
         }
 
         .impact-breakdown-section {
-            margin-top: 2rem;
+            margin-top: 3rem;
             margin-bottom: 2rem;
         }
 
@@ -4206,6 +4206,38 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+        }
+
+        /* Modal Year Breakdown Toggle */
+        .year-breakdown-toggle {
+            margin: 2rem 0 1rem 0;
+            padding: 1rem 1.5rem;
+            background: rgba(59, 130, 246, 0.08);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 0.75rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            color: var(--accent-tertiary);
+            font-weight: 600;
+        }
+
+        .year-breakdown-toggle:hover {
+            background: rgba(59, 130, 246, 0.12);
+            border-color: var(--accent);
+        }
+
+        .year-breakdown-collapsible {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+        }
+
+        .year-breakdown-collapsible.expanded {
+            max-height: 5000px;
+            margin-bottom: 1rem;
         }
 
         @media (max-width: 768px) {
@@ -5160,6 +5192,16 @@
                 <div class="hours-breakdown-total-label">Cumulative Total Impact (2020-2025 H1)</div>
                 <div class="hours-breakdown-total-value">~51,719hrs</div>
             </div>
+
+            <!-- Expandable Year Breakdown -->
+            <div class="year-breakdown-toggle" onclick="toggleModalYearBreakdown('hoursYearBreakdown', this)">
+                <span>View Year-by-Year Breakdown</span>
+                <svg class="year-breakdown-arrow" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </div>
+
+            <div class="year-breakdown-collapsible" id="hoursYearBreakdown">
+                <!-- Dynamically filled by JS -->
+            </div>
         </div>
     </div>
 
@@ -5236,6 +5278,16 @@
             <div class="hours-breakdown-total">
                 <div class="hours-breakdown-total-label">Cumulative Total (2020-2025 H1)</div>
                 <div class="hours-breakdown-total-value">~£1.76M</div>
+            </div>
+
+            <!-- Expandable Year Breakdown -->
+            <div class="year-breakdown-toggle" onclick="toggleModalYearBreakdown('savingsYearBreakdown', this)">
+                <span>View Year-by-Year Breakdown</span>
+                <svg class="year-breakdown-arrow" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </div>
+
+            <div class="year-breakdown-collapsible" id="savingsYearBreakdown">
+                <!-- Dynamically filled by JS -->
             </div>
 
             <div class="impact-note">
@@ -5322,6 +5374,16 @@
             <div class="hours-breakdown-total">
                 <div class="hours-breakdown-total-label">Average Across Portfolio</div>
                 <div class="hours-breakdown-total-value">~88%</div>
+            </div>
+
+            <!-- Expandable Year Breakdown -->
+            <div class="year-breakdown-toggle" onclick="toggleModalYearBreakdown('efficiencyYearBreakdown', this)">
+                <span>View Year-by-Year Breakdown</span>
+                <svg class="year-breakdown-arrow" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </div>
+
+            <div class="year-breakdown-collapsible" id="efficiencyYearBreakdown">
+                <!-- Dynamically filled by JS -->
             </div>
 
             <div class="impact-note">
@@ -6771,6 +6833,95 @@
                 closeEfficiencyModal();
             }
         });
+
+        // Toggle Modal Year Breakdown
+        function toggleModalYearBreakdown(containerId, button) {
+            const container = document.getElementById(containerId);
+            const arrow = button.querySelector('.year-breakdown-arrow');
+            const isExpanded = container.classList.contains('expanded');
+
+            if (!isExpanded) {
+                // Determine metric type from container ID
+                let metric = '';
+                if (containerId === 'hoursYearBreakdown') metric = 'hours';
+                else if (containerId === 'savingsYearBreakdown') metric = 'cost';
+                else if (containerId === 'efficiencyYearBreakdown') metric = 'efficiency';
+
+                // Populate content if not already done
+                if (!container.dataset.populated) {
+                    populateYearBreakdown(container, metric);
+                    container.dataset.populated = 'true';
+                }
+
+                container.classList.add('expanded');
+                arrow.style.transform = 'rotate(180deg)';
+            } else {
+                container.classList.remove('expanded');
+                arrow.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // Populate Year Breakdown Content
+        function populateYearBreakdown(container, metric) {
+            let html = '';
+            const years = ['2021', '2022', '2023', '2024', '2025'];
+
+            years.forEach((year) => {
+                const breakdown = impactBreakdowns[metric][year];
+                if (!breakdown) return;
+
+                const yearData = chartData[metric] ? chartData[metric].find(d => d.year === year) : null;
+                let yearTotal = '';
+                if (yearData) {
+                    yearTotal = yearData.label;
+                } else if (metric === 'hours') {
+                    yearTotal = breakdown.total + 'h';
+                } else if (metric === 'cost') {
+                    yearTotal = '£' + breakdown.total;
+                } else if (metric === 'efficiency') {
+                    yearTotal = '~' + breakdown.total + '%';
+                }
+
+                html += '<div class="year-breakdown-item">';
+                html += '<div class="year-breakdown-header" onclick="toggleYearBreakdown(this)">';
+                html += '<div class="year-breakdown-info">';
+                html += '<div class="year-breakdown-year">' + year + '</div>';
+                html += '<div class="year-breakdown-total">' + yearTotal + '</div>';
+                html += '</div>';
+                html += '<svg class="year-breakdown-arrow" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>';
+                html += '</div>';
+
+                // Collapsible content
+                html += '<div class="year-breakdown-content">';
+
+                if (breakdown.projects.length > 0) {
+                    html += '<div style="display:flex;gap:2rem;align-items:flex-start;margin:1.5rem 0;">';
+                    html += '<div style="flex:0 0 240px;"><canvas class="year-pie-chart" data-year="' + year + '" data-metric="' + metric + '" width="240" height="240"></canvas></div>';
+                    html += '<div style="flex:1;"><div class="year-project-list">';
+
+                    breakdown.projects.forEach(project => {
+                        html += '<div class="year-project-item">';
+                        html += '<div>';
+                        html += '<div class="year-project-name">' + project.name + '</div>';
+                        if (project.note) {
+                            html += '<div style="font-size:0.8rem;color:var(--text-secondary);margin-top:0.25rem;">' + project.note + '</div>';
+                        }
+                        html += '</div>';
+                        html += '<div class="year-project-value">' + project.value + '</div>';
+                        html += '</div>';
+                    });
+
+                    html += '</div></div></div>';
+                } else {
+                    html += '<div style="padding:1rem;text-align:center;color:var(--text-secondary);">' + (breakdown.note || 'No data') + '</div>';
+                }
+
+                html += '</div>';
+                html += '</div>';
+            });
+
+            container.innerHTML = html;
+        }
 
     </script>
 
