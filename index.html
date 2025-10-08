@@ -6048,7 +6048,11 @@
                         const metricRange = metricMax - metricMin || 1;
 
                         const points = data.map((item, index) => {
-                            const xPercent = (index / (data.length - 1)) * 100;
+                            let xPercent = (index / (data.length - 1)) * 100;
+                            // Move 2025 (last point) to the left to prevent overflow
+                            if (index === data.length - 1) {
+                                xPercent = 92; // Move from 100% to 92%
+                            }
                             // Normalize to THIS metric's range, so each metric uses full vertical space
                             const yValue = ((item.value - metricMin) / metricRange) * (chartHeight - 40) + 20;
                             const y = chartHeight - yValue;
@@ -6123,14 +6127,7 @@
                         valueLabel.textContent = point.label;
                         valueLabel.style.position = 'absolute';
                         valueLabel.style.top = '-8px';
-                        // Position 2025 label to the left to prevent overflow for all metrics
-                        if (point.year === '2025') {
-                            valueLabel.style.right = '12px';
-                            valueLabel.style.left = 'auto';
-                        } else {
-                            valueLabel.style.left = '12px';
-                            valueLabel.style.right = 'auto';
-                        }
+                        valueLabel.style.left = '12px';
                         valueLabel.style.fontSize = '0.7rem';
                         valueLabel.style.fontWeight = '600';
                         valueLabel.style.color = color;
@@ -6175,9 +6172,7 @@
                             const yearLeftPx = 4 + (point.x / 100) * (canvas.width - 8);
                             yearLabel.style.left = yearLeftPx + 'px';
                             yearLabel.style.bottom = '15px';
-                            // Adjust transform for last year label to prevent cutoff
-                            const isLastYear = index === metricsPoints[0].points.length - 1;
-                            yearLabel.style.transform = isLastYear ? 'translateX(-100%)' : 'translateX(-50%)';
+                            yearLabel.style.transform = 'translateX(-50%)';
                             yearLabel.style.fontSize = '0.875rem';
                             yearLabel.style.fontWeight = '600';
                             yearLabel.style.color = '#94a3b8';
