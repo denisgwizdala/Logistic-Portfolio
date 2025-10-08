@@ -2400,6 +2400,14 @@
             .project-card {
                 animation: none !important;
             }
+
+            /* MOBILE: Hide particle effects */
+            .particles,
+            .journey-intro-particles,
+            .particle,
+            .journey-particle {
+                display: none !important;
+            }
         }
 
         @media (max-width: 480px) {
@@ -2498,10 +2506,25 @@
             .project-card {
                 animation: none !important;
             }
+
+            /* MOBILE: Hide particle effects */
+            .particles,
+            .journey-intro-particles,
+            .particle,
+            .journey-particle {
+                display: none !important;
+            }
         }
 
         html {
             scroll-behavior: smooth;
+        }
+
+        /* MOBILE: Disable smooth scroll for better performance */
+        @media (max-width: 768px) {
+            html {
+                scroll-behavior: auto !important;
+            }
         }
 
         ::selection {
@@ -5353,11 +5376,13 @@
             }
         }
 
-        // Generate particles
+        // Generate particles (disabled on mobile for performance)
         function createParticles() {
+            if (window.innerWidth <= 768) return; // Skip on mobile
+
             const particlesContainer = document.getElementById('particles');
             const particleCount = 30;
-            
+
             for (let i = 0; i < particleCount; i++) {
                 const particle = document.createElement('div');
                 particle.className = 'particle';
@@ -5406,7 +5431,8 @@
             });
         });
 
-        // Smooth scroll for CTA buttons
+        // Smooth scroll for CTA buttons (disabled on mobile for performance)
+        const isMobileDevice = window.innerWidth <= 768;
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 const href = this.getAttribute('href');
@@ -5415,7 +5441,7 @@
                     const target = document.querySelector(href);
                     if (target) {
                         target.scrollIntoView({
-                            behavior: 'smooth',
+                            behavior: isMobileDevice ? 'auto' : 'smooth',
                             block: 'start'
                         });
                     }
@@ -5456,35 +5482,41 @@
             }
         }, { passive: true });
 
-// Animate metrics cards
+// Animate metrics cards (simplified on mobile)
         function animateMetrics() {
             const statCards = document.querySelectorAll('.stat-card');
-            
+            const isMobileView = window.innerWidth <= 768;
+
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach((entry) => {
                     if (entry.isIntersecting) {
-                        const delay = entry.target.getAttribute('data-delay') || 0;
+                        const delay = isMobileView ? 0 : (entry.target.getAttribute('data-delay') || 0);
                         setTimeout(() => {
                             entry.target.classList.add('animate');
-                            
+
                             // Animate number counter
                             const numberEl = entry.target.querySelector('.stat-number');
                             const target = parseInt(numberEl.getAttribute('data-target'));
-                            animateNumber(numberEl, target, 1500);
-                            
+                            // Skip animation on mobile, show final value immediately
+                            if (isMobileView) {
+                                numberEl.textContent = target.toLocaleString();
+                            } else {
+                                animateNumber(numberEl, target, 1500);
+                            }
+
                             // Animate progress bar
                             const barFill = entry.target.querySelector('.stat-bar-fill');
                             const width = barFill.getAttribute('data-width');
                             setTimeout(() => {
                                 barFill.style.width = width + '%';
-                            }, 200);
+                            }, isMobileView ? 0 : 200);
                         }, delay);
-                        
+
                         observer.unobserve(entry.target);
                     }
                 });
             }, { threshold: 0.2 });
-            
+
             statCards.forEach(card => observer.observe(card));
         }
 
@@ -6191,27 +6223,29 @@
             lines.forEach(line => observer.observe(line));
         }
 
-        // Create Floating Particles for Journey Section
+        // Create Floating Particles for Journey Section (disabled on mobile for performance)
         function createJourneyParticles() {
+            if (window.innerWidth <= 768) return; // Skip on mobile
+
             const container = document.getElementById('journeyParticles');
             if (!container) return;
-            
+
             const particleCount = 25;
-            
+
             for (let i = 0; i < particleCount; i++) {
                 const particle = document.createElement('div');
                 particle.className = 'journey-particle';
-                
+
                 // Random positioning
                 particle.style.left = Math.random() * 100 + '%';
                 particle.style.animationDelay = Math.random() * 20 + 's';
                 particle.style.animationDuration = (15 + Math.random() * 10) + 's';
-                
+
                 // Random size variation
                 const size = 2 + Math.random() * 3;
                 particle.style.width = size + 'px';
                 particle.style.height = size + 'px';
-                
+
                 container.appendChild(particle);
             }
         }
