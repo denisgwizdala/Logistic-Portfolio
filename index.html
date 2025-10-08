@@ -6051,7 +6051,7 @@
                             let xPercent = (index / (data.length - 1)) * 100;
                             // Move 2025 (last point) to the left to prevent overflow
                             if (index === data.length - 1) {
-                                xPercent = 92; // Move from 100% to 92%
+                                xPercent = 95; // Move from 100% to 95%
                             }
                             // Normalize to THIS metric's range, so each metric uses full vertical space
                             const yValue = ((item.value - metricMin) / metricRange) * (chartHeight - 40) + 20;
