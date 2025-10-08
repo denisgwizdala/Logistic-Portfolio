@@ -6507,22 +6507,29 @@
         // Google Apps Script endpoint for visitor tracking
         const TRACKING_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxA5bSwWPpygHVP8GeovafcMZUpuXPfrylY5mhqgIKqpbbzIqcpCvyJxg3BLh_bKC-jeg/exec';
 
-        // Send visit data
-        function logVisit() {
-            const data = {
-                pageUrl: window.location.href,
-                referrer: document.referrer,
-                userAgent: navigator.userAgent,
-                screenResolution: `${screen.width}x${screen.height}`,
-                language: navigator.language
-            };
+        // Get visitor IP and send visit data
+        async function logVisit() {
+            try {
+                // Fetch IP address from free service
+                const ipResponse = await fetch('https://api.ipify.org?format=json');
+                const ipData = await ipResponse.json();
 
-            fetch(TRACKING_ENDPOINT, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(data)
-            }).catch(err => console.log('Tracking failed:', err));
+                const data = {
+                    pageUrl: window.location.href,
+                    referrer: document.referrer,
+                    userAgent: navigator.userAgent,
+                    userIp: ipData.ip
+                };
+
+                fetch(TRACKING_ENDPOINT, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data)
+                }).catch(err => console.log('Tracking failed:', err));
+            } catch (error) {
+                console.log('IP fetch failed:', error);
+            }
         }
 
         // Log visit on page load
