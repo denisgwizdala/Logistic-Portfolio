@@ -6019,15 +6019,15 @@
                         const valueLabel = document.createElement('div');
                         valueLabel.textContent = point.label;
                         valueLabel.style.position = 'absolute';
-                        valueLabel.style.bottom = '18px';
-                        valueLabel.style.left = '50%';
-                        valueLabel.style.transform = 'translateX(-50%)';
-                        valueLabel.style.fontSize = '0.75rem';
-                        valueLabel.style.fontWeight = '700';
+                        valueLabel.style.top = '-8px';
+                        valueLabel.style.left = '12px';
+                        valueLabel.style.fontSize = '0.7rem';
+                        valueLabel.style.fontWeight = '600';
                         valueLabel.style.color = color;
                         valueLabel.style.whiteSpace = 'nowrap';
-                        valueLabel.style.opacity = '0';
+                        valueLabel.style.opacity = '1';
                         valueLabel.style.pointerEvents = 'none';
+                        valueLabel.style.textShadow = '0 0 4px rgba(0,0,0,0.8), 0 0 8px rgba(0,0,0,0.6)';
                         dotContainer.appendChild(valueLabel);
 
                         // Hover effects - bring to front when hovering
@@ -6037,7 +6037,8 @@
                             dot.style.height = '14px';
                             dot.style.transform = 'translate(-3px, -3px)'; // Center the larger dot
                             dot.style.boxShadow = `0 0 20px ${color}`;
-                            valueLabel.style.opacity = '1';
+                            valueLabel.style.fontSize = '0.8rem';
+                            valueLabel.style.fontWeight = '700';
                         });
 
                         dotContainer.addEventListener('mouseleave', () => {
@@ -6046,7 +6047,8 @@
                             dot.style.height = '8px';
                             dot.style.transform = 'translate(0, 0)';
                             dot.style.boxShadow = `0 0 8px ${color}80`;
-                            valueLabel.style.opacity = '0';
+                            valueLabel.style.fontSize = '0.7rem';
+                            valueLabel.style.fontWeight = '600';
                         });
 
                         wrapper.appendChild(dotContainer);
