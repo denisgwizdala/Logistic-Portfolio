@@ -6123,12 +6123,13 @@
                         valueLabel.textContent = point.label;
                         valueLabel.style.position = 'absolute';
                         valueLabel.style.top = '-8px';
-                        // Position last year's label to the left to prevent overflow
-                        const isLastPoint = index === points.length - 1;
-                        if (isLastPoint) {
+                        // Position 2025 label to the left to prevent overflow for all metrics
+                        if (point.year === '2025') {
                             valueLabel.style.right = '12px';
+                            valueLabel.style.left = 'auto';
                         } else {
                             valueLabel.style.left = '12px';
+                            valueLabel.style.right = 'auto';
                         }
                         valueLabel.style.fontSize = '0.7rem';
                         valueLabel.style.fontWeight = '600';
