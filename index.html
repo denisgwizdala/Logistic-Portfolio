@@ -6127,7 +6127,13 @@
                         valueLabel.textContent = point.label;
                         valueLabel.style.position = 'absolute';
                         valueLabel.style.top = '-8px';
-                        valueLabel.style.left = '12px';
+                        // Move 2025 labels to the left to show full text including "H1"
+                        if (point.year === '2025') {
+                            valueLabel.style.right = '12px';
+                            valueLabel.style.left = 'auto';
+                        } else {
+                            valueLabel.style.left = '12px';
+                        }
                         valueLabel.style.fontSize = '0.7rem';
                         valueLabel.style.fontWeight = '600';
                         valueLabel.style.color = color;
