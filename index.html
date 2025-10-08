@@ -4601,7 +4601,7 @@
                                 <span class="metric-label" style="color: #3b82f6;">⬤ Hours Saved</span>
                             </label>
                             <label class="chart-metric-toggle">
-                                <input type="checkbox" data-metric="cost" checked>
+                                <input type="checkbox" data-metric="cost">
                                 <span class="metric-label" style="color: #10b981;">⬤ £ Saved</span>
                             </label>
                             <label class="chart-metric-toggle">
@@ -5985,8 +5985,8 @@
                         points.forEach((point, index) => {
                         const dotContainer = document.createElement('div');
                         dotContainer.style.position = 'absolute';
-                        // Position dot horizontally: use full canvas width (0% = left edge, 100% = right edge)
-                        const dotLeftPx = (point.x / 100) * canvas.width + padding.left;
+                        // Position dot horizontally: match line coordinate system exactly
+                        const dotLeftPx = (point.x / 100) * canvas.width;
                         dotContainer.style.left = dotLeftPx + 'px';
 
                         // Position dot vertically - exactly on the line
@@ -6058,8 +6058,8 @@
                             const yearLabel = document.createElement('div');
                             yearLabel.textContent = point.year;
                             yearLabel.style.position = 'absolute';
-                            // Position year label aligned with dots
-                            const yearLeftPx = (point.x / 100) * canvas.width + padding.left;
+                            // Position year label aligned with dots (same coordinate system)
+                            const yearLeftPx = (point.x / 100) * canvas.width;
                             yearLabel.style.left = yearLeftPx + 'px';
                             yearLabel.style.bottom = '15px';
                             yearLabel.style.transform = 'translateX(-50%)';
