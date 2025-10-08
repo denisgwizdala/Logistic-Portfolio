@@ -3979,6 +3979,7 @@
         }
 
         .impact-breakdown-section {
+            margin-top: 2rem;
             margin-bottom: 2rem;
         }
 
@@ -4109,6 +4110,102 @@
             max-height: 2000px;
             opacity: 1;
             margin-bottom: 1rem;
+        }
+
+        /* Year Breakdown Styles */
+        .year-breakdown-item {
+            margin-bottom: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            background: rgba(15, 20, 25, 0.4);
+            overflow: hidden;
+        }
+
+        .year-breakdown-header {
+            padding: 1.25rem 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .year-breakdown-header:hover {
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .year-breakdown-info {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .year-breakdown-year {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            min-width: 60px;
+        }
+
+        .year-breakdown-total {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .year-breakdown-arrow {
+            color: var(--accent);
+            transition: transform 0.3s ease;
+        }
+
+        .year-breakdown-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+        }
+
+        .year-breakdown-content.expanded {
+            max-height: 2000px;
+            padding: 0 1.5rem 1.5rem 1.5rem;
+        }
+
+        .year-project-list {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .year-project-item {
+            background: rgba(15, 20, 25, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            padding: 0.875rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .year-project-item:hover {
+            border-color: var(--accent);
+            box-shadow: 0 2px 10px rgba(59, 130, 246, 0.1);
+        }
+
+        .year-project-name {
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .year-project-value {
+            font-size: 1rem;
+            font-weight: 700;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         @media (max-width: 768px) {
@@ -5996,26 +6093,15 @@
             let html = '';
 
             if (breakdown.projects.length > 0) {
-                // Total box (always visible)
+                // Total box
                 html += '<div class="impact-total-box">';
                 html += '<div class="impact-total-label">Total for ' + year + '</div>';
                 html += '<div class="impact-total-value">' + chartData[metric].find(d => d.year === year).label + '</div>';
                 html += '</div>';
 
-                // Collapsible breakdown section
-                html += '<div class="impact-breakdown-toggle" onclick="this.classList.toggle(\'expanded\');this.nextElementSibling.classList.toggle(\'expanded\');">';
-                html += '<span>View Breakdown</span>';
-                html += '<svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="transition:transform 0.3s;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>';
-                html += '</div>';
-
-                html += '<div class="impact-breakdown-collapsible">';
-
-                // Pie chart canvas
-                html += '<div style="display:flex;gap:2rem;align-items:center;margin-bottom:2rem;">';
-                html += '<div style="flex:0 0 280px;"><canvas id="impactPieChart" width="280" height="280"></canvas></div>';
-                html += '<div style="flex:1;"><div class="impact-breakdown-title">Active Projects <span class="impact-breakdown-badge">' + breakdown.projects.length + ' running</span></div></div>';
-                html += '</div>';
-
+                // Project breakdown list
+                html += '<div class="impact-breakdown-section">';
+                html += '<div class="impact-breakdown-title">Active Projects <span class="impact-breakdown-badge">' + breakdown.projects.length + ' running</span></div>';
                 html += '<div class="impact-project-list">';
 
                 breakdown.projects.forEach(project => {
@@ -6048,87 +6134,8 @@
             contentEl.innerHTML = html;
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
-
-            // Draw pie chart if there are projects
-            if (breakdown.projects.length > 0) {
-                setTimeout(() => drawImpactPieChart(breakdown, metric), 100);
-            }
         }
 
-        function drawImpactPieChart(breakdown, metric) {
-            const canvas = document.getElementById('impactPieChart');
-            if (!canvas) return;
-
-            const ctx = canvas.getContext('2d');
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
-            const radius = 110;
-
-            // Extract numerical values from project values
-            const projectData = breakdown.projects.map(project => {
-                const valueStr = project.value;
-                let numValue = 0;
-
-                if (metric === 'hours') {
-                    // Extract hours: "9,000h" -> 9000
-                    numValue = parseFloat(valueStr.replace(/[^\d.]/g, ''));
-                } else if (metric === 'cost') {
-                    // Extract cost: "~£1.00M" -> 1000000
-                    if (valueStr.includes('M')) {
-                        numValue = parseFloat(valueStr.replace(/[^\d.]/g, '')) * 1000000;
-                    } else if (valueStr.includes('K')) {
-                        numValue = parseFloat(valueStr.replace(/[^\d.]/g, '')) * 1000;
-                    } else {
-                        numValue = parseFloat(valueStr.replace(/[^\d.]/g, ''));
-                    }
-                }
-
-                return {
-                    name: project.name,
-                    value: numValue
-                };
-            });
-
-            const total = projectData.reduce((sum, p) => sum + p.value, 0);
-
-            // Colors for different projects
-            const colors = [
-                '#3b82f6', '#10b981', '#f59e0b', '#ef4444',
-                '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16',
-                '#f97316', '#6366f1'
-            ];
-
-            // Draw pie chart
-            let currentAngle = -Math.PI / 2;
-            projectData.forEach((project, index) => {
-                const sliceAngle = (project.value / total) * 2 * Math.PI;
-
-                ctx.beginPath();
-                ctx.moveTo(centerX, centerY);
-                ctx.arc(centerX, centerY, radius, currentAngle, currentAngle + sliceAngle);
-                ctx.closePath();
-
-                ctx.fillStyle = colors[index % colors.length];
-                ctx.fill();
-
-                ctx.strokeStyle = '#0a0e15';
-                ctx.lineWidth = 2;
-                ctx.stroke();
-
-                currentAngle += sliceAngle;
-            });
-
-            // Draw white circle in center for donut effect
-            ctx.beginPath();
-            ctx.arc(centerX, centerY, 60, 0, 2 * Math.PI);
-            ctx.fillStyle = '#0f1419';
-            ctx.fill();
-
-            // Add legend
-            const legendX = canvas.width + 20;
-            const legendY = 20;
-            const legendSpacing = 25;
-        }
 
         function closeImpactModal() {
             const modal = document.getElementById('impactModal');
@@ -6570,10 +6577,57 @@
         // Hours Modal Functions
         function openHoursModal() {
             const modal = document.getElementById('hoursModal');
-            if (modal) {
-                modal.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            }
+            const contentContainer = modal.querySelector('.hours-breakdown-list');
+
+            if (!modal || !contentContainer) return;
+
+            // Generate dynamic year-by-year breakdown
+            let html = '';
+            const years = ['2021', '2022', '2023', '2024', '2025'];
+
+            years.forEach((year, index) => {
+                const breakdown = impactBreakdowns.hours[year];
+                if (!breakdown) return;
+
+                const yearData = chartData.hours.find(d => d.year === year);
+                const yearTotal = yearData ? yearData.label : breakdown.total + 'h';
+
+                html += '<div class="year-breakdown-item">';
+                html += '<div class="year-breakdown-header" onclick="toggleYearBreakdown(this)">';
+                html += '<div class="year-breakdown-info">';
+                html += '<div class="year-breakdown-year">' + year + '</div>';
+                html += '<div class="year-breakdown-total">' + yearTotal + '</div>';
+                html += '</div>';
+                html += '<svg class="year-breakdown-arrow" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>';
+                html += '</div>';
+
+                // Collapsible content
+                html += '<div class="year-breakdown-content">';
+
+                if (breakdown.projects.length > 0) {
+                    html += '<div style="display:flex;gap:2rem;align-items:flex-start;margin:1.5rem 0;">';
+                    html += '<div style="flex:0 0 240px;"><canvas class="year-pie-chart" data-year="' + year + '" data-metric="hours" width="240" height="240"></canvas></div>';
+                    html += '<div style="flex:1;"><div class="year-project-list">';
+
+                    breakdown.projects.forEach(project => {
+                        html += '<div class="year-project-item">';
+                        html += '<div class="year-project-name">' + project.name + '</div>';
+                        html += '<div class="year-project-value">' + project.value + '</div>';
+                        html += '</div>';
+                    });
+
+                    html += '</div></div></div>';
+                } else {
+                    html += '<div style="padding:1rem;text-align:center;color:var(--text-secondary);">' + (breakdown.note || 'No projects') + '</div>';
+                }
+
+                html += '</div>';
+                html += '</div>';
+            });
+
+            contentContainer.innerHTML = html;
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
         }
 
         function closeHoursModal() {
@@ -6605,10 +6659,57 @@
         // Savings Modal Functions
         function openSavingsModal() {
             const modal = document.getElementById('savingsModal');
-            if (modal) {
-                modal.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            }
+            const contentContainer = modal.querySelector('.hours-breakdown-list');
+
+            if (!modal || !contentContainer) return;
+
+            // Generate dynamic year-by-year breakdown
+            let html = '';
+            const years = ['2021', '2022', '2023', '2024', '2025'];
+
+            years.forEach((year, index) => {
+                const breakdown = impactBreakdowns.cost[year];
+                if (!breakdown) return;
+
+                const yearData = chartData.cost.find(d => d.year === year);
+                const yearTotal = yearData ? yearData.label : '£' + breakdown.total;
+
+                html += '<div class="year-breakdown-item">';
+                html += '<div class="year-breakdown-header" onclick="toggleYearBreakdown(this)">';
+                html += '<div class="year-breakdown-info">';
+                html += '<div class="year-breakdown-year">' + year + '</div>';
+                html += '<div class="year-breakdown-total">' + yearTotal + '</div>';
+                html += '</div>';
+                html += '<svg class="year-breakdown-arrow" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>';
+                html += '</div>';
+
+                // Collapsible content
+                html += '<div class="year-breakdown-content">';
+
+                if (breakdown.projects.length > 0) {
+                    html += '<div style="display:flex;gap:2rem;align-items:flex-start;margin:1.5rem 0;">';
+                    html += '<div style="flex:0 0 240px;"><canvas class="year-pie-chart" data-year="' + year + '" data-metric="cost" width="240" height="240"></canvas></div>';
+                    html += '<div style="flex:1;"><div class="year-project-list">';
+
+                    breakdown.projects.forEach(project => {
+                        html += '<div class="year-project-item">';
+                        html += '<div class="year-project-name">' + project.name + '</div>';
+                        html += '<div class="year-project-value">' + project.value + '</div>';
+                        html += '</div>';
+                    });
+
+                    html += '</div></div></div>';
+                } else {
+                    html += '<div style="padding:1rem;text-align:center;color:var(--text-secondary);">' + (breakdown.note || 'No cost savings yet') + '</div>';
+                }
+
+                html += '</div>';
+                html += '</div>';
+            });
+
+            contentContainer.innerHTML = html;
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
         }
 
         function closeSavingsModal() {
@@ -6622,10 +6723,60 @@
         // Efficiency Modal Functions
         function openEfficiencyModal() {
             const modal = document.getElementById('efficiencyModal');
-            if (modal) {
-                modal.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            }
+            const contentContainer = modal.querySelector('.hours-breakdown-list');
+
+            if (!modal || !contentContainer) return;
+
+            // Generate dynamic year-by-year breakdown
+            let html = '';
+            const years = ['2021', '2022', '2023', '2024', '2025'];
+
+            years.forEach((year, index) => {
+                const breakdown = impactBreakdowns.efficiency[year];
+                if (!breakdown) return;
+
+                const yearData = chartData.efficiency ? chartData.efficiency.find(d => d.year === year) : null;
+                const yearTotal = yearData ? yearData.label : '~' + breakdown.total + '%';
+
+                html += '<div class="year-breakdown-item">';
+                html += '<div class="year-breakdown-header" onclick="toggleYearBreakdown(this)">';
+                html += '<div class="year-breakdown-info">';
+                html += '<div class="year-breakdown-year">' + year + '</div>';
+                html += '<div class="year-breakdown-total">' + yearTotal + ' Avg</div>';
+                html += '</div>';
+                html += '<svg class="year-breakdown-arrow" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>';
+                html += '</div>';
+
+                // Collapsible content
+                html += '<div class="year-breakdown-content">';
+
+                if (breakdown.projects.length > 0) {
+                    html += '<div style="margin:1.5rem 0;"><div class="year-project-list">';
+
+                    breakdown.projects.forEach(project => {
+                        html += '<div class="year-project-item">';
+                        html += '<div>';
+                        html += '<div class="year-project-name">' + project.name + '</div>';
+                        if (project.note) {
+                            html += '<div style="font-size:0.8rem;color:var(--text-secondary);margin-top:0.25rem;">' + project.note + '</div>';
+                        }
+                        html += '</div>';
+                        html += '<div class="year-project-value">' + project.value + '</div>';
+                        html += '</div>';
+                    });
+
+                    html += '</div></div>';
+                } else {
+                    html += '<div style="padding:1rem;text-align:center;color:var(--text-secondary);">' + (breakdown.note || 'No efficiency data') + '</div>';
+                }
+
+                html += '</div>';
+                html += '</div>';
+            });
+
+            contentContainer.innerHTML = html;
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
         }
 
         function closeEfficiencyModal() {
@@ -6634,6 +6785,104 @@
                 modal.classList.remove('active');
                 document.body.style.overflow = '';
             }
+        }
+
+        // Year Breakdown Toggle Function
+        function toggleYearBreakdown(header) {
+            const content = header.nextElementSibling;
+            const arrow = header.querySelector('.year-breakdown-arrow');
+            const isExpanded = content.classList.contains('expanded');
+
+            if (!isExpanded) {
+                content.classList.add('expanded');
+                arrow.style.transform = 'rotate(180deg)';
+
+                // Draw pie chart when expanded
+                const canvas = content.querySelector('.year-pie-chart');
+                if (canvas && !canvas.dataset.drawn) {
+                    const year = canvas.dataset.year;
+                    const metric = canvas.dataset.metric;
+                    drawYearPieChart(canvas, year, metric);
+                    canvas.dataset.drawn = 'true';
+                }
+            } else {
+                content.classList.remove('expanded');
+                arrow.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // Draw Pie Chart for Year Breakdown
+        function drawYearPieChart(canvas, year, metric) {
+            if (!canvas) return;
+
+            const breakdown = impactBreakdowns[metric][year];
+            if (!breakdown || breakdown.projects.length === 0) return;
+
+            const ctx = canvas.getContext('2d');
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = 90;
+
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Extract numerical values
+            const projectData = breakdown.projects.map(project => {
+                const valueStr = project.value;
+                let numValue = 0;
+
+                if (metric === 'hours') {
+                    numValue = parseFloat(valueStr.replace(/[^\d.]/g, ''));
+                } else if (metric === 'cost') {
+                    if (valueStr.includes('M')) {
+                        numValue = parseFloat(valueStr.replace(/[^\d.]/g, '')) * 1000000;
+                    } else if (valueStr.includes('K')) {
+                        numValue = parseFloat(valueStr.replace(/[^\d.]/g, '')) * 1000;
+                    } else {
+                        numValue = parseFloat(valueStr.replace(/[^\d.]/g, ''));
+                    }
+                }
+
+                return {
+                    name: project.name,
+                    value: numValue
+                };
+            });
+
+            const total = projectData.reduce((sum, p) => sum + p.value, 0);
+
+            // Colors
+            const colors = [
+                '#3b82f6', '#10b981', '#f59e0b', '#ef4444',
+                '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16',
+                '#f97316', '#6366f1'
+            ];
+
+            // Draw pie slices
+            let currentAngle = -Math.PI / 2;
+            projectData.forEach((project, index) => {
+                const sliceAngle = (project.value / total) * 2 * Math.PI;
+
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.arc(centerX, centerY, radius, currentAngle, currentAngle + sliceAngle);
+                ctx.closePath();
+
+                ctx.fillStyle = colors[index % colors.length];
+                ctx.fill();
+
+                ctx.strokeStyle = '#0a0e15';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                currentAngle += sliceAngle;
+            });
+
+            // Draw center circle for donut effect
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 50, 0, 2 * Math.PI);
+            ctx.fillStyle = '#0f1419';
+            ctx.fill();
         }
 
         // Close modal when clicking outside
