@@ -4546,7 +4546,7 @@
 
                 <!-- Compact Stats Grid -->
                 <div class="compact-stats">
-                    <div class="stat-card" data-delay="0">
+                    <div class="stat-card" data-delay="0" id="hours-saved-stat-compact" style="cursor: pointer;">
                         <div class="stat-icon">
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -6311,8 +6311,12 @@
 
             // Hours Saved Modal
             const hoursStat = document.getElementById('hours-saved-stat');
+            const hoursStatCompact = document.getElementById('hours-saved-stat-compact');
             if (hoursStat) {
                 hoursStat.addEventListener('click', openHoursModal);
+            }
+            if (hoursStatCompact) {
+                hoursStatCompact.addEventListener('click', openHoursModal);
             }
 
             // Savings Modal
