@@ -5985,8 +5985,11 @@
                         points.forEach((point, index) => {
                         const dotContainer = document.createElement('div');
                         dotContainer.style.position = 'absolute';
-                        // Position dot horizontally: match line coordinate system exactly
-                        const dotLeftPx = (point.x / 100) * canvas.width;
+                        // Position dot horizontally: add margins so 2020/2025 don't stick out
+                        const leftMargin = 40;
+                        const rightMargin = 40;
+                        const usableWidth = canvas.width - leftMargin - rightMargin;
+                        const dotLeftPx = leftMargin + (point.x / 100) * usableWidth;
                         dotContainer.style.left = dotLeftPx + 'px';
 
                         // Position dot vertically - exactly on the line
@@ -6054,12 +6057,16 @@
 
                     // Add year labels (only once)
                     if (metricsPoints.length > 0) {
+                        const leftMargin = 40;
+                        const rightMargin = 40;
+                        const usableWidth = canvas.width - leftMargin - rightMargin;
+
                         metricsPoints[0].points.forEach((point, index) => {
                             const yearLabel = document.createElement('div');
                             yearLabel.textContent = point.year;
                             yearLabel.style.position = 'absolute';
-                            // Position year label aligned with dots (same coordinate system)
-                            const yearLeftPx = (point.x / 100) * canvas.width;
+                            // Position year label aligned with dots (same margin system)
+                            const yearLeftPx = leftMargin + (point.x / 100) * usableWidth;
                             yearLabel.style.left = yearLeftPx + 'px';
                             yearLabel.style.bottom = '15px';
                             yearLabel.style.transform = 'translateX(-50%)';
@@ -6075,12 +6082,15 @@
                     // Draw multiple lines smoothly after dots appear
                     setTimeout(() => {
                         const canvasWidth = canvas.width;
+                        const leftMargin = 40;
+                        const rightMargin = 40;
+                        const usableWidth = canvasWidth - leftMargin - rightMargin;
 
-                        // Convert all metrics' points to pixel coordinates
+                        // Convert all metrics' points to pixel coordinates with margins
                         const allPixelLines = metricsPoints.map(({ metric, points, color }, lineIndex) => ({
                             pixelPoints: points.map((p, pointIndex) => {
-                                // Draw across full canvas width with padding offset
-                                const x = (p.x / 100) * canvasWidth;
+                                // Draw with margins so lines align with dots
+                                const x = leftMargin + (p.x / 100) * usableWidth;
                                 const y = p.y; // Use exact y coordinate from normalized data
 
                                 return { x, y };
