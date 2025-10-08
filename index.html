@@ -5985,17 +5985,15 @@
                         points.forEach((point, index) => {
                         const dotContainer = document.createElement('div');
                         dotContainer.style.position = 'absolute';
-                        // Position dot horizontally: add margins so 2020/2025 don't stick out
-                        const leftMargin = 70;
-                        const rightMargin = 70;
-                        const usableWidth = canvas.width - leftMargin - rightMargin;
-                        const dotLeftPx = leftMargin + (point.x / 100) * usableWidth;
+                        // Position dot horizontally: don't use margins, just use percentage directly with slight offset
+                        // Add 4px (half of 8px dot) to prevent edge clipping
+                        const dotLeftPx = 4 + (point.x / 100) * (canvas.width - 8);
                         dotContainer.style.left = dotLeftPx + 'px';
 
                         // Position dot vertically - exactly on the line (subtract 4px = half of 8px dot height)
                         const dotTopPx = padding.top + point.y - 4;
                         dotContainer.style.top = dotTopPx + 'px';
-                        dotContainer.style.transform = 'translateX(-50%)'; // Center horizontally only
+                        dotContainer.style.transform = 'none'; // No transform, position directly
                         dotContainer.style.zIndex = `${20 + metricIndex * 10 + index}`; // Better z-index stacking
                         dotContainer.style.cursor = 'pointer';
                         dotContainer.style.padding = '12px'; // Larger hit area
@@ -6057,19 +6055,15 @@
 
                     // Add year labels (only once)
                     if (metricsPoints.length > 0) {
-                        const leftMargin = 70;
-                        const rightMargin = 70;
-                        const usableWidth = canvas.width - leftMargin - rightMargin;
-
                         metricsPoints[0].points.forEach((point, index) => {
                             const yearLabel = document.createElement('div');
                             yearLabel.textContent = point.year;
                             yearLabel.style.position = 'absolute';
-                            // Position year label aligned with dots (same margin system)
-                            const yearLeftPx = leftMargin + (point.x / 100) * usableWidth;
+                            // Position year label aligned with dots (same coordinate system)
+                            const yearLeftPx = 4 + (point.x / 100) * (canvas.width - 8);
                             yearLabel.style.left = yearLeftPx + 'px';
                             yearLabel.style.bottom = '15px';
-                            yearLabel.style.transform = 'translateX(-50%)';
+                            yearLabel.style.transform = 'none';
                             yearLabel.style.fontSize = '0.875rem';
                             yearLabel.style.fontWeight = '600';
                             yearLabel.style.color = '#94a3b8';
@@ -6082,15 +6076,12 @@
                     // Draw multiple lines smoothly after dots appear
                     setTimeout(() => {
                         const canvasWidth = canvas.width;
-                        const leftMargin = 70;
-                        const rightMargin = 70;
-                        const usableWidth = canvasWidth - leftMargin - rightMargin;
 
-                        // Convert all metrics' points to pixel coordinates with margins
+                        // Convert all metrics' points to pixel coordinates (same system as dots)
                         const allPixelLines = metricsPoints.map(({ metric, points, color }, lineIndex) => ({
                             pixelPoints: points.map((p, pointIndex) => {
-                                // Draw with margins so lines align with dots
-                                const x = leftMargin + (p.x / 100) * usableWidth;
+                                // Use same coordinate system as dots: 4px offset, scaled to (width - 8px)
+                                const x = 4 + (p.x / 100) * (canvasWidth - 8);
                                 const y = p.y; // Use exact y coordinate from normalized data
 
                                 return { x, y };
