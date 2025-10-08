@@ -4074,6 +4074,43 @@
             line-height: 1.6;
         }
 
+        .impact-breakdown-toggle {
+            margin: 1.5rem 0;
+            padding: 1rem 1.5rem;
+            background: rgba(59, 130, 246, 0.08);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 0.75rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            color: var(--accent-tertiary);
+            font-weight: 600;
+        }
+
+        .impact-breakdown-toggle:hover {
+            background: rgba(59, 130, 246, 0.12);
+            border-color: var(--accent);
+        }
+
+        .impact-breakdown-toggle.expanded svg {
+            transform: rotate(180deg);
+        }
+
+        .impact-breakdown-collapsible {
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: max-height 0.5s ease, opacity 0.3s ease;
+        }
+
+        .impact-breakdown-collapsible.expanded {
+            max-height: 2000px;
+            opacity: 1;
+            margin-bottom: 1rem;
+        }
+
         @media (max-width: 768px) {
             .impact-modal {
                 padding: 2rem;
@@ -5959,8 +5996,26 @@
             let html = '';
 
             if (breakdown.projects.length > 0) {
-                html += '<div class="impact-breakdown-section">';
-                html += '<div class="impact-breakdown-title">Active Projects <span class="impact-breakdown-badge">' + breakdown.projects.length + ' running</span></div>';
+                // Total box (always visible)
+                html += '<div class="impact-total-box">';
+                html += '<div class="impact-total-label">Total for ' + year + '</div>';
+                html += '<div class="impact-total-value">' + chartData[metric].find(d => d.year === year).label + '</div>';
+                html += '</div>';
+
+                // Collapsible breakdown section
+                html += '<div class="impact-breakdown-toggle" onclick="this.classList.toggle(\'expanded\');this.nextElementSibling.classList.toggle(\'expanded\');">';
+                html += '<span>View Breakdown</span>';
+                html += '<svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="transition:transform 0.3s;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>';
+                html += '</div>';
+
+                html += '<div class="impact-breakdown-collapsible">';
+
+                // Pie chart canvas
+                html += '<div style="display:flex;gap:2rem;align-items:center;margin-bottom:2rem;">';
+                html += '<div style="flex:0 0 280px;"><canvas id="impactPieChart" width="280" height="280"></canvas></div>';
+                html += '<div style="flex:1;"><div class="impact-breakdown-title">Active Projects <span class="impact-breakdown-badge">' + breakdown.projects.length + ' running</span></div></div>';
+                html += '</div>';
+
                 html += '<div class="impact-project-list">';
 
                 breakdown.projects.forEach(project => {
@@ -5975,11 +6030,6 @@
                 });
 
                 html += '</div>';
-                html += '</div>';
-
-                html += '<div class="impact-total-box">';
-                html += '<div class="impact-total-label">Total for ' + year + '</div>';
-                html += '<div class="impact-total-value">' + chartData[metric].find(d => d.year === year).label + '</div>';
                 html += '</div>';
             } else {
                 html += '<div class="impact-breakdown-section">';
@@ -5998,6 +6048,86 @@
             contentEl.innerHTML = html;
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
+
+            // Draw pie chart if there are projects
+            if (breakdown.projects.length > 0) {
+                setTimeout(() => drawImpactPieChart(breakdown, metric), 100);
+            }
+        }
+
+        function drawImpactPieChart(breakdown, metric) {
+            const canvas = document.getElementById('impactPieChart');
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = 110;
+
+            // Extract numerical values from project values
+            const projectData = breakdown.projects.map(project => {
+                const valueStr = project.value;
+                let numValue = 0;
+
+                if (metric === 'hours') {
+                    // Extract hours: "9,000h" -> 9000
+                    numValue = parseFloat(valueStr.replace(/[^\d.]/g, ''));
+                } else if (metric === 'cost') {
+                    // Extract cost: "~£1.00M" -> 1000000
+                    if (valueStr.includes('M')) {
+                        numValue = parseFloat(valueStr.replace(/[^\d.]/g, '')) * 1000000;
+                    } else if (valueStr.includes('K')) {
+                        numValue = parseFloat(valueStr.replace(/[^\d.]/g, '')) * 1000;
+                    } else {
+                        numValue = parseFloat(valueStr.replace(/[^\d.]/g, ''));
+                    }
+                }
+
+                return {
+                    name: project.name,
+                    value: numValue
+                };
+            });
+
+            const total = projectData.reduce((sum, p) => sum + p.value, 0);
+
+            // Colors for different projects
+            const colors = [
+                '#3b82f6', '#10b981', '#f59e0b', '#ef4444',
+                '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16',
+                '#f97316', '#6366f1'
+            ];
+
+            // Draw pie chart
+            let currentAngle = -Math.PI / 2;
+            projectData.forEach((project, index) => {
+                const sliceAngle = (project.value / total) * 2 * Math.PI;
+
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.arc(centerX, centerY, radius, currentAngle, currentAngle + sliceAngle);
+                ctx.closePath();
+
+                ctx.fillStyle = colors[index % colors.length];
+                ctx.fill();
+
+                ctx.strokeStyle = '#0a0e15';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                currentAngle += sliceAngle;
+            });
+
+            // Draw white circle in center for donut effect
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 60, 0, 2 * Math.PI);
+            ctx.fillStyle = '#0f1419';
+            ctx.fill();
+
+            // Add legend
+            const legendX = canvas.width + 20;
+            const legendY = 20;
+            const legendSpacing = 25;
         }
 
         function closeImpactModal() {
