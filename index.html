@@ -4113,6 +4113,10 @@
         }
 
         /* Year Breakdown Styles */
+        .year-breakdown-list {
+            margin-bottom: 2rem;
+        }
+
         .year-breakdown-item {
             margin-bottom: 0.75rem;
             border: 1px solid var(--border);
@@ -5227,50 +5231,9 @@
                 <p class="hours-modal-subtitle">Cost Savings Breakdown by Year (Through H1 2025)</p>
             </div>
 
-            <!-- Expandable Year Breakdown -->
-            <div class="year-breakdown-toggle" onclick="toggleSimpleBreakdown('savingsSimpleBreakdown', this)">
-                <span>View Breakdown</span>
-                <svg class="year-breakdown-arrow" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-            </div>
-
-            <div class="year-breakdown-collapsible" id="savingsSimpleBreakdown">
-                <div class="hours-breakdown-list">
-                    <div class="hours-breakdown-item">
-                        <div class="hours-breakdown-name">2020</div>
-                        <div class="hours-breakdown-year">No Projects</div>
-                        <div class="hours-breakdown-hours">£0</div>
-                    </div>
-
-                    <div class="hours-breakdown-item">
-                        <div class="hours-breakdown-name">2021</div>
-                        <div class="hours-breakdown-year">Projects Deployed</div>
-                        <div class="hours-breakdown-hours">£0</div>
-                    </div>
-
-                    <div class="hours-breakdown-item">
-                        <div class="hours-breakdown-name">2022</div>
-                        <div class="hours-breakdown-year">Projects Running</div>
-                        <div class="hours-breakdown-hours">£0</div>
-                    </div>
-
-                    <div class="hours-breakdown-item">
-                        <div class="hours-breakdown-name">2023</div>
-                        <div class="hours-breakdown-year">Phantom Partial Year</div>
-                        <div class="hours-breakdown-hours">~£50K</div>
-                    </div>
-
-                    <div class="hours-breakdown-item">
-                        <div class="hours-breakdown-name">2024</div>
-                        <div class="hours-breakdown-year">Fill Rate + Phantom + Business Review</div>
-                        <div class="hours-breakdown-hours">~£1.106M</div>
-                    </div>
-
-                    <div class="hours-breakdown-item">
-                        <div class="hours-breakdown-name">2025 H1</div>
-                        <div class="hours-breakdown-year">Fill Rate + Phantom + Work Monitor + Bus Review</div>
-                        <div class="hours-breakdown-hours">~£603.5K</div>
-                    </div>
-                </div>
+            <!-- Year Breakdown List -->
+            <div class="year-breakdown-list" id="savingsYearList">
+                <!-- Dynamically filled by JS -->
             </div>
 
             <div class="hours-breakdown-total">
@@ -5297,74 +5260,9 @@
                 <p class="hours-modal-subtitle">Time Reduction Breakdown by Project</p>
             </div>
 
-            <!-- Expandable Breakdown -->
-            <div class="year-breakdown-toggle" onclick="toggleSimpleBreakdown('efficiencySimpleBreakdown', this)">
-                <span>View Breakdown</span>
-                <svg class="year-breakdown-arrow" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-            </div>
-
-            <div class="year-breakdown-collapsible" id="efficiencySimpleBreakdown">
-                <div class="hours-breakdown-list">
-                    <div class="hours-breakdown-item">
-                        <div class="hours-breakdown-name">Offset Data Entry Automation</div>
-                        <div class="hours-breakdown-year">5-6h → 2-3h daily</div>
-                        <div class="hours-breakdown-hours">~50%</div>
-                    </div>
-
-                    <div class="hours-breakdown-item">
-                        <div class="hours-breakdown-name">Fill Rate Optimizer</div>
-                        <div class="hours-breakdown-year">40h weekly → Automated</div>
-                        <div class="hours-breakdown-hours">~100%</div>
-                    </div>
-
-                    <div class="hours-breakdown-item">
-                        <div class="hours-breakdown-name">Flex Nurseries Automation</div>
-                        <div class="hours-breakdown-year">Manual → Automated</div>
-                        <div class="hours-breakdown-hours">~93%</div>
-                    </div>
-
-                    <div class="hours-breakdown-item">
-                        <div class="hours-breakdown-name">Phantom Shipment Automation</div>
-                        <div class="hours-breakdown-year">20h weekly → Automated</div>
-                        <div class="hours-breakdown-hours">~100%</div>
-                    </div>
-
-                    <div class="hours-breakdown-item">
-                        <div class="hours-breakdown-name">Rescue Route Validator</div>
-                        <div class="hours-breakdown-year">14h weekly → 2h weekly</div>
-                        <div class="hours-breakdown-hours">~85%</div>
-                    </div>
-
-                    <div class="hours-breakdown-item">
-                        <div class="hours-breakdown-name">Yard Updater</div>
-                        <div class="hours-breakdown-year">8h weekly → Automated</div>
-                        <div class="hours-breakdown-hours">~100%</div>
-                    </div>
-
-                    <div class="hours-breakdown-item">
-                        <div class="hours-breakdown-name">Offset Validator</div>
-                        <div class="hours-breakdown-year">Manual validation → Instant</div>
-                        <div class="hours-breakdown-hours">~90%</div>
-                    </div>
-
-                    <div class="hours-breakdown-item">
-                        <div class="hours-breakdown-name">Shift Deck</div>
-                        <div class="hours-breakdown-year">5-10min → Instant access</div>
-                        <div class="hours-breakdown-hours">~88%</div>
-                    </div>
-
-                    <div class="hours-breakdown-item">
-                        <div class="hours-breakdown-name">Work Monitoring Tool</div>
-                        <div class="hours-breakdown-year">Manual monitoring → Auto-alerts</div>
-                        <div class="hours-breakdown-hours">~40%</div>
-                    </div>
-
-                    <div class="hours-breakdown-item">
-                        <div class="hours-breakdown-name">Business Review Automation</div>
-                        <div class="hours-breakdown-year">90 min → 5 min daily</div>
-                        <div class="hours-breakdown-hours">~94%</div>
-                    </div>
-                </div>
+            <!-- Year Breakdown List -->
+            <div class="year-breakdown-list" id="efficiencyYearList">
+                <!-- Dynamically filled by JS -->
             </div>
 
             <div class="hours-breakdown-total">
@@ -6660,10 +6558,65 @@
         // Savings Modal Functions
         function openSavingsModal() {
             const modal = document.getElementById('savingsModal');
-            if (modal) {
-                modal.classList.add('active');
-                document.body.style.overflow = 'hidden';
+            const yearList = document.getElementById('savingsYearList');
+
+            if (!modal) return;
+
+            // Populate year list if not already done
+            if (yearList && !yearList.dataset.populated) {
+                let html = '';
+                const years = ['2020', '2021', '2022', '2023', '2024', '2025'];
+
+                years.forEach((year) => {
+                    const breakdown = impactBreakdowns.cost[year];
+                    if (!breakdown) return;
+
+                    const yearData = chartData.cost.find(d => d.year === year);
+                    const yearTotal = yearData ? yearData.label : '£' + breakdown.total;
+                    const yearLabel = year === '2025' ? '2025 H1' : year;
+
+                    html += '<div class="year-breakdown-item">';
+                    html += '<div class="year-breakdown-header" onclick="toggleYearBreakdown(this)">';
+                    html += '<div class="year-breakdown-info">';
+                    html += '<div class="year-breakdown-year">' + yearLabel + '</div>';
+                    html += '<div class="year-breakdown-total">' + yearTotal + '</div>';
+                    html += '</div>';
+                    html += '<svg class="year-breakdown-arrow" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>';
+                    html += '</div>';
+
+                    // Collapsible content
+                    html += '<div class="year-breakdown-content">';
+
+                    if (breakdown.projects.length > 0) {
+                        html += '<div class="year-project-list" style="margin:1.5rem 0;">';
+
+                        breakdown.projects.forEach(project => {
+                            html += '<div class="year-project-item">';
+                            html += '<div>';
+                            html += '<div class="year-project-name">' + project.name + '</div>';
+                            if (project.note) {
+                                html += '<div style="font-size:0.8rem;color:var(--text-secondary);margin-top:0.25rem;">' + project.note + '</div>';
+                            }
+                            html += '</div>';
+                            html += '<div class="year-project-value">' + project.value + '</div>';
+                            html += '</div>';
+                        });
+
+                        html += '</div>';
+                    } else {
+                        html += '<div style="padding:1rem;text-align:center;color:var(--text-secondary);">' + (breakdown.note || 'No projects') + '</div>';
+                    }
+
+                    html += '</div>';
+                    html += '</div>';
+                });
+
+                yearList.innerHTML = html;
+                yearList.dataset.populated = 'true';
             }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
         }
 
         function closeSavingsModal() {
@@ -6677,10 +6630,64 @@
         // Efficiency Modal Functions
         function openEfficiencyModal() {
             const modal = document.getElementById('efficiencyModal');
-            if (modal) {
-                modal.classList.add('active');
-                document.body.style.overflow = 'hidden';
+            const yearList = document.getElementById('efficiencyYearList');
+
+            if (!modal) return;
+
+            // Populate year list if not already done
+            if (yearList && !yearList.dataset.populated) {
+                let html = '';
+                const years = ['2021', '2022', '2023', '2024', '2025'];
+
+                years.forEach((year) => {
+                    const breakdown = impactBreakdowns.efficiency[year];
+                    if (!breakdown) return;
+
+                    const yearTotal = '~' + breakdown.total + '%';
+                    const yearLabel = year === '2025' ? '2025 H1' : year;
+
+                    html += '<div class="year-breakdown-item">';
+                    html += '<div class="year-breakdown-header" onclick="toggleYearBreakdown(this)">';
+                    html += '<div class="year-breakdown-info">';
+                    html += '<div class="year-breakdown-year">' + yearLabel + '</div>';
+                    html += '<div class="year-breakdown-total">' + yearTotal + ' Avg</div>';
+                    html += '</div>';
+                    html += '<svg class="year-breakdown-arrow" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>';
+                    html += '</div>';
+
+                    // Collapsible content
+                    html += '<div class="year-breakdown-content">';
+
+                    if (breakdown.projects.length > 0) {
+                        html += '<div class="year-project-list" style="margin:1.5rem 0;">';
+
+                        breakdown.projects.forEach(project => {
+                            html += '<div class="year-project-item">';
+                            html += '<div>';
+                            html += '<div class="year-project-name">' + project.name + '</div>';
+                            if (project.note) {
+                                html += '<div style="font-size:0.8rem;color:var(--text-secondary);margin-top:0.25rem;">' + project.note + '</div>';
+                            }
+                            html += '</div>';
+                            html += '<div class="year-project-value">' + project.value + '</div>';
+                            html += '</div>';
+                        });
+
+                        html += '</div>';
+                    } else {
+                        html += '<div style="padding:1rem;text-align:center;color:var(--text-secondary);">' + (breakdown.note || 'No data') + '</div>';
+                    }
+
+                    html += '</div>';
+                    html += '</div>';
+                });
+
+                yearList.innerHTML = html;
+                yearList.dataset.populated = 'true';
             }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
         }
 
         function closeEfficiencyModal() {
