@@ -5986,7 +5986,7 @@
                         const dotContainer = document.createElement('div');
                         dotContainer.style.position = 'absolute';
                         // Position dot horizontally: add margins so 2020/2025 don't stick out
-                        const leftMargin = 40;
+                        const leftMargin = 60;
                         const rightMargin = 40;
                         const usableWidth = canvas.width - leftMargin - rightMargin;
                         const dotLeftPx = leftMargin + (point.x / 100) * usableWidth;
@@ -6057,7 +6057,7 @@
 
                     // Add year labels (only once)
                     if (metricsPoints.length > 0) {
-                        const leftMargin = 40;
+                        const leftMargin = 60;
                         const rightMargin = 40;
                         const usableWidth = canvas.width - leftMargin - rightMargin;
 
@@ -6082,7 +6082,7 @@
                     // Draw multiple lines smoothly after dots appear
                     setTimeout(() => {
                         const canvasWidth = canvas.width;
-                        const leftMargin = 40;
+                        const leftMargin = 60;
                         const rightMargin = 40;
                         const usableWidth = canvasWidth - leftMargin - rightMargin;
 
