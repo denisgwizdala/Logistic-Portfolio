@@ -4138,26 +4138,26 @@
             background: rgba(59, 130, 246, 0.05);
         }
 
-        .year-breakdown-info {
+        .year-breakdown-value-group {
             display: flex;
-            gap: 2rem;
+            gap: 1rem;
             align-items: center;
         }
 
         .year-breakdown-year {
             font-size: 1.5rem;
             font-weight: 700;
-            background: var(--gradient-1);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: var(--text-primary);
             min-width: 60px;
         }
 
         .year-breakdown-total {
             font-size: 1.25rem;
             font-weight: 600;
-            color: var(--text-primary);
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .year-breakdown-arrow {
@@ -6572,16 +6572,18 @@
                     if (!breakdown) return;
 
                     const yearData = chartData.cost.find(d => d.year === year);
-                    const yearTotal = yearData ? yearData.label : '£' + breakdown.total;
+                    let yearTotal = yearData ? yearData.label : '~£' + breakdown.total;
+                    // Add tilde if not already present
+                    if (!yearTotal.startsWith('~')) yearTotal = '~' + yearTotal;
                     const yearLabel = year === '2025' ? '2025 H1' : year;
 
                     html += '<div class="year-breakdown-item">';
                     html += '<div class="year-breakdown-header" onclick="toggleYearBreakdown(this)">';
-                    html += '<div class="year-breakdown-info">';
                     html += '<div class="year-breakdown-year">' + yearLabel + '</div>';
+                    html += '<div class="year-breakdown-value-group">';
                     html += '<div class="year-breakdown-total">' + yearTotal + '</div>';
-                    html += '</div>';
                     html += '<svg class="year-breakdown-arrow" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>';
+                    html += '</div>';
                     html += '</div>';
 
                     // Collapsible content
@@ -6648,11 +6650,11 @@
 
                     html += '<div class="year-breakdown-item">';
                     html += '<div class="year-breakdown-header" onclick="toggleYearBreakdown(this)">';
-                    html += '<div class="year-breakdown-info">';
                     html += '<div class="year-breakdown-year">' + yearLabel + '</div>';
+                    html += '<div class="year-breakdown-value-group">';
                     html += '<div class="year-breakdown-total">' + yearTotal + ' Avg</div>';
-                    html += '</div>';
                     html += '<svg class="year-breakdown-arrow" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>';
+                    html += '</div>';
                     html += '</div>';
 
                     // Collapsible content
