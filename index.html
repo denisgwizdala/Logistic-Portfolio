@@ -5992,10 +5992,10 @@
                         const dotLeftPx = leftMargin + (point.x / 100) * usableWidth;
                         dotContainer.style.left = dotLeftPx + 'px';
 
-                        // Position dot vertically - exactly on the line
-                        const dotTopPx = padding.top + point.y;
+                        // Position dot vertically - exactly on the line (subtract 4px = half of 8px dot height)
+                        const dotTopPx = padding.top + point.y - 4;
                         dotContainer.style.top = dotTopPx + 'px';
-                        dotContainer.style.transform = 'translate(-50%, -50%)'; // Center both horizontally and vertically
+                        dotContainer.style.transform = 'translateX(-50%)'; // Center horizontally only
                         dotContainer.style.zIndex = `${20 + metricIndex * 10 + index}`; // Better z-index stacking
                         dotContainer.style.cursor = 'pointer';
                         dotContainer.style.padding = '12px'; // Larger hit area
