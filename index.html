@@ -6123,7 +6123,13 @@
                         valueLabel.textContent = point.label;
                         valueLabel.style.position = 'absolute';
                         valueLabel.style.top = '-8px';
-                        valueLabel.style.left = '12px';
+                        // Position last year's label to the left to prevent overflow
+                        const isLastPoint = index === points.length - 1;
+                        if (isLastPoint) {
+                            valueLabel.style.right = '12px';
+                        } else {
+                            valueLabel.style.left = '12px';
+                        }
                         valueLabel.style.fontSize = '0.7rem';
                         valueLabel.style.fontWeight = '600';
                         valueLabel.style.color = color;
