@@ -1184,6 +1184,37 @@
             font-weight: 500;
         }
 
+        .intro-divider {
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--accent) 20%, var(--accent) 80%, transparent);
+            margin: 1.75rem auto;
+            border-radius: 2px;
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+            position: relative;
+        }
+
+        .intro-divider::before,
+        .intro-divider::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 50%;
+            top: 50%;
+            transform: translateY(-50%);
+            box-shadow: 0 0 6px var(--accent);
+        }
+
+        .intro-divider::before {
+            left: -12px;
+        }
+
+        .intro-divider::after {
+            right: -12px;
+        }
+
         .intro-social {
             display: flex;
             gap: 1rem;
@@ -4349,6 +4380,7 @@
             <p class="intro-contact">
                 +44 7963526878 | denisgwizdala@gmail.com
             </p>
+            <div class="intro-divider"></div>
             <p class="intro-role">Supply Chain Process Automation Specialist</p>
             <p class="intro-company">Amazon EU</p>
 
@@ -6136,7 +6168,9 @@
                             const yearLeftPx = 4 + (point.x / 100) * (canvas.width - 8);
                             yearLabel.style.left = yearLeftPx + 'px';
                             yearLabel.style.bottom = '15px';
-                            yearLabel.style.transform = 'none';
+                            // Adjust transform for last year label to prevent cutoff
+                            const isLastYear = index === metricsPoints[0].points.length - 1;
+                            yearLabel.style.transform = isLastYear ? 'translateX(-100%)' : 'translateX(-50%)';
                             yearLabel.style.fontSize = '0.875rem';
                             yearLabel.style.fontWeight = '600';
                             yearLabel.style.color = '#94a3b8';
