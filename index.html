@@ -6502,6 +6502,13 @@
 
     </script>
 
+    <!-- Remove index.html from URL if present -->
+    <script>
+        if (window.location.pathname === '/index.html') {
+            window.history.replaceState({}, '', '/');
+        }
+    </script>
+
     <!-- Visitor Tracking Script -->
     <script>
         // Google Apps Script endpoint for visitor tracking
@@ -6514,8 +6521,14 @@
                 const ipResponse = await fetch('https://api.ipify.org?format=json');
                 const ipData = await ipResponse.json();
 
+                // Determine page name
+                let pageName = window.location.href;
+                if (window.location.pathname === '/' || window.location.pathname === '/index.html') {
+                    pageName = 'Main Page';
+                }
+
                 const data = {
-                    pageUrl: window.location.href,
+                    pageUrl: pageName,
                     userIp: ipData.ip
                 };
 
