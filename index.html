@@ -5574,7 +5574,7 @@
             ]
         };
 
-        let activeMetrics = new Set(['hours', 'cost']); // Default: show hours and cost
+        let activeMetrics = new Set(['hours']); // Default: show hours only (single metric mode)
 
         const metricColors = {
             hours: '#3b82f6',
@@ -5985,59 +5985,17 @@
                         points.forEach((point, index) => {
                         const dotContainer = document.createElement('div');
                         dotContainer.style.position = 'absolute';
-                        // Position dot: use full canvas width (0% = left edge, 100% = right edge)
-                        let dotLeftPx = (point.x / 100) * canvas.width;
-                        // MANUAL FIX: Move 2020 dots (x=0) RIGHT by 60px to touch the line
-                        if (point.x === 0 || index === 0) {
-                            dotLeftPx += 60;
-                        }
+                        // Position dot horizontally: use full canvas width (0% = left edge, 100% = right edge)
+                        const dotLeftPx = (point.x / 100) * canvas.width + padding.left;
                         dotContainer.style.left = dotLeftPx + 'px';
 
-                        // Position dot vertically with metric-specific offsets
-                        let dotTopPx = padding.top + point.y;
-
-                        // Custom vertical adjustments per metric and year
-                        const yearOffsets = {
-                            hours: {
-                                '2020': -3,  // slightly lower
-                                '2021': 3,   // slightly higher
-                                '2023': 3,   // slightly higher
-                                '2024': 3,   // slightly higher
-                                '2025': 3    // slightly higher
-                            },
-                            cost: {
-                                '2020': -3,  // slightly lower
-                                '2021': 3,   // higher
-                                '2022': 3,   // higher
-                                '2023': 3,   // higher
-                                '2025': 3    // higher
-                            },
-                            efficiency: {
-                                '2020': 3,   // higher
-                                '2022': 2,   // higher slightly
-                                '2023': 3,   // higher
-                                '2024': 3,   // higher
-                                '2025': 3    // higher
-                            },
-                            errors: {
-                                '2020': -3,  // lower
-                                '2021': 3,   // higher
-                                '2022': 3,   // higher
-                                '2023': 3,   // higher
-                                '2024': 2,   // higher slightly
-                                '2025': 3    // higher
-                            }
-                        };
-
-                        const offset = yearOffsets[metric]?.[point.year] || 0;
-                        dotTopPx += offset;
-
+                        // Position dot vertically - exactly on the line
+                        const dotTopPx = padding.top + point.y;
                         dotContainer.style.top = dotTopPx + 'px';
-                        dotContainer.style.marginTop = '-4px'; // Center 8px dot on line
-                        dotContainer.style.transform = 'translateX(-50%)'; // Only center horizontally
+                        dotContainer.style.transform = 'translate(-50%, -50%)'; // Center both horizontally and vertically
                         dotContainer.style.zIndex = `${20 + metricIndex * 10 + index}`; // Better z-index stacking
                         dotContainer.style.cursor = 'pointer';
-                        dotContainer.style.padding = '12px'; // Larger hit area for overlapping dots
+                        dotContainer.style.padding = '12px'; // Larger hit area
                         dotContainer.style.margin = '-12px'; // Compensate for padding
 
                         // Add click handler to open modal
@@ -6100,11 +6058,8 @@
                             const yearLabel = document.createElement('div');
                             yearLabel.textContent = point.year;
                             yearLabel.style.position = 'absolute';
-                            // Position year label - move 2020 to align with moved dots
-                            let yearLeftPx = (point.x / 100) * canvas.width;
-                            if (point.x === 0 || index === 0) {
-                                yearLeftPx += 60; // Match the dot offset for 2020
-                            }
+                            // Position year label aligned with dots
+                            const yearLeftPx = (point.x / 100) * canvas.width + padding.left;
                             yearLabel.style.left = yearLeftPx + 'px';
                             yearLabel.style.bottom = '15px';
                             yearLabel.style.transform = 'translateX(-50%)';
@@ -6124,31 +6079,9 @@
                         // Convert all metrics' points to pixel coordinates
                         const allPixelLines = metricsPoints.map(({ metric, points, color }, lineIndex) => ({
                             pixelPoints: points.map((p, pointIndex) => {
-                                // Draw across full canvas width (0% = left edge, 100% = right edge)
-                                let x = (p.x / 100) * canvasWidth;
-                                // MANUAL FIX: Move 2020 line start (x=0) RIGHT by 60px to align with dots
-                                if (p.x === 0 || pointIndex === 0) {
-                                    x += 60;
-                                }
-
-                                // Apply same vertical offsets as dots for alignment
-                                const yearOffsets = {
-                                    hours: {
-                                        '2020': -3, '2021': 3, '2023': 3, '2024': 3, '2025': 3
-                                    },
-                                    cost: {
-                                        '2020': -3, '2021': 3, '2022': 3, '2023': 3, '2025': 3
-                                    },
-                                    efficiency: {
-                                        '2020': 3, '2022': 2, '2023': 3, '2024': 3, '2025': 3
-                                    },
-                                    errors: {
-                                        '2020': -3, '2021': 3, '2022': 3, '2023': 3, '2024': 2, '2025': 3
-                                    }
-                                };
-
-                                const offset = yearOffsets[metric]?.[p.year] || 0;
-                                const y = p.y + offset;
+                                // Draw across full canvas width with padding offset
+                                const x = (p.x / 100) * canvasWidth;
+                                const y = p.y; // Use exact y coordinate from normalized data
 
                                 return { x, y };
                             }),
@@ -6204,7 +6137,7 @@
                         drawLines();
                     }, 400);
                 }
-                // Chart Checkbox Toggle Handler (Max 2 selections)
+                // Chart Checkbox Toggle Handler (Only 1 selection allowed - radio button behavior)
                 function initChartControls() {
                     const checkboxes = document.querySelectorAll('.chart-metric-toggle input[type="checkbox"]');
 
@@ -6213,18 +6146,20 @@
                             const metric = checkbox.getAttribute('data-metric');
 
                             if (checkbox.checked) {
-                                // Limit to 2 selections max
-                                if (activeMetrics.size >= 2) {
-                                    checkbox.checked = false;
-                                    alert('Maximum 2 metrics can be displayed at once for optimal visibility');
-                                    return;
-                                }
+                                // Uncheck all other checkboxes (radio button behavior)
+                                checkboxes.forEach(cb => {
+                                    if (cb !== checkbox) {
+                                        cb.checked = false;
+                                    }
+                                });
+                                // Clear activeMetrics and add only the selected one
+                                activeMetrics.clear();
                                 activeMetrics.add(metric);
                             } else {
                                 activeMetrics.delete(metric);
                             }
 
-                            // Re-render with all active metrics
+                            // Re-render with selected metric
                             renderMultiLineChart();
                         });
                     });
