@@ -5126,19 +5126,71 @@
                 <p class="hours-modal-subtitle">Cumulative Impact by Project Since 2020 (Through H1 2025)</p>
             </div>
 
+            <div class="hours-breakdown-list">
+                <div class="hours-breakdown-item">
+                    <div class="hours-breakdown-name">Flex Nurseries</div>
+                    <div class="hours-breakdown-year">3 full years + H1 2025</div>
+                    <div class="hours-breakdown-hours">~31,860h</div>
+                </div>
+
+                <div class="hours-breakdown-item">
+                    <div class="hours-breakdown-name">Fill Rate Optimizer</div>
+                    <div class="hours-breakdown-year">4 full years + H1 2025</div>
+                    <div class="hours-breakdown-hours">~9,443h</div>
+                </div>
+
+                <div class="hours-breakdown-item">
+                    <div class="hours-breakdown-name">Browser Automation Scripts</div>
+                    <div class="hours-breakdown-year">4 full years + H1 2025</div>
+                    <div class="hours-breakdown-hours">~2,951h</div>
+                </div>
+
+                <div class="hours-breakdown-item">
+                    <div class="hours-breakdown-name">Phantom Shipment Automation</div>
+                    <div class="hours-breakdown-year">2 full years + H1 2025</div>
+                    <div class="hours-breakdown-hours">~2,642h</div>
+                </div>
+
+                <div class="hours-breakdown-item">
+                    <div class="hours-breakdown-name">EU Offset Validator</div>
+                    <div class="hours-breakdown-year">4 full years + H1 2025</div>
+                    <div class="hours-breakdown-hours">~1,589h</div>
+                </div>
+
+                <div class="hours-breakdown-item">
+                    <div class="hours-breakdown-name">Yard Updater</div>
+                    <div class="hours-breakdown-year">2 full years + H1 2025</div>
+                    <div class="hours-breakdown-hours">~1,057h</div>
+                </div>
+
+                <div class="hours-breakdown-item">
+                    <div class="hours-breakdown-name">Rescue Route Validator</div>
+                    <div class="hours-breakdown-year">1 full year + H1 2025</div>
+                    <div class="hours-breakdown-hours">~1,012h</div>
+                </div>
+
+                <div class="hours-breakdown-item">
+                    <div class="hours-breakdown-name">Business Review Automation</div>
+                    <div class="hours-breakdown-year">Since end of 2023 (through H1 2025)</div>
+                    <div class="hours-breakdown-hours">~724h</div>
+                </div>
+
+                <div class="hours-breakdown-item">
+                    <div class="hours-breakdown-name">Work Monitoring Tool</div>
+                    <div class="hours-breakdown-year">H1 2025 only</div>
+                    <div class="hours-breakdown-hours">~351h</div>
+                </div>
+
+                <div class="hours-breakdown-item">
+                    <div class="hours-breakdown-name">Shift Deck</div>
+                    <div class="hours-breakdown-year">Deployed 2025</div>
+                    <div class="hours-breakdown-hours">~90h</div>
+                </div>
+            </div>
+
             <div class="hours-breakdown-total">
                 <div class="hours-breakdown-total-label">Cumulative Total Impact (2020-2025 H1)</div>
                 <div class="hours-breakdown-total-value">~51,719hrs</div>
-            </div>
-
-            <!-- Expandable Year Breakdown -->
-            <div class="year-breakdown-toggle" onclick="toggleModalYearBreakdown('hoursYearBreakdown', this)">
-                <span>View Year-by-Year Breakdown</span>
-                <svg class="year-breakdown-arrow" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-            </div>
-
-            <div class="year-breakdown-collapsible" id="hoursYearBreakdown">
-                <!-- Dynamically filled by JS -->
             </div>
         </div>
     </div>
@@ -5175,19 +5227,55 @@
                 <p class="hours-modal-subtitle">Cost Savings Breakdown by Year (Through H1 2025)</p>
             </div>
 
-            <div class="hours-breakdown-total">
-                <div class="hours-breakdown-total-label">Cumulative Total (2020-2025 H1)</div>
-                <div class="hours-breakdown-total-value">~£1.76M</div>
-            </div>
-
             <!-- Expandable Year Breakdown -->
-            <div class="year-breakdown-toggle" onclick="toggleModalYearBreakdown('savingsYearBreakdown', this)">
-                <span>View Year-by-Year Breakdown</span>
+            <div class="year-breakdown-toggle" onclick="toggleSimpleBreakdown('savingsSimpleBreakdown', this)">
+                <span>View Breakdown</span>
                 <svg class="year-breakdown-arrow" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
             </div>
 
-            <div class="year-breakdown-collapsible" id="savingsYearBreakdown">
-                <!-- Dynamically filled by JS -->
+            <div class="year-breakdown-collapsible" id="savingsSimpleBreakdown">
+                <div class="hours-breakdown-list">
+                    <div class="hours-breakdown-item">
+                        <div class="hours-breakdown-name">2020</div>
+                        <div class="hours-breakdown-year">No Projects</div>
+                        <div class="hours-breakdown-hours">£0</div>
+                    </div>
+
+                    <div class="hours-breakdown-item">
+                        <div class="hours-breakdown-name">2021</div>
+                        <div class="hours-breakdown-year">Projects Deployed</div>
+                        <div class="hours-breakdown-hours">£0</div>
+                    </div>
+
+                    <div class="hours-breakdown-item">
+                        <div class="hours-breakdown-name">2022</div>
+                        <div class="hours-breakdown-year">Projects Running</div>
+                        <div class="hours-breakdown-hours">£0</div>
+                    </div>
+
+                    <div class="hours-breakdown-item">
+                        <div class="hours-breakdown-name">2023</div>
+                        <div class="hours-breakdown-year">Phantom Partial Year</div>
+                        <div class="hours-breakdown-hours">~£50K</div>
+                    </div>
+
+                    <div class="hours-breakdown-item">
+                        <div class="hours-breakdown-name">2024</div>
+                        <div class="hours-breakdown-year">Fill Rate + Phantom + Business Review</div>
+                        <div class="hours-breakdown-hours">~£1.106M</div>
+                    </div>
+
+                    <div class="hours-breakdown-item">
+                        <div class="hours-breakdown-name">2025 H1</div>
+                        <div class="hours-breakdown-year">Fill Rate + Phantom + Work Monitor + Bus Review</div>
+                        <div class="hours-breakdown-hours">~£603.5K</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hours-breakdown-total">
+                <div class="hours-breakdown-total-label">Cumulative Total (2020-2025 H1)</div>
+                <div class="hours-breakdown-total-value">~£1.76M</div>
             </div>
 
             <div class="impact-note">
@@ -5209,19 +5297,79 @@
                 <p class="hours-modal-subtitle">Time Reduction Breakdown by Project</p>
             </div>
 
-            <div class="hours-breakdown-total">
-                <div class="hours-breakdown-total-label">Average Across Portfolio</div>
-                <div class="hours-breakdown-total-value">~88%</div>
-            </div>
-
-            <!-- Expandable Year Breakdown -->
-            <div class="year-breakdown-toggle" onclick="toggleModalYearBreakdown('efficiencyYearBreakdown', this)">
-                <span>View Year-by-Year Breakdown</span>
+            <!-- Expandable Breakdown -->
+            <div class="year-breakdown-toggle" onclick="toggleSimpleBreakdown('efficiencySimpleBreakdown', this)">
+                <span>View Breakdown</span>
                 <svg class="year-breakdown-arrow" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
             </div>
 
-            <div class="year-breakdown-collapsible" id="efficiencyYearBreakdown">
-                <!-- Dynamically filled by JS -->
+            <div class="year-breakdown-collapsible" id="efficiencySimpleBreakdown">
+                <div class="hours-breakdown-list">
+                    <div class="hours-breakdown-item">
+                        <div class="hours-breakdown-name">Offset Data Entry Automation</div>
+                        <div class="hours-breakdown-year">5-6h → 2-3h daily</div>
+                        <div class="hours-breakdown-hours">~50%</div>
+                    </div>
+
+                    <div class="hours-breakdown-item">
+                        <div class="hours-breakdown-name">Fill Rate Optimizer</div>
+                        <div class="hours-breakdown-year">40h weekly → Automated</div>
+                        <div class="hours-breakdown-hours">~100%</div>
+                    </div>
+
+                    <div class="hours-breakdown-item">
+                        <div class="hours-breakdown-name">Flex Nurseries Automation</div>
+                        <div class="hours-breakdown-year">Manual → Automated</div>
+                        <div class="hours-breakdown-hours">~93%</div>
+                    </div>
+
+                    <div class="hours-breakdown-item">
+                        <div class="hours-breakdown-name">Phantom Shipment Automation</div>
+                        <div class="hours-breakdown-year">20h weekly → Automated</div>
+                        <div class="hours-breakdown-hours">~100%</div>
+                    </div>
+
+                    <div class="hours-breakdown-item">
+                        <div class="hours-breakdown-name">Rescue Route Validator</div>
+                        <div class="hours-breakdown-year">14h weekly → 2h weekly</div>
+                        <div class="hours-breakdown-hours">~85%</div>
+                    </div>
+
+                    <div class="hours-breakdown-item">
+                        <div class="hours-breakdown-name">Yard Updater</div>
+                        <div class="hours-breakdown-year">8h weekly → Automated</div>
+                        <div class="hours-breakdown-hours">~100%</div>
+                    </div>
+
+                    <div class="hours-breakdown-item">
+                        <div class="hours-breakdown-name">Offset Validator</div>
+                        <div class="hours-breakdown-year">Manual validation → Instant</div>
+                        <div class="hours-breakdown-hours">~90%</div>
+                    </div>
+
+                    <div class="hours-breakdown-item">
+                        <div class="hours-breakdown-name">Shift Deck</div>
+                        <div class="hours-breakdown-year">5-10min → Instant access</div>
+                        <div class="hours-breakdown-hours">~88%</div>
+                    </div>
+
+                    <div class="hours-breakdown-item">
+                        <div class="hours-breakdown-name">Work Monitoring Tool</div>
+                        <div class="hours-breakdown-year">Manual monitoring → Auto-alerts</div>
+                        <div class="hours-breakdown-hours">~40%</div>
+                    </div>
+
+                    <div class="hours-breakdown-item">
+                        <div class="hours-breakdown-name">Business Review Automation</div>
+                        <div class="hours-breakdown-year">90 min → 5 min daily</div>
+                        <div class="hours-breakdown-hours">~94%</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hours-breakdown-total">
+                <div class="hours-breakdown-total-label">Average Across Portfolio</div>
+                <div class="hours-breakdown-total-value">~88%</div>
             </div>
 
             <div class="impact-note">
@@ -6671,6 +6819,21 @@
                 closeEfficiencyModal();
             }
         });
+
+        // Toggle Simple Breakdown
+        function toggleSimpleBreakdown(containerId, button) {
+            const container = document.getElementById(containerId);
+            const arrow = button.querySelector('.year-breakdown-arrow');
+            const isExpanded = container.classList.contains('expanded');
+
+            if (!isExpanded) {
+                container.classList.add('expanded');
+                arrow.style.transform = 'rotate(180deg)';
+            } else {
+                container.classList.remove('expanded');
+                arrow.style.transform = 'rotate(0deg)';
+            }
+        }
 
         // Toggle Modal Year Breakdown
         function toggleModalYearBreakdown(containerId, button) {
