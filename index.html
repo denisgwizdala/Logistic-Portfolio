@@ -55,6 +55,8 @@
             background: var(--gradient-1);
             z-index: 10000;
             box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+            will-change: width;
+            transition: width 0.1s ease-out;
         }
 
         /* Parallax Background Layers */
@@ -72,6 +74,9 @@
             position: absolute;
             width: 100%;
             height: 100%;
+            will-change: background-position;
+            backface-visibility: hidden;
+            transform: translateZ(0);
         }
 
         /* Make the gradient far larger than the viewport so translating doesn't reveal transparency */
@@ -91,7 +96,7 @@
         .intro-card {
             opacity: 0;
             transform: translate3d(0, 20px, 0);
-            transition: opacity 0.4s ease, transform 0.4s ease;
+            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
             will-change: opacity, transform;
         }
 
@@ -122,7 +127,7 @@
         .timeline-track {
             display: flex;
             gap: 4rem;
-            transition: transform 0.3s ease-out;
+            transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1);
             will-change: transform;
             padding: 0;
         }
@@ -137,7 +142,7 @@
             backdrop-filter: blur(20px);
             opacity: 0.4;
             transform: translate3d(0, 0, 0) scale(0.95);
-            transition: opacity 0.3s ease, transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+            transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);
             flex-shrink: 0;
             will-change: opacity, transform;
             contain: layout style paint;
@@ -328,8 +333,10 @@
             justify-content: center;
             z-index: 1001;
             opacity: 0;
-            transition: all 0.3s ease;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
             pointer-events: none;
+            will-change: opacity, transform;
+            transform: translateZ(0);
         }
 
         .scroll-indicator.active {
@@ -420,13 +427,14 @@
             position: relative;
             z-index: 1;
             max-width: 1100px;
-            animation: fadeInUp 0.5s ease-out;
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: opacity, transform;
         }
 
         @keyframes fadeInUp {
             from {
                 opacity: 0;
-                transform: translate3d(0, 15px, 0);
+                transform: translate3d(0, 30px, 0);
             }
             to {
                 opacity: 1;
@@ -447,7 +455,7 @@
             border-radius: 2rem;
             border: 1px solid rgba(59, 130, 246, 0.3);
             backdrop-filter: blur(10px);
-            animation: fadeInUp 0.5s ease-out 0.1s both;
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
         }
 
         .hero-title {
@@ -456,7 +464,7 @@
             line-height: 1.1;
             margin-bottom: 2rem;
             letter-spacing: -0.03em;
-            animation: fadeInUp 0.5s ease-out 0.15s both;
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
         }
         .hero-title .highlight {
             background: var(--gradient-1);
@@ -548,7 +556,7 @@
             margin-right: auto;
             font-weight: 400;
             line-height: 1.7;
-            animation: fadeInUp 1s ease-out 0.6s both;
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.6s both;
         }
 
         .hero-tagline {
@@ -561,7 +569,7 @@
             font-weight: 700;
             margin-bottom: 3.5rem;
             font-family: 'Dancing Script', cursive;
-            animation: fadeInUp 1s ease-out 0.8s both;
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.8s both;
         }
 
         .hero-stats {
@@ -570,7 +578,7 @@
             gap: 3rem;
             max-width: 1000px;
             margin: 0 auto 3.5rem;
-            animation: fadeInUp 1s ease-out 1s both;
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 1s both;
         }
 
         .hero-stat {
@@ -625,7 +633,7 @@
             border: none;
             cursor: pointer;
             box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
-            animation: fadeInUp 1s ease-out 1.2s both;
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 1.2s both;
             position: relative;
             overflow: hidden;
         }
@@ -663,7 +671,7 @@
         .section-fade {
             opacity: 0;
             transform: translateY(30px);
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .section-fade.visible {
@@ -752,7 +760,7 @@
         display:flex; gap:1.25rem; padding:1.25rem;
         background: var(--bg-tertiary);
         border:1px solid var(--border);
-        border-radius:.875rem; transition:all .3s ease;
+        border-radius:.875rem; transition:all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .experience-box .experience-item:hover{
         border-color:var(--accent);
@@ -869,7 +877,7 @@
         background: var(--bg-tertiary);
         border:1px solid var(--border);
         border-radius:1rem;
-        transition:all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        transition:all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         position: relative;
         overflow: hidden;
         z-index: 1;
@@ -1324,9 +1332,10 @@
             border-radius: 0.75rem;
             font-weight: 600;
             font-size: 1rem;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             border: none;
             cursor: pointer;
+            will-change: transform;
         }
 
         .download-cv {
@@ -1383,7 +1392,7 @@
             background: var(--bg-secondary);
             border: 1px solid var(--border);
             border-radius: 1rem;
-            transition: all 0.3s ease;
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .experience-item:hover {
@@ -1961,7 +1970,8 @@
             border: 1px solid var(--border);
             border-radius: 1.25rem;
             padding: 2.5rem;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform;
             position: relative;
             overflow: hidden;
         }
@@ -2518,6 +2528,11 @@
 
         html {
             scroll-behavior: smooth;
+        }
+
+        * {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         /* MOBILE: Disable smooth scroll for better performance */
@@ -4696,7 +4711,7 @@
                 </div>
 
                 <a href="fill-rate-optimizer.html" style="text-decoration: none; color: inherit; display: block;">
-                    <div class="project-card" style="cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow=''">
+                    <div class="project-card" style="cursor: pointer; transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow=''">
                         <div class="project-header">
                             <h3 class="project-title">Fill-Rate Optimizer</h3>
                         </div>
@@ -4720,7 +4735,7 @@
                 </a>
 
                 <a href="flex-nurseries-automation.html" style="text-decoration: none; color: inherit; display: block;">
-                    <div class="project-card" style="cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow=''">
+                    <div class="project-card" style="cursor: pointer; transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow=''">
                         <div class="project-header">
                             <h3 class="project-title">Flex Nursery Tool</h3>
                         </div>
@@ -4744,7 +4759,7 @@
                 </a>
 
                 <a href="phantom-shipment-automation.html" style="text-decoration: none; color: inherit; display: block;">
-                    <div class="project-card" style="cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow=''">
+                    <div class="project-card" style="cursor: pointer; transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow=''">
                         <div class="project-header">
                             <h3 class="project-title">Phantom Shipments Automation</h3>
                         </div>
@@ -4768,7 +4783,7 @@
                 </a>
 
                 <a href="rescue-route-validator.html" style="text-decoration: none; color: inherit; display: block;">
-                    <div class="project-card" style="cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow=''">
+                    <div class="project-card" style="cursor: pointer; transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow=''">
                         <div class="project-header">
                             <h3 class="project-title">Rescue Validator</h3>
                         </div>
@@ -4792,7 +4807,7 @@
                 </a>
 
                 <a href="shift-deck.html" style="text-decoration: none; color: inherit; display: block;">
-                    <div class="project-card" style="cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow=''">
+                    <div class="project-card" style="cursor: pointer; transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow=''">
                         <div class="project-header">
                             <h3 class="project-title">Shift Deck</h3>
                         </div>
@@ -4816,7 +4831,7 @@
                 </a>
 
                 <a href="browser-automation-scripts.html" style="text-decoration: none; color: inherit; display: block;">
-                    <div class="project-card" style="cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow=''">
+                    <div class="project-card" style="cursor: pointer; transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow=''">
                         <div class="project-header">
                             <h3 class="project-title">Offset Data Entry & Guardrails</h3>
                         </div>
@@ -4840,7 +4855,7 @@
                 </a>
 
                 <a href="work-monitoring-tool.html" style="text-decoration: none; color: inherit; display: block;">
-                    <div class="project-card" style="cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow=''">
+                    <div class="project-card" style="cursor: pointer; transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow=''">
                         <div class="project-header">
                             <h3 class="project-title">Work Monitoring Tool</h3>
                         </div>
@@ -4864,7 +4879,7 @@
                 </a>
 
                 <a href="business-review-automation.html" style="text-decoration: none; color: inherit; display: block;">
-                    <div class="project-card" style="cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow=''">
+                    <div class="project-card" style="cursor: pointer; transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow=''">
                         <div class="project-header">
                             <h3 class="project-title">Business Review Automation</h3>
                         </div>
@@ -5491,11 +5506,34 @@
             }
         }
 
+        // Smooth scroll with lerping for buttery smooth animations
+        let currentScroll = 0;
+        let targetScroll = 0;
+        const lerpFactor = 0.1; // Lower = smoother but slower (0.05-0.15 recommended)
+
+        function lerp(start, end, factor) {
+            return start + (end - start) * factor;
+        }
+
+        function smoothScrollLoop() {
+            // Lerp current scroll towards target
+            currentScroll = lerp(currentScroll, targetScroll, lerpFactor);
+
+            // Only update if there's a meaningful difference
+            if (Math.abs(targetScroll - currentScroll) > 0.5) {
+                requestAnimationFrame(smoothScrollLoop);
+            } else {
+                currentScroll = targetScroll;
+            }
+        }
+
         // Throttle scroll events using requestAnimationFrame for better performance
         // MOBILE: Disable heavy scroll animations on mobile devices for performance
         const isMobile = window.innerWidth <= 768;
         let scrollTicking = false;
         window.addEventListener('scroll', () => {
+            targetScroll = window.scrollY;
+
             if (!scrollTicking && !isMobile) {
                 window.requestAnimationFrame(() => {
                     updateScrollProgressBar();
