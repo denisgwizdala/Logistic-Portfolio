@@ -570,6 +570,26 @@
             margin-bottom: 3.5rem;
             font-family: 'Dancing Script', cursive;
             animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.8s both;
+            cursor: pointer;
+            position: relative;
+            display: inline-block;
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .hero-tagline:hover {
+            transform: scale(1.05);
+        }
+
+        .hero-tagline.typing::after {
+            content: '|';
+            animation: blink 0.7s infinite;
+            margin-left: 2px;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
         }
 
         .hero-stats {
@@ -6951,6 +6971,41 @@
         if (window.location.pathname === '/index.html') {
             window.history.replaceState({}, '', '/');
         }
+    </script>
+
+    <!-- Typewriter effect for hero tagline -->
+    <script>
+        (function() {
+            const tagline = document.querySelector('.hero-tagline');
+            if (!tagline) return;
+
+            const originalText = tagline.textContent;
+            let isAnimating = false;
+
+            async function typewriterEffect() {
+                if (isAnimating) return;
+                isAnimating = true;
+
+                tagline.classList.add('typing');
+
+                // Clear text
+                tagline.textContent = '';
+
+                // Type out each character
+                for (let i = 0; i < originalText.length; i++) {
+                    tagline.textContent += originalText[i];
+                    await new Promise(resolve => setTimeout(resolve, 80));
+                }
+
+                // Keep cursor for a moment
+                await new Promise(resolve => setTimeout(resolve, 500));
+
+                tagline.classList.remove('typing');
+                isAnimating = false;
+            }
+
+            tagline.addEventListener('mouseenter', typewriterEffect);
+        })();
     </script>
 
     <!-- Visitor Tracking Script -->
