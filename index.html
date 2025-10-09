@@ -6981,6 +6981,8 @@
             const originalText = tagline.textContent;
             let isAnimating = false;
             let hasLoadedOnce = false;
+            let lastHoverTime = 0;
+            const COOLDOWN_MS = 10000; // 10 seconds
 
             async function typeText(text) {
                 tagline.classList.add('typing');
@@ -7012,8 +7014,17 @@
             }
 
             async function typewriterOnHover() {
+                const currentTime = Date.now();
+                const timeSinceLastHover = currentTime - lastHoverTime;
+
+                // Check cooldown - must wait 10 seconds between animations
+                if (timeSinceLastHover < COOLDOWN_MS && lastHoverTime !== 0) {
+                    return;
+                }
+
                 if (isAnimating) return;
                 isAnimating = true;
+                lastHoverTime = currentTime;
 
                 tagline.classList.add('typing');
 
