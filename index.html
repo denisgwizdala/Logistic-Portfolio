@@ -4498,7 +4498,7 @@
                     <div class="timeline-year">2025</div>
                     <div class="timeline-title">Performance Guardian</div>
                     <div class="timeline-description">
-                        Proactively developed <strong>SLA Guardian</strong> — a Tampermonkey script protecting task queue SLA compliance through intelligent alerts and automatic tab switching. After management identified systematic SLA breaches, volunteered solution that became mandatory standard framework across 400+ stations, achieving ~12% SLA miss reduction in first month and ~40% time on task reduction.
+                        Proactively developed <strong>SLA Guardian</strong> — a Tampermonkey script protecting task queue SLA compliance through intelligent alerts and automatic tab switching. After management identified systematic SLA breaches, volunteered solution that became mandatory standard framework across 500+ delivery stations, achieving ~12% SLA miss reduction in first month and ~40% time on task reduction.
                     </div>
                     <div class="timeline-stats">
                         <div class="timeline-stat">
@@ -4568,7 +4568,7 @@
             About me:
             </h3>
             <p class="intro-summary">
-                I am a Supply Chain Transformation and Process Automation Specialist with 5 years' experience driving innovation in last-mile delivery across Europe. At Amazon, I coordinated logistics for more than 400 stations while developing Python and Java automation solutions that eliminated bottlenecks, reduced manual effort, and improved operational performance at scale. I bridge the gap between operations and technology—a rare combination that allows me to translate front-line operational challenges into technical solutions that teams actually use.
+                I am a Supply Chain Transformation and Process Automation Specialist with 5 years' experience driving innovation in last-mile delivery across Europe. At Amazon, I coordinated logistics for more than 500 delivery stations while developing Python and Java automation solutions that eliminated bottlenecks, reduced manual effort, and improved operational performance at scale. I bridge the gap between operations and technology—a rare combination that allows me to translate front-line operational challenges into technical solutions that teams actually use.
             </p>
             <p class="intro-summary">
                 My projects have delivered over ~15,000 hours of manual labour savings annually, generated more than ~£1M in annual cost reductions, and achieved efficiency gains of up to ~90% in key processes, while also reducing errors through the application of automated guardrails. Several of these initiatives have been piloted and successfully adopted across the EU network. I combine hands-on technical expertise with strategic supply chain knowledge, transforming complex challenges into scalable solutions that drive operational excellence and sustainable business growth.
@@ -4720,7 +4720,7 @@
                         <p class="experience-period">2020 – Present</p>
                         <ul class="experience-highlights">
                             <li>Designed and deployed Python/Selenium automations, saving ~15,000 hours annually.</li>
-                            <li>Deployed decision-support tools used across 400+ stations</li>
+                            <li>Deployed decision-support tools used across 500+ delivery stations</li>
                             <li>Cut validation time by ~90% with audit workflows</li>
                         </ul>
                     </div>
@@ -4772,7 +4772,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
                         </div>
-                        <div class="stat-number" data-target="52000+">0</div>
+                        <div class="stat-number" data-target="~52000">0</div>
                         <div class="stat-label">Hours Saved Since 2020 (Through H1 2025)</div>
                         <div class="stat-bar"><div class="stat-bar-fill" data-width="100"></div></div>
                     </div>
@@ -4783,7 +4783,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
                         </div>
-                        <div class="stat-number" data-target="1800000+">0</div>
+                        <div class="stat-number" data-target="~1800000">0</div>
                         <div class="stat-label">Saved Since 2020 (Through H1 2025)</div>
                         <div class="stat-bar"><div class="stat-bar-fill" data-width="100"></div></div>
                     </div>
@@ -4805,8 +4805,8 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                             </svg>
                         </div>
-                        <div class="stat-number" data-target="400+">0</div>
-                        <div class="stat-label">~EU Stations Covered</div>
+                        <div class="stat-number" data-target="500+">0</div>
+                        <div class="stat-label">EU Delivery Stations Covered</div>
                         <div class="stat-bar"><div class="stat-bar-fill" data-width="95"></div></div>
                     </div>
                 </div>
@@ -5296,7 +5296,7 @@
                             <img src="me.jpg" alt="Denis Gwizdała" class="author-avatar">
                             <div class="author-info">
                                 <div class="author-name">Denis Gwizdała</div>
-                                <div class="publication-date">08/10/2025</div>
+                                <div class="publication-date">07/10/2025</div>
                             </div>
                         </div>
                         <svg class="external-link-icon" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -5679,12 +5679,18 @@
 
                             // Animate number counter
                             const numberEl = entry.target.querySelector('.stat-number');
-                            const target = parseInt(numberEl.getAttribute('data-target'));
+                            const targetStr = numberEl.getAttribute('data-target');
+                            const hasPrefix = targetStr.startsWith('~');
+                            const hasSuffix = targetStr.includes('+');
+                            const target = parseInt(targetStr.replace(/[~+]/g, ''));
                             // Skip animation on mobile, show final value immediately
                             if (isMobileView) {
-                                numberEl.textContent = target.toLocaleString();
+                                let displayValue = target.toLocaleString();
+                                if (hasPrefix) displayValue = '~' + displayValue;
+                                if (hasSuffix) displayValue = displayValue + '+';
+                                numberEl.textContent = displayValue;
                             } else {
-                                animateNumber(numberEl, target, 1500);
+                                animateNumber(numberEl, target, 1500, hasSuffix, hasPrefix);
                             }
 
                             // Animate progress bar
@@ -5704,18 +5710,23 @@
         }
 
         // Animate numbers
-        function animateNumber(element, target, duration) {
+        function animateNumber(element, target, duration, hasSuffix = false, hasPrefix = false) {
             const start = 0;
             const increment = target / (duration / 16);
             let current = start;
-            
+
             const timer = setInterval(() => {
                 current += increment;
                 if (current >= target) {
-                    element.textContent = target.toLocaleString();
+                    let displayValue = target.toLocaleString();
+                    if (hasPrefix) displayValue = '~' + displayValue;
+                    if (hasSuffix) displayValue = displayValue + '+';
+                    element.textContent = displayValue;
                     clearInterval(timer);
                 } else {
-                    element.textContent = Math.floor(current).toLocaleString();
+                    let displayValue = Math.floor(current).toLocaleString();
+                    if (hasPrefix) displayValue = '~' + displayValue;
+                    element.textContent = displayValue;
                 }
             }, 16);
         }

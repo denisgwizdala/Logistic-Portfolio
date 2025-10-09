@@ -191,9 +191,9 @@
         /* System Metrics */
         .system-metrics {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(5, 1fr);
             gap: 1rem;
-            max-width: 1000px;
+            max-width: 1200px;
         }
 
         .metric-card {
@@ -636,6 +636,10 @@
                     <div class="metric-value">~40/wk</div>
                 </div>
                 <div class="metric-card">
+                    <div class="metric-label">> sla_reduction</div>
+                    <div class="metric-value">10%</div>
+                </div>
+                <div class="metric-card">
                     <div class="metric-label">> eu_adoption</div>
                     <div class="metric-value">100%</div>
                 </div>
@@ -751,6 +755,8 @@
                     <div class="phase-period">2023 Q1 - FULL EU ADOPTION</div>
                     <p class="phase-desc">
                         <strong style="color: var(--accent-primary);">CRITICAL MILESTONE:</strong> Integrated Selenium automation for live fill-rate validation—this breakthrough cut unnecessary surges by 50%+ and saved over £1M annually. System formally adopted as Standard Operating Procedure across entire EU Supply Chain. All EU stations now rely on this tool for daily price optimization. Added Slack webhooks for stakeholder notifications and real-time SOP compliance checks.
+                        <br><br>
+                        <strong style="color: var(--accent-primary);">COMMUNICATOR TOOL ADDED:</strong> Once automation started, SLA misses emerged from other departments manually requesting price increases. Built dedicated communicator tool allowing teams to send surge requests directly to a processing queue—eliminating manual intervention and reducing SLA misses by <strong style="color: var(--accent-primary);">10% on average</strong>. Requests were automatically validated and queued for processing without user involvement.
                     </p>
                 </div>
 
@@ -759,7 +765,11 @@
                     <h3 class="phase-title">Full Cloud Automation</h3>
                     <div class="phase-period">2024 Q2</div>
                     <p class="phase-desc">
-                        Fully autonomous cloud-based system—the mission-critical tool that entire EU Supply Chain now depends on 24/7. Configurable SOP parameters (buffer thresholds, price caps), automated Selenium-based price adjustments, fail-safe contingency alerts, S3 cloud logging for business intelligence, and back-end API enabling stations to trigger requests directly. Zero human input required—runs on schedule with complete audit trail while eliminating all 40 hours/week of manual labor.
+                        <strong style="color: var(--accent-primary);">FULL CLOUD MIGRATION:</strong> Fully autonomous cloud-based system—the mission-critical tool that entire EU Supply Chain now depends on 24/7. Configurable SOP parameters (buffer thresholds, price caps), automated Selenium-based price adjustments, fail-safe contingency alerts, S3 cloud logging for business intelligence, and back-end API enabling stations to trigger requests directly.
+                        <br><br>
+                        <strong style="color: var(--accent-primary);">COMMUNICATOR MERGED TO CLOUD:</strong> The standalone communicator tool was fully integrated into cloud infrastructure—requests now flow directly to cloud processing queue via API, maintaining the 10% SLA improvement while eliminating the separate desktop application.
+                        <br><br>
+                        Zero human input required—runs on schedule with complete audit trail while eliminating all 40 hours/week of manual labor.
                     </p>
                 </div>
             </div>
@@ -832,6 +842,43 @@
                     </div>
                     <p style="margin-top: 0.5rem; font-size: 0.8125rem; color: var(--text-tertiary); text-align: center; font-style: italic;">
                         <strong>Note:</strong> First version interface, no longer in active use. For demonstration purposes only.
+                    </p>
+                </div>
+            </div>
+
+            <div class="section-header" style="margin-top: 4rem;">
+                <span class="section-tag">// COMMUNICATOR TOOL</span>
+                <h2 class="section-title">SLA Reduction Through Direct Request Queue</h2>
+                <p class="section-description">
+                    Dedicated tool enabling departments to submit surge requests directly to processing queue—reducing SLA misses by 10%
+                </p>
+            </div>
+
+            <div style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 400px 1fr; gap: 2rem; align-items: stretch;">
+                <div class="image-showcase-container" style="height: 100%; display: flex; flex-direction: column;">
+                    <img src="project21.png" alt="Communicator Tool Interface" loading="lazy">
+                    <div class="image-caption">
+                        <span>></span> communicator_tool.interface
+                    </div>
+                    <p style="margin-top: 0.5rem; font-size: 0.8125rem; color: var(--text-tertiary); text-align: center; font-style: italic;">
+                        <strong>Note:</strong> First version interface, no longer in active use. For demonstration purposes only.
+                    </p>
+                </div>
+
+                <div style="background: var(--bg-elevated); border: 1px solid var(--border); border-left: 4px solid var(--accent-primary); padding: 2.5rem; display: flex; flex-direction: column; justify-content: center;">
+                    <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; color: var(--accent-primary);">The Problem</h3>
+                    <p style="color: var(--text-muted); line-height: 1.7; margin-bottom: 1.5rem;">
+                        Once the Fill Rate Optimizer automation started in 2023 Q1, a new bottleneck emerged: other departments (capacity planning, station operations) still needed to manually request price increases for specific scenarios. These manual requests created SLA misses and delayed critical pricing decisions.
+                    </p>
+
+                    <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; color: var(--accent-primary);">The Solution</h3>
+                    <p style="color: var(--text-muted); line-height: 1.7; margin-bottom: 1.5rem;">
+                        Built a standalone communicator tool allowing departments to send surge requests directly to a processing queue. Requests were automatically validated, queued, and processed without manual intervention from the Fill Rate Optimizer operator—cutting SLA response time and reducing SLA misses by <strong style="color: var(--accent-primary);">10% on average</strong>.
+                    </p>
+
+                    <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; color: var(--accent-primary);">Cloud Integration (2024 Q2)</h3>
+                    <p style="color: var(--text-muted); line-height: 1.7;">
+                        During Phase 3 cloud migration, the communicator tool was fully integrated into the cloud infrastructure. Requests now flow directly via back-end API to the cloud processing queue—maintaining the SLA improvement while eliminating the separate desktop application entirely.
                     </p>
                 </div>
             </div>
@@ -923,6 +970,10 @@
                 <div class="result-box">
                     <div class="result-value">~40hrs</div>
                     <div class="result-label">Saved Per Week</div>
+                </div>
+                <div class="result-box">
+                    <div class="result-value">10%</div>
+                    <div class="result-label">SLA Reduction</div>
                 </div>
                 <div class="result-box">
                     <div class="result-value">EU-Wide</div>
