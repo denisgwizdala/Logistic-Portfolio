@@ -6994,7 +6994,7 @@
                 const currentText = tagline.textContent;
                 for (let i = currentText.length; i > 0; i--) {
                     tagline.textContent = currentText.substring(0, i - 1);
-                    await new Promise(resolve => setTimeout(resolve, 40));
+                    await new Promise(resolve => setTimeout(resolve, 70));
                 }
             }
 
@@ -7019,7 +7019,7 @@
 
                 // Erase current text
                 await eraseText();
-                await new Promise(resolve => setTimeout(resolve, 200));
+                await new Promise(resolve => setTimeout(resolve, 700));
 
                 // Type out text again
                 await typeText(originalText);
