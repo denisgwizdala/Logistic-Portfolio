@@ -560,7 +560,7 @@
         }
 
         .hero-tagline {
-            font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+            font-size: clamp(2rem, 3.75vw, 2.75rem);
             font-style: italic;
             background: var(--gradient-1);
             -webkit-background-clip: text;
@@ -6980,30 +6980,60 @@
 
             const originalText = tagline.textContent;
             let isAnimating = false;
+            let hasLoadedOnce = false;
 
-            async function typewriterEffect() {
-                if (isAnimating) return;
-                isAnimating = true;
-
+            async function typeText(text) {
                 tagline.classList.add('typing');
-
-                // Clear text
-                tagline.textContent = '';
-
-                // Type out each character
-                for (let i = 0; i < originalText.length; i++) {
-                    tagline.textContent += originalText[i];
+                for (let i = 0; i < text.length; i++) {
+                    tagline.textContent += text[i];
                     await new Promise(resolve => setTimeout(resolve, 80));
                 }
+            }
 
-                // Keep cursor for a moment
+            async function eraseText() {
+                const currentText = tagline.textContent;
+                for (let i = currentText.length; i > 0; i--) {
+                    tagline.textContent = currentText.substring(0, i - 1);
+                    await new Promise(resolve => setTimeout(resolve, 40));
+                }
+            }
+
+            async function typewriterOnLoad() {
+                if (hasLoadedOnce) return;
+                hasLoadedOnce = true;
+                isAnimating = true;
+
+                tagline.textContent = '';
+                await typeText(originalText);
                 await new Promise(resolve => setTimeout(resolve, 500));
 
                 tagline.classList.remove('typing');
                 isAnimating = false;
             }
 
-            tagline.addEventListener('mouseenter', typewriterEffect);
+            async function typewriterOnHover() {
+                if (isAnimating) return;
+                isAnimating = true;
+
+                tagline.classList.add('typing');
+
+                // Erase current text
+                await eraseText();
+                await new Promise(resolve => setTimeout(resolve, 200));
+
+                // Type out text again
+                await typeText(originalText);
+                await new Promise(resolve => setTimeout(resolve, 500));
+
+                tagline.classList.remove('typing');
+                isAnimating = false;
+            }
+
+            // Type on load after a short delay
+            setTimeout(typewriterOnLoad, 800);
+
+            // Erase and retype on hover
+            tagline.addEventListener('mouseenter', typewriterOnHover);
         })();
     </script>
 
