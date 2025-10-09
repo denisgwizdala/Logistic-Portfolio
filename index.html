@@ -3996,6 +3996,35 @@
             line-height: 1.6;
         }
 
+        /* EU Coverage Map Styles */
+        .eu-country {
+            stroke-width: 2;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .eu-country.covered {
+            fill: rgba(59, 130, 246, 0.3);
+            stroke: rgba(59, 130, 246, 0.8);
+        }
+
+        .eu-country.covered:hover {
+            fill: rgba(59, 130, 246, 0.5);
+            stroke: rgba(59, 130, 246, 1);
+            stroke-width: 3;
+            filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.6));
+        }
+
+        .eu-country.not-covered {
+            fill: rgba(100, 116, 139, 0.15);
+            stroke: rgba(100, 116, 139, 0.3);
+        }
+
+        .eu-country.not-covered:hover {
+            fill: rgba(100, 116, 139, 0.25);
+            stroke: rgba(100, 116, 139, 0.5);
+        }
+
         @media (max-width: 768px) {
             .projects-modal {
                 padding: 2rem;
@@ -5072,7 +5101,7 @@
                         <div class="stat-bar"><div class="stat-bar-fill" data-width="89"></div></div>
                     </div>
 
-                    <div class="stat-card" data-delay="300">
+                    <div class="stat-card" data-delay="300" id="eu-coverage-stat" style="cursor: pointer;">
                         <div class="stat-icon">
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
@@ -5843,6 +5872,118 @@
                 <p class="projects-modal-note">
                     <strong>SOP Adoption:</strong> Projects marked as "EU SOP" or "UK SOP" have been officially adopted as Standard Operating Procedures across their respective networks, demonstrating proven value and reliability at scale.
                 </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- EU Coverage Map Modal -->
+    <div class="hours-modal-overlay" id="euCoverageModal">
+        <div class="hours-modal">
+            <div class="hours-modal-header">
+                <div class="hours-modal-close" onclick="closeEuCoverageModal()">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </div>
+                <h2 class="hours-modal-title">EU Network Coverage</h2>
+                <p class="hours-modal-subtitle">500+ Delivery Stations Across 10 Countries</p>
+            </div>
+
+            <div style="padding: 2rem;">
+                <svg viewBox="0 0 1000 1000" style="width: 100%; height: auto; max-width: 700px; margin: 0 auto; display: block;">
+                    <!-- Europe base map with highlighted countries -->
+
+                    <!-- Ireland -->
+                    <path class="eu-country covered" d="M 140 280 L 120 300 L 115 330 L 125 360 L 145 380 L 165 385 L 180 375 L 185 350 L 175 320 L 160 295 Z" data-country="Ireland"/>
+
+                    <!-- UK -->
+                    <path class="eu-country covered" d="M 180 200 L 160 230 L 165 270 L 180 310 L 210 340 L 240 360 L 270 355 L 285 330 L 280 290 L 260 250 L 240 220 L 220 200 Z" data-country="United Kingdom"/>
+
+                    <!-- Netherlands -->
+                    <path class="eu-country covered" d="M 320 260 L 310 280 L 315 310 L 340 320 L 365 315 L 370 290 L 355 265 Z" data-country="Netherlands"/>
+
+                    <!-- Belgium -->
+                    <path class="eu-country covered" d="M 310 320 L 300 340 L 310 360 L 335 365 L 350 355 L 345 330 Z" data-country="Belgium"/>
+
+                    <!-- Luxembourg -->
+                    <path class="eu-country covered" d="M 340 370 L 335 385 L 345 395 L 360 390 L 355 375 Z" data-country="Luxembourg"/>
+
+                    <!-- France -->
+                    <path class="eu-country covered" d="M 260 380 L 240 420 L 235 470 L 250 520 L 280 560 L 320 580 L 360 575 L 385 550 L 390 510 L 380 470 L 360 430 L 340 400 L 310 380 Z" data-country="France"/>
+
+                    <!-- Spain -->
+                    <path class="eu-country covered" d="M 180 520 L 165 560 L 170 610 L 200 650 L 240 670 L 290 675 L 330 660 L 340 630 L 330 590 L 300 570 L 260 565 L 220 555 Z" data-country="Spain"/>
+
+                    <!-- Germany -->
+                    <path class="eu-country covered" d="M 370 280 L 355 310 L 360 350 L 380 390 L 410 420 L 450 430 L 485 415 L 500 380 L 490 340 L 470 310 L 440 290 L 410 280 Z" data-country="Germany"/>
+
+                    <!-- Austria -->
+                    <path class="eu-country covered" d="M 470 430 L 455 450 L 460 475 L 490 485 L 530 480 L 555 465 L 550 440 L 520 425 Z" data-country="Austria"/>
+
+                    <!-- Italy -->
+                    <path class="eu-country covered" d="M 420 490 L 405 520 L 410 570 L 430 620 L 455 665 L 480 690 L 505 705 L 525 700 L 540 675 L 545 640 L 535 600 L 520 560 L 500 530 L 475 505 Z" data-country="Italy"/>
+
+                    <!-- Other European countries (not covered) - simplified -->
+                    <path class="eu-country not-covered" d="M 510 240 L 490 270 L 505 310 L 540 330 L 580 320 L 600 285 L 585 250 Z" data-country="Poland"/>
+                    <path class="eu-country not-covered" d="M 560 470 L 545 500 L 555 540 L 590 560 L 625 550 L 635 515 L 620 480 Z" data-country="Hungary"/>
+                    <path class="eu-country not-covered" d="M 610 300 L 595 330 L 605 370 L 640 385 L 675 375 L 685 340 L 670 310 Z" data-country="Czech Republic"/>
+                    <path class="eu-country not-covered" d="M 500 210 L 480 235 L 490 265 L 525 275 L 555 260 L 560 230 Z" data-country="Denmark"/>
+                    <path class="eu-country not-covered" d="M 480 100 L 460 140 L 470 180 L 510 200 L 550 195 L 580 170 L 575 130 L 545 105 Z" data-country="Sweden"/>
+                </svg>
+
+                <div style="margin-top: 2rem; display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                    <div style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 0.75rem; padding: 1.5rem;">
+                        <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; color: var(--accent);">Covered Countries (10)</h3>
+                        <div style="display: grid; gap: 0.5rem; font-size: 0.9375rem; color: var(--text-secondary);">
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div style="width: 8px; height: 8px; background: rgba(59, 130, 246, 0.6); border-radius: 50%;"></div>
+                                Austria
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div style="width: 8px; height: 8px; background: rgba(59, 130, 246, 0.6); border-radius: 50%;"></div>
+                                Belgium
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div style="width: 8px; height: 8px; background: rgba(59, 130, 246, 0.6); border-radius: 50%;"></div>
+                                France
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div style="width: 8px; height: 8px; background: rgba(59, 130, 246, 0.6); border-radius: 50%;"></div>
+                                Germany
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div style="width: 8px; height: 8px; background: rgba(59, 130, 246, 0.6); border-radius: 50%;"></div>
+                                Ireland
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 0.75rem; padding: 1.5rem;">
+                        <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; color: var(--accent);">&nbsp;</h3>
+                        <div style="display: grid; gap: 0.5rem; font-size: 0.9375rem; color: var(--text-secondary);">
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div style="width: 8px; height: 8px; background: rgba(59, 130, 246, 0.6); border-radius: 50%;"></div>
+                                Italy
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div style="width: 8px; height: 8px; background: rgba(59, 130, 246, 0.6); border-radius: 50%;"></div>
+                                Luxembourg
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div style="width: 8px; height: 8px; background: rgba(59, 130, 246, 0.6); border-radius: 50%;"></div>
+                                Netherlands
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div style="width: 8px; height: 8px; background: rgba(59, 130, 246, 0.6); border-radius: 50%;"></div>
+                                Spain
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div style="width: 8px; height: 8px; background: rgba(59, 130, 246, 0.6); border-radius: 50%;"></div>
+                                United Kingdom
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -7031,6 +7172,12 @@
             if (projectsStat) {
                 projectsStat.addEventListener('click', openProjectsModal);
             }
+
+            // EU Coverage Modal
+            const euCoverageStat = document.getElementById('eu-coverage-stat');
+            if (euCoverageStat) {
+                euCoverageStat.addEventListener('click', openEuCoverageModal);
+            }
         });
 
         // Hours Modal Functions
@@ -7224,6 +7371,23 @@
 
         function closeProjectsModal() {
             const modal = document.getElementById('projectsModal');
+            if (modal) {
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        }
+
+        // EU Coverage Modal Functions
+        function openEuCoverageModal() {
+            const modal = document.getElementById('euCoverageModal');
+            if (modal) {
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeEuCoverageModal() {
+            const modal = document.getElementById('euCoverageModal');
             if (modal) {
                 modal.classList.remove('active');
                 document.body.style.overflow = '';
