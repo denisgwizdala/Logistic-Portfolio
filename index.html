@@ -593,9 +593,9 @@
 
         .hero-stats {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 3rem;
-            max-width: 1000px;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 2.5rem;
+            max-width: 1200px;
             margin: 0 auto 3.5rem;
             animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 1s both;
         }
@@ -635,6 +635,17 @@
             text-transform: uppercase;
             letter-spacing: 0.1em;
             font-weight: 600;
+        }
+
+        .hero-stat-subtext {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            font-style: italic;
+            margin-top: 0.5rem;
+            text-transform: none;
+            letter-spacing: 0;
+            font-weight: 400;
         }
 
         .hero-cta {
@@ -4350,6 +4361,11 @@
                 <div class="hero-stat" id="projects-stat" style="cursor: pointer;" onclick="document.getElementById('projects').scrollIntoView({ behavior: 'smooth' })">
                     <span class="hero-stat-value">10</span>
                     <span class="hero-stat-label">Projects</span>
+                </div>
+                <div class="hero-stat">
+                    <span class="hero-stat-value">9</span>
+                    <span class="hero-stat-label">EU-Wide SOPs</span>
+                    <span class="hero-stat-subtext">(out of 10 projects)</span>
                 </div>
                 <div class="hero-stat" id="hours-saved-stat" style="cursor: pointer;">
                     <span class="hero-stat-value">~52K</span>
