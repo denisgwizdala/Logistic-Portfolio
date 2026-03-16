@@ -193,37 +193,60 @@
         }
 
         .stat-card {
-            background: rgba(15, 23, 42, 0.5);
+            background: rgba(15, 23, 42, 0.6);
             backdrop-filter: blur(16px);
-            border: 1px solid rgba(96, 165, 250, 0.12);
-            border-radius: 12px;
-            padding: 32px 24px;
+            border: 1px solid rgba(96, 165, 250, 0.15);
+            border-left: 3px solid var(--blue);
+            border-radius: 0;
+            padding: 28px 24px;
             transition: all 0.3s var(--transition);
             position: relative;
             will-change: transform;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--blue);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.5s ease;
         }
 
         .stat-card:hover {
             transform: translateY(-4px);
-            border-color: rgba(96, 165, 250, 0.24);
-            background: rgba(15, 23, 42, 0.7);
-            box-shadow: 0 12px 32px rgba(96, 165, 250, 0.12);
+            border-color: rgba(96, 165, 250, 0.3);
+            background: rgba(15, 23, 42, 0.8);
+            box-shadow: 0 12px 32px rgba(96, 165, 250, 0.15);
+        }
+
+        .stat-card:hover::before {
+            transform: scaleX(1);
         }
 
         .stat-value {
-            font-size: 36px;
+            font-size: 2.5rem;
             font-weight: 700;
             letter-spacing: -0.02em;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             display: block;
-            color: var(--blue-light);
+            color: var(--blue);
+            font-family: 'JetBrains Mono', monospace;
+            line-height: 1;
         }
 
         .stat-label {
-            font-size: 12px;
+            font-size: 0.75rem;
             color: var(--gray);
-            font-weight: 500;
-            letter-spacing: 0.02em;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            font-family: 'JetBrains Mono', monospace;
         }
 
         /* Section Divider with Animation */
@@ -784,8 +807,8 @@
                 <span class="stat-label">Error Free</span>
             </div>
             <div class="stat-card fade-in">
-                <span class="stat-value">~724h</span>
-                <span class="stat-label">Total Saved (Through H1 2025)</span>
+                <span class="stat-value">~976h</span>
+                <span class="stat-label">Total Saved (Through Q1 2026)</span>
             </div>
             <div class="stat-card fade-in">
                 <span class="stat-value">3→1</span>
@@ -1006,11 +1029,11 @@
 
                 <div class="impact-card featured fade-in">
                     <div class="impact-card-header">
-                        <div class="impact-trend">Since End of 2023 (Through H1 2025)</div>
+                        <div class="impact-trend">Since End of 2023 (Through Q1 2026)</div>
                     </div>
-                    <div class="impact-value">~724h</div>
+                    <div class="impact-value">~976h</div>
                     <div class="impact-label">Total Time Saved</div>
-                    <div class="impact-description">Cumulative time saved since deployment through H1 2025 (177h in 2023 + 355h in 2024 + 192h in H1 2025 at 1.5h daily × 128 working days), still actively running in production</div>
+                    <div class="impact-description">Cumulative time saved since deployment through Q1 2026 (177h in 2023 + 355h in 2024 + 355h in 2025 + 89h in Q1 2026 at 1.5h daily), still actively running in production</div>
                 </div>
             </div>
         </div>
@@ -1018,7 +1041,7 @@
 
     <!-- Footer -->
     <footer class="fade-in">
-        <div class="footer-text">© 2025 Denis Gwizdala</div>
+        <div class="footer-text">© 2026 Denis Gwizdala</div>
         <div class="footer-disclaimer">
             All figures and metrics presented are estimates or have been adjusted for confidentiality purposes. Time savings calculations are based on observed manual process durations and automated tool performance.
         </div>

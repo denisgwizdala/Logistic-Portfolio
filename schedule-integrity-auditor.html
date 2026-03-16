@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule Integrity Auditor | Denis Gwizdala</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg-dark: #050f0f;
+            --bg-card: #081a1a;
+            --bg-elevated: #0c2222;
+            --accent-primary: #14b8a6;
+            --accent-secondary: #0d9488;
+            --accent-glow: rgba(20, 184, 166, 0.3);
+            --text-primary: #f0fdfa;
+            --text-secondary: #99f6e4;
+            --text-muted: #5eead4;
+            --text-dim: #14b8a6;
+            --border: #123f3f;
+            --warning: #f59e0b;
+            --success: #10b981;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .mono { font-family: 'JetBrains Mono', monospace; }
+
+        /* Navigation */
+        .nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: rgba(5, 15, 15, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+        }
+        .nav-inner {
+            max-width: 1400px; margin: 0 auto; padding: 1rem 2rem;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .nav-back {
+            display: flex; align-items: center; gap: 0.5rem;
+            color: var(--text-dim); text-decoration: none;
+            font-size: 0.875rem; font-weight: 600;
+            transition: all 0.3s ease;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .nav-back:hover { color: var(--accent-primary); transform: translateX(-4px); }
+        .status-indicator {
+            display: flex; align-items: center; gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(20, 184, 166, 0.1);
+            border: 1px solid var(--accent-primary); border-radius: 4px;
+            font-size: 0.75rem; font-weight: 700; color: var(--accent-primary);
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase; letter-spacing: 0.1em;
+        }
+        .status-dot {
+            width: 8px; height: 8px; background: var(--accent-primary);
+            border-radius: 50%; box-shadow: 0 0 12px var(--accent-glow);
+            animation: pulse-status 2s ease infinite;
+        }
+        @keyframes pulse-status { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+        /* Hero */
+        .hero {
+            min-height: 100vh; display: flex; align-items: center;
+            padding: 8rem 2rem 4rem; position: relative; overflow: hidden;
+        }
+        .grid-bg {
+            position: absolute; inset: 0;
+            background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 40px 40px; opacity: 0.3;
+            mask-image: radial-gradient(ellipse at center, black 20%, transparent 80%);
+        }
+        .hero-glow {
+            position: absolute; top: 20%; left: 50%; transform: translateX(-50%);
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+            filter: blur(100px); pointer-events: none;
+        }
+        .hero-content { max-width: 1400px; margin: 0 auto; position: relative; z-index: 1; }
+        .system-label {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(20, 184, 166, 0.1);
+            border: 1px solid var(--accent-primary); border-left: 3px solid var(--accent-primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem; font-weight: 700; color: var(--accent-primary);
+            text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 2rem;
+        }
+        .hero-title {
+            font-size: clamp(3rem, 8vw, 5.5rem); font-weight: 700;
+            line-height: 1.1; margin-bottom: 1.5rem; letter-spacing: -0.02em;
+        }
+        .hero-title .highlight { color: var(--accent-primary); text-shadow: 0 0 30px var(--accent-glow); }
+        .hero-subtitle { font-size: 1.25rem; color: var(--text-muted); max-width: 900px; margin-bottom: 3rem; line-height: 1.7; }
+
+        .system-metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; max-width: 1000px; }
+        .metric-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-left: 3px solid var(--accent-primary); padding: 1.5rem;
+            position: relative; overflow: hidden; transition: all 0.3s ease;
+        }
+        .metric-card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+            background: var(--accent-primary); transform: scaleX(0); transition: transform 0.5s ease;
+        }
+        .metric-card:hover { transform: translateY(-4px); border-left-color: var(--accent-secondary); box-shadow: 0 8px 24px var(--accent-glow); }
+        .metric-card:hover::before { transform: scaleX(1); }
+        .metric-label { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; }
+        .metric-value { font-size: 2.5rem; font-weight: 700; color: var(--accent-primary); line-height: 1; font-family: 'JetBrains Mono', monospace; }
+
+        /* Sections */
+        .section { padding: 6rem 2rem; position: relative; }
+        .section-inner { max-width: 1400px; margin: 0 auto; }
+        .section-header { margin-bottom: 4rem; }
+        .section-tag { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; font-weight: 700; color: var(--accent-primary); text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 1rem; display: inline-block; }
+        .section-title { font-size: clamp(2rem, 5vw, 3rem); font-weight: 700; margin-bottom: 1rem; letter-spacing: -0.02em; }
+        .section-description { font-size: 1.125rem; color: var(--text-muted); max-width: 700px; }
+
+        /* Terminal */
+        .terminal-window { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 3rem; }
+        .terminal-header { background: var(--bg-card); padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.5rem; }
+        .terminal-dot { width: 12px; height: 12px; border-radius: 50%; }
+        .terminal-dot.red { background: #ef4444; }
+        .terminal-dot.yellow { background: var(--warning); }
+        .terminal-dot.green { background: var(--success); }
+        .terminal-title { font-family: 'JetBrains Mono', monospace; font-size: 0.875rem; color: var(--text-muted); margin-left: auto; }
+        .terminal-content { padding: 2rem; font-family: 'JetBrains Mono', monospace; font-size: 0.875rem; line-height: 1.8; }
+        .terminal-line { display: flex; gap: 1rem; margin-bottom: 0.5rem; }
+        .terminal-prompt { color: var(--accent-primary); user-select: none; }
+        .terminal-text { color: var(--text-muted); }
+        .terminal-highlight { color: var(--accent-secondary); font-weight: 600; }
+        /* Savings Banner */
+        .savings-banner {
+            background: linear-gradient(135deg, rgba(20, 184, 166, 0.15) 0%, rgba(13, 148, 136, 0.05) 100%);
+            border: 2px solid var(--accent-primary); border-radius: 8px;
+            padding: 3rem; margin: 4rem 0; position: relative; overflow: hidden;
+        }
+        .savings-banner::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--accent-primary); animation: scan 3s linear infinite; }
+        @keyframes scan { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+        .savings-title { font-family: 'JetBrains Mono', monospace; font-size: 0.875rem; color: var(--accent-primary); text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 1.5rem; font-weight: 700; }
+        .savings-amount { font-size: 4rem; font-weight: 900; color: var(--accent-primary); line-height: 1; margin-bottom: 1rem; font-family: 'JetBrains Mono', monospace; }
+        .savings-desc { font-size: 1.25rem; color: var(--text-muted); line-height: 1.6; }
+
+        /* Results Grid */
+        .results-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin: 3rem 0; }
+        .result-box { background: var(--bg-elevated); border: 1px solid var(--border); border-left: 4px solid var(--accent-primary); padding: 2rem; text-align: center; }
+        .result-value { font-size: 3rem; font-weight: 700; color: var(--accent-primary); line-height: 1; margin-bottom: 0.5rem; font-family: 'JetBrains Mono', monospace; }
+        .result-label { font-size: 0.875rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; font-family: 'JetBrains Mono', monospace; }
+
+        /* How It Works */
+        .flow-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; margin: 3rem 0; }
+        .flow-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-left: 4px solid var(--accent-primary); padding: 2rem;
+            transition: all 0.3s ease;
+        }
+        .flow-card:hover { transform: translateX(8px); box-shadow: 0 8px 24px var(--accent-glow); }
+        .flow-number {
+            font-family: 'JetBrains Mono', monospace; font-size: 2rem; font-weight: 800;
+            color: var(--accent-primary); opacity: 0.15; margin-bottom: 0.5rem; line-height: 1;
+        }
+        .flow-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--text-primary); }
+        .flow-desc { color: var(--text-muted); line-height: 1.7; }
+
+        /* Footer */
+        .footer { padding: 3rem 2rem; border-top: 1px solid var(--border); text-align: center; }
+        .footer-text { font-size: 0.8125rem; color: var(--text-dim); max-width: 800px; margin: 0 auto; line-height: 1.6; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .system-metrics { grid-template-columns: 1fr; }
+            .flow-grid { grid-template-columns: 1fr; }
+        }
+
+        /* Animations */
+        @keyframes slideInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-up { animation: slideInUp 0.8s ease forwards; opacity: 0; }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+
+        /* Lightbox */
+        .lightbox { display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.95); align-items: center; justify-content: center; animation: fadeIn 0.3s ease; }
+        .lightbox.active { display: flex; }
+        .lightbox-content { max-width: 90%; max-height: 90%; object-fit: contain; animation: zoomIn 0.3s ease; }
+        .lightbox-close { position: absolute; top: 20px; right: 40px; color: white; font-size: 40px; font-weight: bold; cursor: pointer; transition: color 0.3s; z-index: 10000; }
+        .lightbox-close:hover { color: #ccc; }
+        .zoomable-image { cursor: zoom-in; transition: opacity 0.3s; }
+        .zoomable-image:hover { opacity: 0.9; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="index#projects" class="nav-back">
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+                <span>cd ..</span>
+            </a>
+            <div class="status-indicator">
+                <span class="status-dot"></span>
+                <span>AUDITOR ACTIVE</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="grid-bg"></div>
+        <div class="hero-glow"></div>
+        <div class="hero-content">
+            <div class="system-label fade-up">
+                <span>●</span> PRE-DISPATCH INTEGRITY CONTROL
+            </div>
+            <h1 class="hero-title fade-up delay-1">
+                Schedule Integrity<br><span class="highlight">Auditor</span>
+            </h1>
+            <p class="hero-subtitle fade-up delay-2">
+                Proactive D-1 auditing tool for EU station scheduling and routing plans. Automatically scans schedules, identifies discrepancies, and flags issues before dispatch—replacing a ~2 hour weekly manual review with a ~10 minute automated flow. Auto-generates and sends email summaries to stakeholders, ensuring full visibility without manual follow-up, while preventing uncounted operational errors.
+            </p>
+            <div class="system-metrics fade-up delay-3">
+                <div class="metric-card">
+                    <div class="metric-label">> hours_saved</div>
+                    <div class="metric-value">~95/yr</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">> cost_savings</div>
+                    <div class="metric-value">~£1.76K</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">> time_reduction</div>
+                    <div class="metric-value">~92%</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">> audit_type</div>
+                    <div class="metric-value">D-1</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- The Challenge -->
+    <section class="section">
+        <div class="section-inner">
+            <div class="section-header">
+                <span class="section-tag">// THE CHALLENGE</span>
+                <h2 class="section-title">Reactive Scheduling Checks at Scale</h2>
+                <p class="section-description">
+                    Station scheduling and routing plans were manually audited each week—a tedious ~2 hour process prone to human error, with discrepancies often caught only after dispatch had already begun.
+                </p>
+            </div>
+
+            <div class="terminal-window">
+                <div class="terminal-header">
+                    <span class="terminal-dot red"></span>
+                    <span class="terminal-dot yellow"></span>
+                    <span class="terminal-dot green"></span>
+                    <span class="terminal-title">schedule_audit.log</span>
+                </div>
+                <div class="terminal-content">
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">$</span>
+                        <span class="terminal-text">Analyzing D-1 scheduling audit process...</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">></span>
+                        <span class="terminal-text">Manual audit time: <span class="terminal-highlight">~2 hours per week</span></span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">></span>
+                        <span class="terminal-text">Audit approach: <span class="terminal-highlight">REACTIVE — errors found after dispatch</span></span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">></span>
+                        <span class="terminal-text">Discrepancy detection: <span class="terminal-highlight">MANUAL — human review of schedule data</span></span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">></span>
+                        <span class="terminal-text">Routing validation: <span class="terminal-highlight">INCONSISTENT — depends on reviewer</span></span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">></span>
+                        <span class="terminal-text">Error impact: <span class="terminal-highlight">UNCOUNTED — operational errors not formally tracked</span></span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">!</span>
+                        <span class="terminal-text" style="color: var(--accent-primary);">RISK: Schedule discrepancies reaching dispatch without correction</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="savings-banner">
+                <div class="savings-title">// ANNUAL IMPACT</div>
+                <div class="savings-amount">~£1.76K</div>
+                <div class="savings-desc">
+                    Annual labour savings from automating the D-1 schedule audit—plus significant error prevention that was not formally quantified. The tool catches discrepancies before they reach dispatch, shifting the process from reactive correction to proactive control.
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- How It Works -->
+    <section class="section" style="background: var(--bg-card);">
+        <div class="section-inner">
+            <div class="section-header">
+                <span class="section-tag">// HOW IT WORKS</span>
+                <h2 class="section-title">From Reactive Checks to Proactive Control</h2>
+                <p class="section-description">
+                    Automated D-1 audit pipeline that validates scheduling integrity before dispatch begins
+                </p>
+            </div>
+
+            <div class="flow-grid">
+                <div class="flow-card">
+                    <span class="flow-number">01</span>
+                    <h3 class="flow-title">D-1 Schedule Scan</h3>
+                    <p class="flow-desc">
+                        The tool automatically pulls the next day's station scheduling and routing plans, scanning all entries for completeness and consistency against expected patterns.
+                    </p>
+                </div>
+                <div class="flow-card">
+                    <span class="flow-number">02</span>
+                    <h3 class="flow-title">Discrepancy Detection</h3>
+                    <p class="flow-desc">
+                        Intelligent comparison flags mismatches between scheduled capacity, routing assignments, and historical baselines—identifying issues that manual review would miss or catch too late.
+                    </p>
+                </div>
+                <div class="flow-card">
+                    <span class="flow-number">03</span>
+                    <h3 class="flow-title">Pre-Dispatch Flagging & Reporting</h3>
+                    <p class="flow-desc">
+                        Flagged discrepancies are surfaced with clear context so operators can correct issues before dispatch begins. An automated email summary is generated and sent to stakeholders—ensuring visibility and accountability without manual follow-up.
+                    </p>
+                </div>
+                <div class="flow-card">
+                    <span class="flow-number">04</span>
+                    <h3 class="flow-title">Continuous Monitoring</h3>
+                    <p class="flow-desc">
+                        Runs on schedule with minimal oversight. What previously required ~2 hours of manual weekly review now completes in roughly 10 minutes with higher accuracy and consistency.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Screenshots -->
+    <section class="section">
+        <div class="section-inner">
+            <div class="section-header">
+                <span class="section-tag">// SYSTEM INTERFACE</span>
+                <h2 class="section-title">Tool in Action</h2>
+                <p class="section-description">
+                    From schedule ingestion to validated output—the auditor's workflow captured at each stage
+                </p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin: 3rem 0;">
+                <div style="background: var(--bg-card); border: 1px solid var(--border); border-top: 3px solid var(--accent-primary); padding: 1rem; overflow: hidden; transition: all 0.3s ease;">
+                    <img src="project25.png" alt="Schedule Integrity Auditor UI" loading="lazy" style="width: 100%; height: auto; display: block; filter: brightness(0.95) contrast(1.05);">
+                    <div style="padding: 1rem 0.5rem; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--text-dim); display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="color: var(--accent-primary);">></span> auditor_dashboard
+                    </div>
+                    <p style="font-size: 0.8125rem; color: var(--text-muted); padding: 0 0.5rem 0.5rem;">
+                        Main interface showing the D-1 schedule overview with station routing plans loaded for next-day validation. Discrepancy indicators highlight entries requiring review.
+                    </p>
+                </div>
+                <div style="background: var(--bg-card); border: 1px solid var(--border); border-top: 3px solid var(--accent-primary); padding: 1rem; overflow: hidden; transition: all 0.3s ease;">
+                    <img src="project26.png" alt="Validation Logs" loading="lazy" style="width: 100%; height: auto; display: block; filter: brightness(0.95) contrast(1.05);">
+                    <div style="padding: 1rem 0.5rem; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--text-dim); display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="color: var(--accent-primary);">></span> validation_logs
+                    </div>
+                    <p style="font-size: 0.8125rem; color: var(--text-muted); padding: 0 0.5rem 0.5rem;">
+                        Real-time validation log output as the auditor scans scheduling data. Each entry shows the check performed, the result, and any flagged mismatches against expected routing patterns.
+                    </p>
+                </div>
+                <div style="background: var(--bg-card); border: 1px solid var(--border); border-top: 3px solid var(--accent-primary); padding: 1rem; overflow: hidden; transition: all 0.3s ease;">
+                    <img src="project27.png" alt="Audit Output Report" loading="lazy" style="width: 100%; height: auto; display: block; filter: brightness(0.95) contrast(1.05);">
+                    <div style="padding: 1rem 0.5rem; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--text-dim); display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="color: var(--accent-primary);">></span> audit_report
+                    </div>
+                    <p style="font-size: 0.8125rem; color: var(--text-muted); padding: 0 0.5rem 0.5rem;">
+                        Final audit report summarising all flagged discrepancies with severity levels, affected stations, and recommended corrections—ready for operator review before dispatch.
+                    </p>
+                </div>
+                <div style="background: var(--bg-card); border: 1px solid var(--border); border-top: 3px solid var(--accent-primary); padding: 1rem; overflow: hidden; transition: all 0.3s ease;">
+                    <img src="project28.png" alt="Automated Email Summary" loading="lazy" style="width: 100%; height: auto; display: block; filter: brightness(0.95) contrast(1.05);">
+                    <div style="padding: 1rem 0.5rem; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--text-dim); display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="color: var(--accent-primary);">></span> email_summary
+                    </div>
+                    <p style="font-size: 0.8125rem; color: var(--text-muted); padding: 0 0.5rem 0.5rem;">
+                        Auto-generated email summary sent to stakeholders after each audit run. Includes flagged discrepancies, severity breakdown, and action items—ensuring visibility without manual follow-up.
+                    </p>
+                </div>
+            </div>
+
+            <p style="font-size: 0.8125rem; color: var(--text-dim); text-align: center; font-style: italic; margin-top: 1rem;">
+                <strong>Note:</strong> Screenshots shown for demonstration purposes. Sensitive operational data has been redacted.
+            </p>
+        </div>
+    </section>
+
+    <!-- Results -->
+    <section class="section">
+        <div class="section-inner">
+            <div class="section-header" style="text-align: center; max-width: 800px; margin: 0 auto 4rem;">
+                <span class="section-tag">// MEASURABLE IMPACT</span>
+                <h2 class="section-title">Transformation Results</h2>
+                <p class="section-description" style="margin: 0 auto;">
+                    Quantifiable improvements in audit efficiency, cost savings, and error prevention
+                </p>
+            </div>
+
+            <div class="results-grid">
+                <div class="result-box">
+                    <div class="result-value">~95h</div>
+                    <div class="result-label">Saved Annually</div>
+                </div>
+                <div class="result-box">
+                    <div class="result-value">~£1.76K</div>
+                    <div class="result-label">Annual Savings</div>
+                </div>
+                <div class="result-box">
+                    <div class="result-value">~92%</div>
+                    <div class="result-label">Time Reduction</div>
+                </div>
+                <div class="result-box">
+                    <div class="result-value">D-1</div>
+                    <div class="result-label">Pre-Dispatch Audit</div>
+                </div>
+            </div>
+
+            <div style="margin-top: 4rem; padding: 2.5rem; background: var(--bg-elevated); border: 1px solid var(--border); border-left: 3px solid var(--accent-primary);">
+                <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1.5rem;">Key Benefits</h3>
+                <ul style="list-style: none; display: grid; gap: 1rem;">
+                    <li style="display: flex; gap: 1rem; align-items: start;">
+                        <span style="color: var(--accent-primary); font-size: 1.25rem;">✓</span>
+                        <span style="color: var(--text-muted);"><strong style="color: var(--text-primary);">Proactive Error Prevention:</strong> Discrepancies caught before dispatch—not after. Prevents operational errors that were previously undetected until impact occurred.</span>
+                    </li>
+                    <li style="display: flex; gap: 1rem; align-items: start;">
+                        <span style="color: var(--accent-primary); font-size: 1.25rem;">✓</span>
+                        <span style="color: var(--text-muted);"><strong style="color: var(--text-primary);">~92% Time Reduction:</strong> Manual audit reduced from ~2 hours/week to ~10 minutes—freeing up capacity for higher-value operational tasks.</span>
+                    </li>
+                    <li style="display: flex; gap: 1rem; align-items: start;">
+                        <span style="color: var(--accent-primary); font-size: 1.25rem;">✓</span>
+                        <span style="color: var(--text-muted);"><strong style="color: var(--text-primary);">Consistent Validation:</strong> Automated checks apply the same standards every time—eliminating reviewer-dependent inconsistencies in schedule auditing.</span>
+                    </li>
+                    <li style="display: flex; gap: 1rem; align-items: start;">
+                        <span style="color: var(--accent-primary); font-size: 1.25rem;">✓</span>
+                        <span style="color: var(--text-muted);"><strong style="color: var(--text-primary);">Uncounted Error Reduction:</strong> Beyond the quantified labour savings, the tool prevents a significant number of operational errors that were not formally tracked—improving overall scheduling integrity.</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div style="margin-top: 3rem; padding: 2rem; background: rgba(20, 184, 166, 0.08); border: 1px solid var(--border); border-radius: 8px;">
+                <h3 style="font-family: 'JetBrains Mono', monospace; font-size: 0.875rem; color: var(--accent-primary); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1rem;">// MATH BEHIND THE METRICS</h3>
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.875rem; color: var(--text-muted); line-height: 2;">
+                    <div>Manual effort before: <strong style="color: var(--text-primary);">2 hours/week</strong></div>
+                    <div>Effort after automation: <strong style="color: var(--text-primary);">~10 minutes/week</strong></div>
+                    <div>Weekly savings: <strong style="color: var(--text-primary);">1 hour 50 minutes</strong></div>
+                    <div>Annual savings: <strong style="color: var(--text-primary);">~95.3 hours/year</strong></div>
+                    <div>Hourly cost (avg EU logistics): <strong style="color: var(--text-primary);">£18.46/h</strong></div>
+                    <div>Annual cost savings: <strong style="color: var(--accent-primary);">~£1,759.85/year</strong></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p class="footer-text">
+            © 2026 Denis Gwizdala · Supply Chain Process Automation Portfolio
+        </p>
+    </footer>
+
+    <div id="lightbox" class="lightbox"><span class="lightbox-close" id="lightbox-close">&times;</span><img class="lightbox-content" id="lightbox-img" src="" alt="Zoomed image"></div>
+    <script>(function() { const lb = document.getElementById('lightbox'), img = document.getElementById('lightbox-img'), cls = document.getElementById('lightbox-close'); document.querySelectorAll('img[src*=".png"], img[src*=".jpg"], img[src*=".jpeg"]').forEach(i => { i.classList.add('zoomable-image'); i.style.cursor = 'zoom-in'; i.addEventListener('click', function(e) { e.preventDefault(); lb.classList.add('active'); img.src = this.src; document.body.style.overflow = 'hidden'; }); }); function close() { lb.classList.remove('active'); document.body.style.overflow = ''; } cls.addEventListener('click', close); lb.addEventListener('click', e => { if (e.target === lb) close(); }); document.addEventListener('keydown', e => { if (e.key === 'Escape' && lb.classList.contains('active')) close(); }); })();</script>
+</body>
+</html>

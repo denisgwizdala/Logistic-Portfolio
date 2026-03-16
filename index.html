@@ -4,7 +4,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/css/flag-icons.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/css/flag-icons.min.css" media="print" onload="this.media='all'">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=1200">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -48,6 +48,13 @@
             -webkit-tap-highlight-color: transparent;
         }
 /* === SCROLL STORYTELLING FEATURES === */
+
+        /* Performance: auto-skip rendering for off-screen sections */
+        .introduction, .section-fade, .timeline-section,
+        .hours-modal-overlay, .impact-modal-overlay {
+            content-visibility: auto;
+            contain-intrinsic-size: auto 800px;
+        }
 
         /* Scroll Progress Bar at Top */
         .scroll-progress-bar {
@@ -163,6 +170,19 @@
         .timeline-card-flip {
             perspective: 1000px;
             min-height: 500px;
+        }
+
+        .timeline-card.timeline-card-flip {
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+            contain: none;
+            transform-style: preserve-3d;
+            transform: none;
+            background: rgba(22, 29, 39, 0.95);
+        }
+
+        .timeline-card.timeline-card-flip.active {
+            transform: none;
         }
 
         .timeline-card-flip .timeline-card-inner {
@@ -578,6 +598,7 @@
             position: relative;
             display: inline-block;
             transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            min-height: 1.2em;
         }
 
         .hero-tagline:hover {
@@ -585,9 +606,7 @@
         }
 
         .hero-tagline.typing::after {
-            content: '|';
-            animation: blink 0.7s infinite;
-            margin-left: 2px;
+            content: none;
         }
 
         @keyframes blink {
@@ -2034,6 +2053,14 @@
             gap: 2.5rem;
         }
 
+        .projects-grid > a {
+            display: flex !important;
+        }
+
+        .projects-grid > div {
+            display: flex;
+        }
+
         .project-card {
             background: var(--bg-tertiary);
             border: 1px solid var(--border);
@@ -2043,6 +2070,9 @@
             will-change: transform;
             position: relative;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
         }
 
         .project-card::before {
@@ -2178,6 +2208,8 @@
             gap: 0.625rem;
             position: relative;
             z-index: 1;
+            margin-top: auto;
+            padding-top: 1rem;
         }
 
         .tag {
@@ -3905,13 +3937,13 @@
             background: rgba(15, 20, 25, 0.6);
             border: 1px solid var(--border);
             border-radius: 1rem;
-            padding: 1.5rem;
+            padding: 1.75rem;
             transition: all 0.3s ease;
             position: relative;
             cursor: pointer;
             display: flex;
             flex-direction: column;
-            min-height: 100%;
+            min-height: 240px;
         }
 
         .project-modal-card:hover {
@@ -3991,6 +4023,8 @@
             display: flex;
             flex-wrap: wrap;
             gap: 0.5rem;
+            margin-top: auto;
+            padding-top: 0.75rem;
         }
 
         .project-modal-tag {
@@ -4681,17 +4715,17 @@
                     <span class="hero-stat-value">6</span>
                     <span class="hero-stat-label">Years Expertise</span>
                 </div>
-                <div class="hero-stat" id="savings-stat" style="cursor: pointer;">
-                    <span class="hero-stat-value" style="letter-spacing: 0; transform: translateX(-15px); display: inline-block;">~£1.8M</span>
-                    <span class="hero-stat-label">Saved Since 2020 (Through H1 2025)</span>
+                <div class="hero-stat" id="savings-stat" style="cursor: pointer;" title="Click me for more information">
+                    <span class="hero-stat-value" style="letter-spacing: 0; transform: translateX(-15px); display: inline-block;">~£528K</span>
+                    <span class="hero-stat-label">Saved Since 2020 (Through Q1 2026)</span>
                 </div>
-                <div class="hero-stat" id="projects-stat" style="cursor: pointer;">
-                    <span class="hero-stat-value">10</span>
+                <div class="hero-stat" id="projects-stat" style="cursor: pointer;" title="Click me for more information">
+                    <span class="hero-stat-value">11</span>
                     <span class="hero-stat-label">Projects</span>
                 </div>
-                <div class="hero-stat" id="hours-saved-stat" style="cursor: pointer;">
-                    <span class="hero-stat-value">~52K</span>
-                    <span class="hero-stat-label">Hours Saved Since 2020 (Through H1 2025)</span>
+                <div class="hero-stat" id="hours-saved-stat" style="cursor: pointer;" title="Click me for more information">
+                    <span class="hero-stat-value">~63K</span>
+                    <span class="hero-stat-label">Hours Saved Since 2020 (Through Q1 2026)</span>
                 </div>
             </div>
 
@@ -4836,7 +4870,7 @@
                 <div class="timeline-year">2024</div>
                 <div class="timeline-title">Peak Performance</div>
                 <div class="timeline-description">
-                   Achieved 4,500+ total hours saved annually. Delivered significant cost savings of £1.099M through Fill Rate Optimizer breakthrough and Phantom process improvements, combining cross-department collaboration, deep dive analysis, and streamlined automation. Successfully piloted international projects.
+                   Achieved 4,500+ total hours saved annually. Delivered significant cost savings of £199K through Fill Rate Optimizer breakthrough and Phantom process improvements, combining cross-department collaboration, deep dive analysis, and streamlined automation. Successfully piloted international projects.
                 </div>
                 <div class="timeline-stats">
                     <div class="timeline-stat">
@@ -4844,7 +4878,7 @@
                         <span class="timeline-stat-label">Hours Saved Anually</span>
                     </div>
                     <div class="timeline-stat">
-                        <span class="timeline-stat-value">~£1.099M</span>
+                        <span class="timeline-stat-value">~£199K</span>
                         <span class="timeline-stat-label">Approx. Cost Savings</span>
                     </div>
                 </div>
@@ -4890,6 +4924,24 @@
             </div>
         </div>
 
+            <div class="timeline-card">
+                <div class="timeline-year">2026</div>
+                <div class="timeline-title">Schedule Integrity Auditor</div>
+                <div class="timeline-description">
+                    Built a D-1 audit tool that auto-reviews station scheduling and routing plans, flags discrepancies before dispatch, and cuts manual validation from ~2h/week to ~10 minutes — preventing uncounted operational errors.
+                </div>
+                <div class="timeline-stats">
+                    <div class="timeline-stat">
+                        <span class="timeline-stat-value">95 +/-</span>
+                        <span class="timeline-stat-label">Hours Saved Annually</span>
+                    </div>
+                    <div class="timeline-stat">
+                        <span class="timeline-stat-value">~£1.76K</span>
+                        <span class="timeline-stat-label">Approx. Cost Savings</span>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </section>
@@ -4901,7 +4953,7 @@
         <!-- LEFT: Profile -->
         <div class="intro-profile">
             <div class="intro-image-wrapper">
-            <img src="me.jpg" alt="Denis Gwizdala">
+            <img src="me.jpg" alt="Denis Gwizdala" loading="eager" decoding="async">
             </div>
             <h2 class="intro-name">Denis Gwizdala</h2>
             <p class="intro-contact">
@@ -4929,10 +4981,10 @@
             About me:
             </h3>
             <p class="intro-summary">
-                I am a Supply Chain Transformation and Process Automation Specialist with 5 years' experience driving innovation in last-mile delivery across Europe. At Amazon, I coordinated logistics for more than 500 delivery stations while developing Python and Java automation solutions that eliminated bottlenecks, reduced manual effort, and improved operational performance at scale. I bridge the gap between operations and technology—a rare combination that allows me to translate front-line operational challenges into technical solutions that teams actually use.
+                I am a Supply Chain Transformation and Process Automation Specialist with 5 years of experience driving innovation in last-mile delivery across Europe. At Amazon, I coordinated logistics for more than 500 delivery stations while developing Python and Java automation solutions that eliminated bottlenecks, reduced manual effort, and improved operational performance at scale. I collaborate closely with project managers and operational stakeholders across Europe, as well as US-based teams, helping align technical solutions with operational needs. I bridge the gap between operations and technology—a rare combination that allows me to translate front-line operational challenges into practical technical solutions that teams actually use.
             </p>
             <p class="intro-summary">
-                My projects have delivered over ~15,000 hours of manual labour savings annually, generated more than ~£1M in annual cost reductions, and achieved efficiency gains of up to ~90% in key processes, while also reducing errors through the application of automated guardrails. Several of these initiatives have been piloted and successfully adopted across the EU network. I combine hands-on technical expertise with strategic supply chain knowledge, transforming complex challenges into scalable solutions that drive operational excellence and sustainable business growth.
+                My projects have delivered over ~15,000 hours of manual labour savings annually, generated more than ~£100K in annual cost reductions, and achieved efficiency gains of up to ~90% in key processes, while also reducing errors through the application of automated guardrails. Several of these initiatives have been piloted and successfully adopted across the EU network. I combine hands-on technical expertise with strategic supply chain knowledge, transforming complex challenges into scalable solutions that drive operational excellence and sustainable business growth.
             </p>
 
             <div class="intro-cta-group">
@@ -5099,7 +5151,7 @@
                         />
                     </div>
                     <div class="experience-content">
-                        <h4 class="experience-title">Logistics Operations Assistants</h4>
+                        <h4 class="experience-title">Logistics Operations Assistant</h4>
                         <p class="experience-company">Amazon Logistics</p>
                         <p class="experience-period">2019 – 2020</p>
                         <ul class="experience-highlights">
@@ -5133,8 +5185,8 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
                         </div>
-                        <div class="stat-number" data-target="~52000">0</div>
-                        <div class="stat-label">Hours Saved Since 2020 (Through H1 2025)</div>
+                        <div class="stat-number" data-target="~63000">0</div>
+                        <div class="stat-label">Hours Saved Since 2020 (Through Q1 2026)</div>
                         <div class="stat-bar"><div class="stat-bar-fill" data-width="100"></div></div>
                     </div>
 
@@ -5144,8 +5196,8 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
                         </div>
-                        <div class="stat-number" data-target="~1800000">0</div>
-                        <div class="stat-label">£ Saved Since 2020 (Through H1 2025)</div>
+                        <div class="stat-number" data-target="~528000">0</div>
+                        <div class="stat-label">£ Saved Since 2020 (Through Q1 2026)</div>
                         <div class="stat-bar"><div class="stat-bar-fill" data-width="100"></div></div>
                     </div>
 
@@ -5289,7 +5341,7 @@
                             </div>
                             <div class="impact-item">
                                 <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                <span class="impact-text"><span class="impact-value">~£1M</span> saved annually</span>
+                                <span class="impact-text"><span class="impact-value">~£100K</span> saved annually</span>
                             </div>
                         </div>
                         <div class="project-tags">
@@ -5405,7 +5457,7 @@
                         <div class="project-impact">
                             <div class="impact-item">
                                 <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                <span class="impact-text"><span class="impact-value">~2,951h</span> saved (through H1 2025)</span>
+                                <span class="impact-text"><span class="impact-value">~3,413h</span> saved (through Q1 2026)</span>
                             </div>
                             <div class="impact-item">
                                 <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
@@ -5429,7 +5481,7 @@
                         <div class="project-impact">
                             <div class="impact-item">
                                 <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                <span class="impact-text"><span class="impact-value">~351h</span> saved (H1 2025)</span>
+                                <span class="impact-text"><span class="impact-value">~813h</span> saved (through Q1 2026)</span>
                             </div>
                             <div class="impact-item">
                                 <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
@@ -5453,7 +5505,7 @@
                         <div class="project-impact">
                             <div class="impact-item">
                                 <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                <span class="impact-text"><span class="impact-value">~724h</span> saved (through H1 2025)</span>
+                                <span class="impact-text"><span class="impact-value">~976h</span> saved (through Q1 2026)</span>
                             </div>
                             <div class="impact-item">
                                 <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
@@ -5467,6 +5519,30 @@
                         </div>
                     </div>
                 </a>
+
+                <a href="schedule-integrity-auditor" style="text-decoration: none; color: inherit; display: block;">
+                    <div class="project-card" style="cursor: pointer; transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow=''">
+                        <div class="project-header">
+                            <h3 class="project-title">Schedule Integrity Auditor</h3>
+                        </div>
+                        <p class="project-description">D-1 audit tool that auto-reviews station scheduling and routing plans, flags discrepancies before dispatch, and cuts manual validation from ~2h/week to ~10 minutes—preventing uncounted operational errors.</p>
+                        <div class="project-impact">
+                            <div class="impact-item">
+                                <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                <span class="impact-text"><span class="impact-value">~95h</span> saved annually</span>
+                            </div>
+                            <div class="impact-item">
+                                <svg class="impact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                <span class="impact-text"><span class="impact-value">~92%</span> time reduction</span>
+                            </div>
+                        </div>
+                        <div class="project-tags">
+                            <span class="tag">Python</span>
+                            <span class="tag">Scheduling</span>
+                            <span class="tag">Pre-Dispatch Audit</span>
+                        </div>
+                    </div>
+                </a>
             </div>
         </div>
     </section>
@@ -5474,7 +5550,7 @@
     <!-- Footer -->
     <footer>
         <div class="container">
-            <p class="footer-text">© 2025 Denis Gwizdala · Supply Chain Process Automation Portfolio</p>
+            <p class="footer-text">© 2026 Denis Gwizdala · Supply Chain Process Automation Portfolio</p>
         </div>
     </footer>
 
@@ -5487,75 +5563,81 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
                 </div>
-                <h2 class="hours-modal-title">~52,000 Hours Saved</h2>
-                <p class="hours-modal-subtitle">Cumulative Impact by Project Since 2020 (Through H1 2025)</p>
+                <h2 class="hours-modal-title">~63,000 Hours Saved</h2>
+                <p class="hours-modal-subtitle">Cumulative Impact by Project Since 2020 (Through Q1 2026)</p>
             </div>
 
             <div class="hours-breakdown-list">
                 <div class="hours-breakdown-item">
                     <div class="hours-breakdown-name">Flex Nurseries</div>
-                    <div class="hours-breakdown-year">3 full years + H1 2025</div>
-                    <div class="hours-breakdown-hours">~31,860h</div>
+                    <div class="hours-breakdown-year">4 full years + Q1 2026</div>
+                    <div class="hours-breakdown-hours">~38,250h</div>
                 </div>
 
                 <div class="hours-breakdown-item">
                     <div class="hours-breakdown-name">Fill Rate Optimizer</div>
-                    <div class="hours-breakdown-year">4 full years + H1 2025</div>
-                    <div class="hours-breakdown-hours">~9,443h</div>
+                    <div class="hours-breakdown-year">5 full years + Q1 2026</div>
+                    <div class="hours-breakdown-hours">~10,920h</div>
                 </div>
 
                 <div class="hours-breakdown-item">
                     <div class="hours-breakdown-name">Browser Automation Scripts</div>
-                    <div class="hours-breakdown-year">4 full years + H1 2025</div>
-                    <div class="hours-breakdown-hours">~2,951h</div>
+                    <div class="hours-breakdown-year">5 full years + Q1 2026</div>
+                    <div class="hours-breakdown-hours">~3,413h</div>
                 </div>
 
                 <div class="hours-breakdown-item">
                     <div class="hours-breakdown-name">Phantom Shipment Automation</div>
-                    <div class="hours-breakdown-year">2 full years + H1 2025</div>
-                    <div class="hours-breakdown-hours">~2,642h</div>
+                    <div class="hours-breakdown-year">3 full years + Q1 2026</div>
+                    <div class="hours-breakdown-hours">~3,380h</div>
                 </div>
 
                 <div class="hours-breakdown-item">
                     <div class="hours-breakdown-name">EU Offset Validator</div>
-                    <div class="hours-breakdown-year">4 full years + H1 2025</div>
-                    <div class="hours-breakdown-hours">~1,589h</div>
-                </div>
-
-                <div class="hours-breakdown-item">
-                    <div class="hours-breakdown-name">Yard Updater</div>
-                    <div class="hours-breakdown-year">2 full years + H1 2025</div>
-                    <div class="hours-breakdown-hours">~1,057h</div>
+                    <div class="hours-breakdown-year">5 full years + Q1 2026</div>
+                    <div class="hours-breakdown-hours">~1,838h</div>
                 </div>
 
                 <div class="hours-breakdown-item">
                     <div class="hours-breakdown-name">Rescue Route Validator</div>
-                    <div class="hours-breakdown-year">1 full year + H1 2025</div>
-                    <div class="hours-breakdown-hours">~1,012h</div>
+                    <div class="hours-breakdown-year">2 full years + Q1 2026</div>
+                    <div class="hours-breakdown-hours">~1,478h</div>
+                </div>
+
+                <div class="hours-breakdown-item">
+                    <div class="hours-breakdown-name">Yard Updater</div>
+                    <div class="hours-breakdown-year">3 full years + Q1 2026</div>
+                    <div class="hours-breakdown-hours">~1,352h</div>
                 </div>
 
                 <div class="hours-breakdown-item">
                     <div class="hours-breakdown-name">Business Review Automation</div>
-                    <div class="hours-breakdown-year">Since end of 2023 (through H1 2025)</div>
-                    <div class="hours-breakdown-hours">~724h</div>
+                    <div class="hours-breakdown-year">Since end of 2023 (through Q1 2026)</div>
+                    <div class="hours-breakdown-hours">~976h</div>
                 </div>
 
                 <div class="hours-breakdown-item">
                     <div class="hours-breakdown-name">Work Monitoring Tool</div>
-                    <div class="hours-breakdown-year">H1 2025 only</div>
-                    <div class="hours-breakdown-hours">~351h</div>
+                    <div class="hours-breakdown-year">Full 2025 + Q1 2026</div>
+                    <div class="hours-breakdown-hours">~813h</div>
                 </div>
 
                 <div class="hours-breakdown-item">
                     <div class="hours-breakdown-name">Shift Deck</div>
-                    <div class="hours-breakdown-year">Deployed 2025</div>
-                    <div class="hours-breakdown-hours">~90h</div>
+                    <div class="hours-breakdown-year">Full 2025 + Q1 2026</div>
+                    <div class="hours-breakdown-hours">~225h</div>
+                </div>
+
+                <div class="hours-breakdown-item">
+                    <div class="hours-breakdown-name">Schedule Integrity Auditor</div>
+                    <div class="hours-breakdown-year">Q1 2026 only</div>
+                    <div class="hours-breakdown-hours">~24h</div>
                 </div>
             </div>
 
             <div class="hours-breakdown-total">
-                <div class="hours-breakdown-total-label">Cumulative Total Impact (2020-2025 H1)</div>
-                <div class="hours-breakdown-total-value">~51,719hrs</div>
+                <div class="hours-breakdown-total-label">Cumulative Total Impact (2020 – Q1 2026)</div>
+                <div class="hours-breakdown-total-value">~62,669hrs</div>
             </div>
         </div>
     </div>
@@ -5588,8 +5670,8 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
                 </div>
-                <h2 class="hours-modal-title">~£1.8M Saved Since 2020</h2>
-                <p class="hours-modal-subtitle">Cost Savings Breakdown by Year (Through H1 2025)</p>
+                <h2 class="hours-modal-title">~£528K Saved Since 2020</h2>
+                <p class="hours-modal-subtitle">Cost Savings Breakdown by Year (Through Q1 2026)</p>
             </div>
 
             <!-- Year Breakdown List -->
@@ -5598,12 +5680,12 @@
             </div>
 
             <div class="hours-breakdown-total">
-                <div class="hours-breakdown-total-label">Cumulative Total (2020-2025 H1)</div>
-                <div class="hours-breakdown-total-value">~£1.76M</div>
+                <div class="hours-breakdown-total-label">Cumulative Total (2020 – Q1 2026)</div>
+                <div class="hours-breakdown-total-value">~£528K</div>
             </div>
 
             <div class="impact-note">
-                <strong>Note:</strong> All figures are estimates or adjusted for confidentiality. Cost tracking began in 2023 with Phantom deployment. 2025 shows H1 only (Jan-Jun, 54% of year) with all projects pro-rated. Fill Rate Optimizer's £1M annual savings from Selenium automation breakthrough in 2023 Q1 continues through present. Business Review Automation contributes ~£3.5K in H1 2025.
+                <strong>Note:</strong> All figures are estimates or adjusted for confidentiality. Cost tracking began in 2023 with Phantom deployment. 2025 shows full year. 2026 shows Q1 only (Jan-Mar, projected) with all projects pro-rated. Fill Rate Optimizer's £100K annual savings from Selenium automation breakthrough in 2023 Q1 continues through present. Schedule Integrity Auditor deployed Q1 2026.
             </div>
         </div>
     </div>
@@ -5722,7 +5804,7 @@
                     </svg>
                 </div>
                 <h2 class="projects-modal-title">Portfolio Projects Overview</h2>
-                <p class="projects-modal-subtitle">9 out of 10 projects adopted as Standard Operating Procedures (SOPs)</p>
+                <p class="projects-modal-subtitle">9 out of 11 projects adopted as Standard Operating Procedures (SOPs)</p>
             </div>
 
             <div class="projects-grid-modal">
@@ -5737,7 +5819,7 @@
                         <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
                         </svg>
-                        ~£1M saved annually across EU network
+                        ~£100K saved annually across EU network
                     </div>
                     <div class="project-modal-tags">
                         <span class="project-modal-tag">Cloud Automation</span>
@@ -5925,6 +6007,26 @@
                         <span class="project-modal-tag">Open Source</span>
                     </div>
                 </div>
+
+                <!-- Schedule Integrity Auditor - New 2026 -->
+                <div class="project-modal-card" onclick="window.location.href='schedule-integrity-auditor.html'">
+                    <div class="project-modal-header">
+                        <h3 class="project-modal-name">Schedule Integrity Auditor</h3>
+                        <span class="sop-badge-eu">2026</span>
+                    </div>
+                    <p class="project-modal-description">D-1 audit tool that auto-reviews station scheduling and routing plans, flags discrepancies before dispatch, and sends automated email summaries to stakeholders.</p>
+                    <div class="project-modal-metric">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+                        </svg>
+                        ~95h saved · ~£1.76K · ~92% time reduction
+                    </div>
+                    <div class="project-modal-tags">
+                        <span class="project-modal-tag">Python</span>
+                        <span class="project-modal-tag">Pre-Dispatch Audit</span>
+                        <span class="project-modal-tag">Email Automation</span>
+                    </div>
+                </div>
             </div>
 
             <div class="projects-modal-footer">
@@ -6047,70 +6149,65 @@
         }
         }
 
-        // Progressive Disclosure
+        // Progressive Disclosure — using IntersectionObserver
         function revealOnScroll() {
-            const reveals = document.querySelectorAll('.intro-card:not(.revealed)');
-            
-            reveals.forEach(element => {
-                const rect = element.getBoundingClientRect();
-                const windowHeight = window.innerHeight;
-                
-                if (rect.top < windowHeight * 0.85) {
-                    element.classList.add('revealed');
-                    
-                    const counters = element.querySelectorAll('.counter:not(.animated)');
+            // No-op: handled by revealObserver below
+        }
+
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                    const counters = entry.target.querySelectorAll('.counter:not(.animated)');
                     counters.forEach(counter => animateCounter(counter));
+                    revealObserver.unobserve(entry.target);
                 }
             });
-        }
+        }, { threshold: 0, rootMargin: '0px 0px -15% 0px' });
+
+        document.querySelectorAll('.intro-card').forEach(el => revealObserver.observe(el));
 
         // Horizontal Timeline Scroll
         // Horizontal Timeline Scroll - Centered Cards
         // Horizontal Timeline Scroll - Fixed Centering
+        let _tlSection, _tlTrack, _tlCards, _tlCached = false;
         function updateTimeline() {
-            const section = document.querySelector('.timeline-section');
-            const track = document.querySelector('.timeline-track');
-            const cards = document.querySelectorAll('.timeline-card');
+            if (!_tlCached) {
+                _tlSection = document.querySelector('.timeline-section');
+                _tlTrack = document.querySelector('.timeline-track');
+                _tlCards = document.querySelectorAll('.timeline-card');
+                _tlCached = true;
+            }
+            if (!_tlSection || !_tlTrack || _tlCards.length === 0) return;
             
-            if (!section || !track || cards.length === 0) return;
-            
-            const sectionTop = section.offsetTop;
-            const sectionHeight = section.offsetHeight;
+            const sectionTop = _tlSection.offsetTop;
+            const sectionHeight = _tlSection.offsetHeight;
             const viewportHeight = window.innerHeight;
             const scrolled = window.scrollY - sectionTop;
             
-            // Only animate when in the timeline section
-            if (scrolled < 0 || scrolled > sectionHeight - viewportHeight) {
-                return;
-            }
+            if (scrolled < 0 || scrolled > sectionHeight - viewportHeight) return;
             
-            // Calculate scroll progress (0 to 1)
             const totalScrollRange = sectionHeight - viewportHeight;
             const scrollProgress = Math.max(0, Math.min(1, scrolled / totalScrollRange));
             
-            // Determine active card index
             const activeIndex = Math.min(
-                Math.floor(scrollProgress * cards.length),
-                cards.length - 1
+                Math.floor(scrollProgress * _tlCards.length),
+                _tlCards.length - 1
             );
             
-            // Calculate translation to center active card
-            const cardWidth = cards[0].offsetWidth;
-            const gap = parseFloat(getComputedStyle(track).gap) || 64;
+            const cardWidth = _tlCards[0].offsetWidth;
+            const gap = parseFloat(getComputedStyle(_tlTrack).gap) || 64;
             const viewportCenter = window.innerWidth / 2;
             const cardCenter = cardWidth / 2;
             
-            // Position to center the active card
             const translateX = viewportCenter - cardCenter - (activeIndex * (cardWidth + gap));
             
-            track.style.transform = `translateX(${translateX}px)`;
+            _tlTrack.style.transform = `translateX(${translateX}px)`;
             
-            // Update card states
-            cards.forEach((card, index) => {
+            _tlCards.forEach((card, index) => {
                 if (index === activeIndex) {
                     if (!card.classList.contains('active')) {
                         card.classList.add('active');
-                        // Animate counters for newly active card
                         const counters = card.querySelectorAll('.counter:not(.animated)');
                         counters.forEach(counter => animateCounter(counter));
                     }
@@ -6167,26 +6264,29 @@
             }
         }
 
-        // Fade in sections on scroll
+        // Fade in sections on scroll — using IntersectionObserver
         function checkSectionVisibility() {
-            if (domCache.sectionFades) {
-                domCache.sectionFades.forEach(section => {
-                    const rect = section.getBoundingClientRect();
-                    const isVisible = rect.top < window.innerHeight * 0.85;
-
-                    if (isVisible) {
-                        section.classList.add('visible');
-                    }
-                });
-            }
+            // No-op: handled by sectionObserver below
         }
+
+        // IntersectionObserver for section fade-ins (replaces per-frame getBoundingClientRect)
+        const sectionObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    sectionObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0, rootMargin: '0px 0px -15% 0px' });
+
+        document.querySelectorAll('.section-fade').forEach(el => sectionObserver.observe(el));
 
         // Generate particles (disabled on mobile for performance)
         function createParticles() {
             if (window.innerWidth <= 768) return; // Skip on mobile
 
             const particlesContainer = document.getElementById('particles');
-            const particleCount = 30;
+            const particleCount = 15;
 
             for (let i = 0; i < particleCount; i++) {
                 const particle = document.createElement('div');
@@ -6254,38 +6354,27 @@
             });
         });
 
+        // Timeline visibility — using IntersectionObserver
         function checkTimelineVisibility() {
-            const timeline = document.querySelector('.timeline-section');
-            if (!timeline) return;
-            
-            const rect = timeline.getBoundingClientRect();
-            const isVisible = rect.top < window.innerHeight * 0.7;
-            
-            if (isVisible && !timeline.classList.contains('visible')) {
-                timeline.classList.add('visible');
-            }
+            // No-op: handled by timelineObserver below
         }
 
-        // Smooth scroll with lerping for buttery smooth animations
+        const _tlVisEl = document.querySelector('.timeline-section');
+        if (_tlVisEl) {
+            const timelineObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        timelineObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0, rootMargin: '0px 0px -30% 0px' });
+            timelineObserver.observe(_tlVisEl);
+        }
+
+        // Scroll position tracking
         let currentScroll = 0;
         let targetScroll = 0;
-        const lerpFactor = 0.1; // Lower = smoother but slower (0.05-0.15 recommended)
-
-        function lerp(start, end, factor) {
-            return start + (end - start) * factor;
-        }
-
-        function smoothScrollLoop() {
-            // Lerp current scroll towards target
-            currentScroll = lerp(currentScroll, targetScroll, lerpFactor);
-
-            // Only update if there's a meaningful difference
-            if (Math.abs(targetScroll - currentScroll) > 0.5) {
-                requestAnimationFrame(smoothScrollLoop);
-            } else {
-                currentScroll = targetScroll;
-            }
-        }
 
         // Throttle scroll events using requestAnimationFrame for better performance
         // MOBILE: Disable heavy scroll animations on mobile devices for performance
@@ -6300,10 +6389,7 @@
                     updateParallax();
                     updateJourneyParallax();
                     updateTimeline();
-                    revealOnScroll();
                     updateScrollProgress();
-                    checkSectionVisibility();
-                    checkTimelineVisibility();
                     scrollTicking = false;
                 });
                 scrollTicking = true;
@@ -6385,15 +6471,17 @@
                 { year: '2022', value: 12080, label: '12,080h' },
                 { year: '2023', value: 13713, label: '13,713h' },
                 { year: '2024', value: 14548, label: '14,548h' },
-                { year: '2025', value: 8298, label: '8,298h H1' }
+                { year: '2025', value: 15378, label: '15,378h' },
+                { year: '2026', value: 3868, label: '~3,868h Q1' }
             ],
             cost: [
                 { year: '2020', value: 0, label: '£0' },
                 { year: '2021', value: 0, label: '£0' },
                 { year: '2022', value: 0, label: '£0' },
                 { year: '2023', value: 50000, label: '£50K' },
-                { year: '2024', value: 1106000, label: '£1.106M' },
-                { year: '2025', value: 603500, label: '£603.5K H1' }
+                { year: '2024', value: 206000, label: '£206K' },
+                { year: '2025', value: 217600, label: '£217.6K' },
+                { year: '2026', value: 54840, label: '~£55K Q1' }
             ],
             efficiency: [
                 { year: '2020', value: 0, label: '0%' },
@@ -6401,7 +6489,8 @@
                 { year: '2022', value: 93, label: '~93%' },
                 { year: '2023', value: 90, label: '~90%' },
                 { year: '2024', value: 85, label: '~85%' },
-                { year: '2025', value: 88, label: '~88%' }
+                { year: '2025', value: 88, label: '~88%' },
+                { year: '2026', value: 90, label: '~90% Q1' }
             ],
             errors: [
                 { year: '2020', value: 0, label: '0' },
@@ -6409,7 +6498,8 @@
                 { year: '2022', value: 3500, label: '~3,500' },
                 { year: '2023', value: 5800, label: '~5,800' },
                 { year: '2024', value: 8600, label: '~8,600' },
-                { year: '2025', value: 9500, label: '~9,500 H1' }
+                { year: '2025', value: 17600, label: '~17,600' },
+                { year: '2026', value: 4400, label: '~4,400 Q1' }
             ]
         };
 
@@ -6473,20 +6563,37 @@
                     note: 'Peak performance with validation suite deployment. All projects delivering sustained efficiency gains'
                 },
                 '2025': {
-                    total: 8298,
+                    total: 15378,
                     projects: [
-                        { name: 'Flex Nurseries Automation', value: '4,860h', deployed: '2022' },
-                        { name: 'Fill Rate Optimizer', value: '1,123h', deployed: '2021' },
-                        { name: 'Phantom Shipment Automation', value: '562h', deployed: '2023' },
-                        { name: 'Rescue Route Validator', value: '355h', deployed: '2024' },
-                        { name: 'Browser Automation Scripts', value: '351h', deployed: '2021' },
-                        { name: 'Work Monitoring Tool', value: '351h', deployed: 'Q1 2025' },
-                        { name: 'Yard Updater', value: '225h', deployed: '2023' },
-                        { name: 'EU Offset Validator', value: '189h', deployed: '2021' },
-                        { name: 'Business Review Automation', value: '192h', deployed: '2023' },
-                        { name: 'Shift Deck', value: '90h', deployed: '2025' }
+                        { name: 'Flex Nurseries Automation', value: '9,000h', deployed: '2022' },
+                        { name: 'Fill Rate Optimizer', value: '2,080h', deployed: '2021' },
+                        { name: 'Phantom Shipment Automation', value: '1,040h', deployed: '2023' },
+                        { name: 'Rescue Route Validator', value: '657h', deployed: '2024' },
+                        { name: 'Browser Automation Scripts', value: '650h', deployed: '2021' },
+                        { name: 'Work Monitoring Tool', value: '650h', deployed: 'Q1 2025' },
+                        { name: 'Yard Updater', value: '416h', deployed: '2023' },
+                        { name: 'EU Offset Validator', value: '350h', deployed: '2021' },
+                        { name: 'Business Review Automation', value: '355h', deployed: '2023' },
+                        { name: 'Shift Deck', value: '180h', deployed: '2025' }
                     ],
-                    note: 'H1 2025 Only (Jan-Jun, 128 working days = 54% of year): All annual projects pro-rated to H1. Flex Nurseries 9,000h × 54% = 4,860h. Fill Rate 2,080h × 54% = 1,123h. All projects delivering sustained efficiency gains.'
+                    note: 'Full year 2025: All 10 automation projects running at full annual rates. Work Monitoring Tool and Shift Deck deployed during 2025.'
+                },
+                '2026': {
+                    total: 3868,
+                    projects: [
+                        { name: 'Flex Nurseries Automation', value: '2,250h', deployed: '2022' },
+                        { name: 'Fill Rate Optimizer', value: '520h', deployed: '2021' },
+                        { name: 'Phantom Shipment Automation', value: '260h', deployed: '2023' },
+                        { name: 'Rescue Route Validator', value: '164h', deployed: '2024' },
+                        { name: 'Browser Automation Scripts', value: '163h', deployed: '2021' },
+                        { name: 'Work Monitoring Tool', value: '163h', deployed: 'Q1 2025' },
+                        { name: 'Yard Updater', value: '104h', deployed: '2023' },
+                        { name: 'EU Offset Validator', value: '88h', deployed: '2021' },
+                        { name: 'Business Review Automation', value: '89h', deployed: '2023' },
+                        { name: 'Shift Deck', value: '45h', deployed: '2025' },
+                        { name: 'Schedule Integrity Auditor', value: '24h', deployed: '2026' }
+                    ],
+                    note: 'Q1 2026 (Jan-Mar, projected): All annual projects pro-rated to 25% of year. Schedule Integrity Auditor newly deployed in 2026.'
                 }
             },
             cost: {
@@ -6506,13 +6613,13 @@
                     note: 'First measurable cost savings from process improvements. Partial year deployment (end of 2023).'
                 },
                 '2024': {
-                    total: 1105553,
+                    total: 205600,
                     projects: [
                         {
                             name: 'Fill Rate Optimizer',
-                            value: '~£1.00M',
+                            value: '~£100K',
                             deployed: '2021',
-                            note: '2,080h saved (40h weekly) × £18.46/h = £38.4K labor savings + £961.6K from eliminating unnecessary price surges (50% reduction in blind surges via live scheduling data validation)'
+                            note: '2,080h saved (40h weekly) × £18.46/h = £38.4K labor savings + £61.6K from eliminating unnecessary price surges (50% reduction in blind surges via live scheduling data validation)'
                         },
                         {
                             name: 'Phantom Shipment Automation',
@@ -6530,34 +6637,70 @@
                     note: 'Major financial impact through Fill Rate optimization breakthrough and Phantom process improvements. Fill Rate Optimizer\'s Selenium automation (deployed 2023 Q1) continues generating savings.'
                 },
                 '2025': {
-                    total: 603500,
+                    total: 217600,
                     projects: [
                         {
                             name: 'Fill Rate Optimizer',
-                            value: '~£540K',
+                            value: '~£100K',
                             deployed: '2021',
-                            note: 'H1 2025 (Jan-Jun, 128 working days): £1M annual rate × 54% = £540K (£38.4K labor × 54% + £961.6K surge reduction × 54%)'
+                            note: 'Full year 2025: £100K annual rate (£38.4K labor + £61.6K surge reduction)'
                         },
                         {
                             name: 'Phantom Shipment Automation',
-                            value: '~£53.5K',
+                            value: '~£99K',
                             deployed: '2023',
-                            note: 'H1 2025 (Jan-Jun): £99K annual rate × 54% = £53.5K (£19.2K labor × 54% + £79.8K process efficiency × 54%)'
+                            note: 'Full year 2025: £99K annual rate (£19.2K labor + £79.8K process efficiency)'
                         },
                         {
                             name: 'Work Monitoring Tool',
-                            value: '~£6.5K',
+                            value: '~£12K',
                             deployed: 'Q1 2025',
-                            note: 'H1 2025 (Jan-Jun): 351h saved (650h annual × 54%) × £18.46/h = £6.5K labor cost avoided through automated SLA monitoring'
+                            note: 'Full year 2025: 650h saved × £18.46/h = £12K labor cost avoided through automated SLA monitoring'
                         },
                         {
                             name: 'Business Review Automation',
-                            value: '~£3.5K',
+                            value: '~£6.6K',
                             deployed: '2023',
-                            note: 'H1 2025 (Jan-Jun): 192h saved (1.5h daily × 128 working days) × £18.46/h = £3.5K labor cost avoided'
+                            note: 'Full year 2025: 355h saved (1.5h daily) × £18.46/h = £6.6K labor cost avoided'
                         }
                     ],
-                    note: 'H1 2025 (Jan-Jun, 128 working days): All cost savings pro-rated for first half of year. Fill Rate and Phantom continue generating value; Work Monitoring deployed Q1 and Business Review show partial year impact.'
+                    note: 'Full year 2025: All cost-tracked projects running at full annual rates. Fill Rate and Phantom continue generating value; Work Monitoring deployed Q1 2025.'
+                },
+                '2026': {
+                    total: 54840,
+                    projects: [
+                        {
+                            name: 'Fill Rate Optimizer',
+                            value: '~£25K',
+                            deployed: '2021',
+                            note: 'Q1 2026 (Jan-Mar): £100K annual rate × 25% = £25K'
+                        },
+                        {
+                            name: 'Phantom Shipment Automation',
+                            value: '~£24.75K',
+                            deployed: '2023',
+                            note: 'Q1 2026 (Jan-Mar): £99K annual rate × 25% = £24.75K'
+                        },
+                        {
+                            name: 'Work Monitoring Tool',
+                            value: '~£3K',
+                            deployed: 'Q1 2025',
+                            note: 'Q1 2026 (Jan-Mar): £12K annual rate × 25% = £3K'
+                        },
+                        {
+                            name: 'Business Review Automation',
+                            value: '~£1.65K',
+                            deployed: '2023',
+                            note: 'Q1 2026 (Jan-Mar): £6.6K annual rate × 25% = £1.65K'
+                        },
+                        {
+                            name: 'Schedule Integrity Auditor',
+                            value: '~£0.44K',
+                            deployed: '2026',
+                            note: 'Q1 2026 (Jan-Mar): £1.76K annual rate × 25% = £0.44K — newly deployed'
+                        }
+                    ],
+                    note: 'Q1 2026 (Jan-Mar, projected): All cost savings pro-rated to 25% of year. Schedule Integrity Auditor newly deployed.'
                 }
             },
             efficiency: {
@@ -6619,7 +6762,24 @@
                         { name: 'Fill Rate Optimizer', value: '~100%', deployed: '2021', note: 'Continues running' },
                         { name: 'Offset Data Entry Automation', value: '~50%', deployed: '2021', note: 'Continues running' }
                     ],
-                    note: 'All 10 automation projects running concurrently - sustained ~88% average efficiency'
+                    note: 'Full year 2025: All 10 automation projects running concurrently - sustained ~88% average efficiency'
+                },
+                '2026': {
+                    total: 90,
+                    projects: [
+                        { name: 'Schedule Integrity Auditor', value: '~92%', deployed: '2026', note: '2h/week → 10min/week' },
+                        { name: 'Shift Deck', value: '~88%', deployed: '2025', note: 'Continues running' },
+                        { name: 'Work Monitoring Tool', value: '~40%', deployed: 'Q1 2025', note: 'Continues running' },
+                        { name: 'Rescue Route Validator', value: '~85%', deployed: '2024', note: 'Continues running' },
+                        { name: 'Offset Validator', value: '~90%', deployed: '2024', note: 'Continues running' },
+                        { name: 'Business Review Automation', value: '~94%', deployed: '2023', note: 'Continues running' },
+                        { name: 'Phantom Shipment Automation', value: '~100%', deployed: '2023', note: 'Continues running' },
+                        { name: 'Yard Updater', value: '~100%', deployed: '2023', note: 'Continues running' },
+                        { name: 'Flex Nurseries Automation', value: '~93%', deployed: '2022', note: 'Continues running' },
+                        { name: 'Fill Rate Optimizer', value: '~100%', deployed: '2021', note: 'Continues running' },
+                        { name: 'Offset Data Entry Automation', value: '~50%', deployed: '2021', note: 'Continues running' }
+                    ],
+                    note: 'Q1 2026 (projected): All 11 automation projects running - ~90% average efficiency'
                 }
             },
             errors: {
@@ -6675,7 +6835,22 @@
                         { name: 'Flex Nurseries Automation', value: '~90%', deployed: '2022', note: 'Continues preventing errors' },
                         { name: 'Offset Data Entry Automation', value: '~95%', deployed: '2021', note: 'Continues preventing errors' }
                     ],
-                    note: 'All 8 validation projects running concurrently - ~92% average error reduction'
+                    note: 'Full year 2025: All 8 validation projects running concurrently - ~92% average error reduction'
+                },
+                '2026': {
+                    total: 92,
+                    projects: [
+                        { name: 'Schedule Integrity Auditor', value: '~90%', deployed: '2026', note: 'Prevents scheduling/routing discrepancies before dispatch' },
+                        { name: 'Work Monitoring Tool', value: '~12%', deployed: 'Q1 2025', note: 'Continues SLA miss reduction' },
+                        { name: 'Rescue Route Validator', value: '~90%', deployed: '2024', note: 'Continues validation' },
+                        { name: 'Offset Validator', value: '~90%', deployed: '2024', note: 'Continues validation' },
+                        { name: 'Business Review Automation', value: '~100%', deployed: '2023', note: 'Continues preventing errors' },
+                        { name: 'Phantom Shipment Automation', value: '~85%', deployed: '2023', note: 'Continues validation' },
+                        { name: 'Fill Rate Optimizer', value: '~100%', deployed: '2021', note: 'Continues preventing errors' },
+                        { name: 'Flex Nurseries Automation', value: '~90%', deployed: '2022', note: 'Continues preventing errors' },
+                        { name: 'Offset Data Entry Automation', value: '~95%', deployed: '2021', note: 'Continues preventing errors' }
+                    ],
+                    note: 'Q1 2026 (projected): All 9 validation projects running - ~92% average error reduction'
                 }
             }
         };
@@ -7233,7 +7408,7 @@
             // Populate year list if not already done
             if (yearList && !yearList.dataset.populated) {
                 let html = '';
-                const years = ['2020', '2021', '2022', '2023', '2024', '2025'];
+                const years = ['2020', '2021', '2022', '2023', '2024', '2025', '2026'];
 
                 years.forEach((year) => {
                     const breakdown = impactBreakdowns.cost[year];
@@ -7243,7 +7418,7 @@
                     let yearTotal = yearData ? yearData.label : '~£' + breakdown.total;
                     // Add tilde if not already present
                     if (!yearTotal.startsWith('~')) yearTotal = '~' + yearTotal;
-                    const yearLabel = year === '2025' ? '2025 H1' : year;
+                    const yearLabel = year === '2026' ? '2026 Q1 (Projected)' : year;
 
                     html += '<div class="year-breakdown-item">';
                     html += '<div class="year-breakdown-header" onclick="toggleYearBreakdown(this)">';
@@ -7307,14 +7482,14 @@
             // Populate year list if not already done
             if (yearList && !yearList.dataset.populated) {
                 let html = '';
-                const years = ['2021', '2022', '2023', '2024', '2025'];
+                const years = ['2021', '2022', '2023', '2024', '2025', '2026'];
 
                 years.forEach((year) => {
                     const breakdown = impactBreakdowns.efficiency[year];
                     if (!breakdown) return;
 
                     const yearTotal = '~' + breakdown.total + '%';
-                    const yearLabel = year === '2025' ? '2025 H1' : year;
+                    const yearLabel = year === '2026' ? '2026 Q1 (Projected)' : year;
 
                     html += '<div class="year-breakdown-item">';
                     html += '<div class="year-breakdown-header" onclick="toggleYearBreakdown(this)">';
@@ -7628,7 +7803,7 @@
         // Populate Year Breakdown Content
         function populateYearBreakdown(container, metric) {
             let html = '';
-            const years = ['2021', '2022', '2023', '2024', '2025'];
+            const years = ['2021', '2022', '2023', '2024', '2025', '2026'];
 
             years.forEach((year) => {
                 const breakdown = impactBreakdowns[metric][year];
@@ -7702,73 +7877,59 @@
             const tagline = document.querySelector('.hero-tagline');
             if (!tagline) return;
 
-            const originalText = tagline.textContent;
+            const phrases = [
+                'Invent and Simplify',
+                'Learn & Be Curious',
+                'Think Big',
+                'Deliver Results',
+                'Bias for Action',
+                'Dive Deep',
+                'Customer Obsession'
+            ];
+
+            let currentIndex = 0;
             let isAnimating = false;
-            let hasLoadedOnce = false;
-            let lastHoverTime = 0;
-            const COOLDOWN_MS = 10000; // 10 seconds
 
             async function typeText(text) {
                 tagline.classList.add('typing');
+                tagline.textContent = '';
                 for (let i = 0; i < text.length; i++) {
                     tagline.textContent += text[i];
-                    await new Promise(resolve => setTimeout(resolve, 80));
+                    await new Promise(r => setTimeout(r, 80));
                 }
+                tagline.classList.remove('typing');
             }
 
             async function eraseText() {
-                const currentText = tagline.textContent;
-                for (let i = currentText.length; i > 0; i--) {
-                    tagline.textContent = currentText.substring(0, i - 1);
-                    await new Promise(resolve => setTimeout(resolve, 70));
+                tagline.classList.add('typing');
+                const text = tagline.textContent;
+                for (let i = text.length; i > 0; i--) {
+                    tagline.textContent = text.substring(0, i - 1) || '\u00A0';
+                    await new Promise(r => setTimeout(r, 50));
                 }
-            }
-
-            async function typewriterOnLoad() {
-                if (hasLoadedOnce) return;
-                hasLoadedOnce = true;
-                isAnimating = true;
-
-                tagline.textContent = '';
-                await typeText(originalText);
-                await new Promise(resolve => setTimeout(resolve, 500));
-
                 tagline.classList.remove('typing');
-                isAnimating = false;
             }
 
-            async function typewriterOnHover() {
-                const currentTime = Date.now();
-                const timeSinceLastHover = currentTime - lastHoverTime;
-
-                // Check cooldown - must wait 10 seconds between animations
-                if (timeSinceLastHover < COOLDOWN_MS && lastHoverTime !== 0) {
-                    return;
-                }
-
+            async function loop() {
                 if (isAnimating) return;
                 isAnimating = true;
-                lastHoverTime = currentTime;
 
-                tagline.classList.add('typing');
+                // Initial type on first load
+                tagline.textContent = '';
+                await typeText(phrases[0]);
+                await new Promise(r => setTimeout(r, 2500));
 
-                // Erase current text
-                await eraseText();
-                await new Promise(resolve => setTimeout(resolve, 700));
-
-                // Type out text again
-                await typeText(originalText);
-                await new Promise(resolve => setTimeout(resolve, 500));
-
-                tagline.classList.remove('typing');
-                isAnimating = false;
+                // Cycle through phrases forever
+                while (true) {
+                    await eraseText();
+                    await new Promise(r => setTimeout(r, 400));
+                    currentIndex = (currentIndex + 1) % phrases.length;
+                    await typeText(phrases[currentIndex]);
+                    await new Promise(r => setTimeout(r, 2500));
+                }
             }
 
-            // Type on load after a short delay
-            setTimeout(typewriterOnLoad, 800);
-
-            // Erase and retype on hover
-            tagline.addEventListener('mouseenter', typewriterOnHover);
+            setTimeout(loop, 800);
         })();
     </script>
 
